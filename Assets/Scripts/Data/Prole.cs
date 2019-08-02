@@ -7,7 +7,7 @@ public class Person {
 
 	public string surname, name, ID;
 	public int yearsOld, deltaDays;
-	public bool diseased, dead;
+	public bool diseased, markedForDeath;
 	public Float3d skinColor;
 	public World world;
 
@@ -48,7 +48,7 @@ public class Person {
 
 			int roll = Random.Range(0, 100);
 			if (roll <= DeathChance)
-				Kill();
+				MarkForDeath();
 
 		}
 
@@ -72,15 +72,21 @@ public class Person {
 
 	}
 
-	public virtual void Kill() {
+	public void MarkForDeath() {
 
-		dead = true;
+		markedForDeath = true;
 
 	}
 
 	public override string ToString() {
 
 		return FullName;
+
+	}
+
+	public virtual void Kill() {
+
+
 
 	}
 
@@ -128,7 +134,7 @@ public class Adult : Person {
 
 	//add 10% death chance if diseased
 	//add 15% death chance if retired
-	public override int DeathChance { get { return (diseased ? 10 : 0) + (Retired ? 15 : 0); } }
+	public override int DeathChance { get { return (diseased ? 10 : 0) + (Retired ? 15 : 0) + WorkDeathRisk(); } }
 
 	//constructor
 	public Adult(bool randomAge, bool wChildren) : base(randomAge) {
@@ -228,7 +234,7 @@ public class Adult : Person {
 		workNode = null;
 
 		if (go == null)
-            return;
+            Debug.LogError("Workplace at " + workNode + " for " + this + " does not exist");
 
         Workplace wrk = go.GetComponent<Workplace>();
         wrk.RemoveWorker(workIndex);
@@ -261,8 +267,7 @@ public class Adult : Person {
 	}
 
 	public override void Kill() {
-
-		base.Kill();
+		
 		QuitWork();
 		EvictHouse(true);
 
@@ -293,5 +298,27 @@ public class Adult : Person {
         house.Savings += wages;
 
     }
+
+	public int WorkDeathRisk() {
+
+		if (workNode == null)
+			return 0;
+
+		GameObject go = world.GetBuildingAt(workNode);
+		workNode = null;
+
+		if (go == null)
+			Debug.LogError("Workplace at " + workNode + " for " + this + " does not exist");
+
+		Workplace wrk = go.GetComponent<Workplace>();
+
+		if (wrk.laborType != LaborType.Physical)
+			return 0;
+
+		int workingDay = wrk.WorkingDay;
+		int excess = workingDay - 8;
+		return excess > 0 ? excess : 0;
+
+	}
 
 }

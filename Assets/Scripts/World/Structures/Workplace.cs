@@ -38,6 +38,7 @@ public class Workplace : Structure {
     public int workersMax = 1;
     public float baseWages = .4f;
     public LaborDivision laborDivision;
+	public LaborType laborType = LaborType.Physical;
 
     public int TimeToSpawnWalker { get; set; }
     

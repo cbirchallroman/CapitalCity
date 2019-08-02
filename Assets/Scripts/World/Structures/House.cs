@@ -370,22 +370,31 @@ public class House : Structure {
 
 	void UpdateResidentsAge() {
 
-		foreach(Adult p in Residents) {
+		//iterate backwards to not have any problems with removing residents or children
+		for(int i = Residents.Count - 1; i >= 0; i--) {
+
+			Adult p = Residents[i];
 			p.UpdateAge();
 
-			if (p.dead) {
-				//do if p is dead
+			for (int j = p.children.Count - 1; j >= 0; j--) {
+
+				Child c = p.children[j];
+				c.UpdateAge();
+				if (c.markedForDeath) {
+					//do if c is dead
+					p.children.Remove(c);
+					c.Kill();
+				}
+
 			}
 
-			foreach (Child c in p.children) {
-				c.UpdateAge();
-				if (c.dead) {
-					//do if c is dead
-				}
+			if (p.markedForDeath) {
+				//do if p is about to die
+				p.Kill();
 			}
 
 		}
-
+		
 	}
 
 	public void CheckProleSpawn() {
