@@ -1,4 +1,4 @@
 sceneSetups:
-- path: C:/Users/ambit/Desktop/Platformer/Assets/Scenes/SampleScene.unity
+- path: Assets/Scenes/City.unity
   isLoaded: 1
   isActive: 1
