@@ -1,0 +1,2 @@
+C:\Users\ambit\Desktop\Portapolis\obj\Debug\Assembly-CSharp.csprojAssemblyReference.cache
+C:\Users\ambit\Desktop\Portapolis\obj\Debug\Assembly-CSharp.csproj.CoreCompileInputs.cache

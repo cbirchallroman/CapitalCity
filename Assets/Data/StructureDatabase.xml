@@ -1,0 +1,659 @@
+﻿<StructureDatabase>
+  
+  <Structure>
+  
+    <Name>House1s</Name>
+    <DisplayName>House</DisplayName>
+
+    <Sizex>1</Sizex>
+    <Sizey>1</Sizey>
+    <BaseCost>2</BaseCost>
+
+    <CanDrag>true</CanDrag>
+
+  </Structure>
+
+  <Structure>
+
+    <Name>House2s</Name>
+    <DisplayName>House</DisplayName>
+
+    <Sizex>1</Sizex>
+    <Sizey>1</Sizey>
+    <BaseCost>2</BaseCost>
+
+    <CanDrag>true</CanDrag>
+
+  </Structure>
+
+  <Structure>
+
+    <Name>House3s</Name>
+    <DisplayName>House</DisplayName>
+
+    <Sizex>1</Sizex>
+    <Sizey>1</Sizey>
+    <BaseCost>2</BaseCost>
+
+    <CanDrag>true</CanDrag>
+
+  </Structure>
+
+  <Structure>
+
+    <Name>House4s</Name>
+    <DisplayName>House</DisplayName>
+
+    <Sizex>1</Sizex>
+    <Sizey>1</Sizey>
+    <BaseCost>2</BaseCost>
+
+    <CanDrag>true</CanDrag>
+
+  </Structure>
+
+  <Structure>
+
+    <Name>House5s</Name>
+    <DisplayName>House</DisplayName>
+
+    <Sizex>1</Sizex>
+    <Sizey>1</Sizey>
+    <BaseCost>2</BaseCost>
+
+    <CanDrag>true</CanDrag>
+
+  </Structure>
+
+  <Structure>
+
+    <Name>House6s</Name>
+    <DisplayName>House</DisplayName>
+
+    <Sizex>1</Sizex>
+    <Sizey>1</Sizey>
+    <BaseCost>2</BaseCost>
+
+    <CanDrag>true</CanDrag>
+
+  </Structure>
+
+  <Structure>
+
+    <Name>House0s</Name>
+    <DisplayName>Empty Lot</DisplayName>
+
+    <Sizex>1</Sizex>
+    <Sizey>1</Sizey>
+    <BaseCost>2</BaseCost>
+
+    <CanDrag>true</CanDrag>
+    <PlaceNearby>Road</PlaceNearby>
+
+  </Structure>
+
+  <Structure>
+  
+    <Name>Market</Name>
+    <DisplayName>Market</DisplayName>
+
+    <Sizex>2</Sizex>
+    <Sizey>2</Sizey>
+    <BaseCost>8</BaseCost>
+
+  </Structure>
+
+  <Structure>
+
+    <Name>Grocer</Name>
+    <DisplayName>Grocer</DisplayName>
+
+    <Sizex>2</Sizex>
+    <Sizey>2</Sizey>
+    <BaseCost>8</BaseCost>
+
+  </Structure>
+
+  <Structure>
+  
+    <Name>Fountain</Name>
+    <DisplayName>Fountain</DisplayName>
+
+    <Sizex>1</Sizex>
+    <Sizey>1</Sizey>
+    <BaseCost>2</BaseCost>
+
+  </Structure>
+
+  <Structure>
+
+    <Name>InspectorsTower</Name>
+    <DisplayName>Inspector's Tower</DisplayName>
+
+    <Sizex>1</Sizex>
+    <Sizey>1</Sizey>
+    <BaseCost>4</BaseCost>
+
+  </Structure>
+
+  <Structure>
+
+    <Name>ArchitectsPost</Name>
+    <DisplayName>Architect's Post</DisplayName>
+
+    <Sizex>2</Sizex>
+    <Sizey>2</Sizey>
+    <BaseCost>12</BaseCost>
+
+  </Structure>
+  
+  <Structure>
+  
+    <Name>Road</Name>
+    <DisplayName>Road</DisplayName>
+
+    <Sizex>1</Sizex>
+    <Sizey>1</Sizey>
+    <BaseCost>1</BaseCost>
+    
+    <CanDrag>true</CanDrag>
+	<StraightLineDrag>true</StraightLineDrag>
+
+  </Structure>
+  
+  <Structure>
+  
+    <Name>RoadPaved</Name>
+    <DisplayName>Road</DisplayName>
+
+    <Sizex>1</Sizex>
+    <Sizey>1</Sizey>
+    <BaseCost>1</BaseCost>
+    
+    <CanDrag>true</CanDrag>
+
+  </Structure>
+
+  <Structure>
+
+    <Name>Potter</Name>
+    <DisplayName>Potter</DisplayName>
+
+    <Sizex>2</Sizex>
+    <Sizey>2</Sizey>
+    <BaseCost>12</BaseCost>
+
+  </Structure>
+
+  <Structure>
+
+    <Name>Tree</Name>
+    <DisplayName>Tree</DisplayName>
+
+    <Sizex>1</Sizex>
+    <Sizey>1</Sizey>
+    <BaseCost>0</BaseCost>
+
+    <CanDrag>true</CanDrag>
+
+  </Structure>
+
+  <Structure>
+
+    <Name>Stone</Name>
+    <DisplayName>Stone</DisplayName>
+
+    <Sizex>1</Sizex>
+    <Sizey>1</Sizey>
+    <BaseCost>0</BaseCost>
+
+    <CanDrag>true</CanDrag>
+
+  </Structure>
+  
+  <Structure>
+
+    <Name>RubbleOnFire</Name>
+    <DisplayName>Fire</DisplayName>
+
+    <Sizex>1</Sizex>
+    <Sizey>1</Sizey>
+    <BaseCost>0</BaseCost>
+
+    <CanDrag>true</CanDrag>
+
+  </Structure>
+  
+  <Structure>
+
+    <Name>Rubble</Name>
+    <DisplayName>Rubble</DisplayName>
+
+    <Sizex>1</Sizex>
+    <Sizey>1</Sizey>
+    <BaseCost>0</BaseCost>
+
+    <CanDrag>true</CanDrag>
+
+  </Structure>
+
+  <Structure>
+
+    <Name>Granary</Name>
+    <DisplayName>Granary</DisplayName>
+
+    <Sizex>4</Sizex>
+    <Sizey>4</Sizey>
+    <BaseCost>12</BaseCost>
+
+  </Structure>
+  
+  <Structure>
+
+    <Name>MapEntrance</Name>
+    <DisplayName>Map Entrance</DisplayName>
+
+    <Sizex>1</Sizex>
+    <Sizey>1</Sizey>
+    <BaseCost>0</BaseCost>
+
+    <BuiltOnce>true</BuiltOnce>
+
+  </Structure>
+
+  <Structure>
+
+    <Name>MapExit</Name>
+    <DisplayName>Map Exit</DisplayName>
+
+    <Sizex>1</Sizex>
+    <Sizey>1</Sizey>
+    <BaseCost>0</BaseCost>
+
+    <BuiltOnce>true</BuiltOnce>
+
+  </Structure>
+
+  <Structure>
+
+    <Name>Roadblock</Name>
+    <DisplayName>Roadblock</DisplayName>
+
+    <Sizex>1</Sizex>
+    <Sizey>1</Sizey>
+    <BaseCost>2</BaseCost>
+
+    <HasRoadTiles>true</HasRoadTiles>
+
+  </Structure>
+  
+  <Structure>
+
+    <Name>Dock</Name>
+    <DisplayName>Dock</DisplayName>
+
+    <Sizex>2</Sizex>
+    <Sizey>2</Sizey>
+    <BaseCost>5</BaseCost>
+
+    <HasWaterTiles>true</HasWaterTiles>
+
+  </Structure>
+
+  <Structure>
+
+    <Name>Brewery</Name>
+    <DisplayName>Brewery</DisplayName>
+
+    <Sizex>2</Sizex>
+    <Sizey>2</Sizey>
+    <BaseCost>6</BaseCost>
+
+  </Structure>
+  
+  <Structure>
+
+    <Name>GoatShed</Name>
+    <DisplayName>Goat Shed</DisplayName>
+
+    <Sizex>2</Sizex>
+    <Sizey>2</Sizey>
+    <BaseCost>6</BaseCost>
+
+  </Structure>
+
+  <Structure>
+
+    <Name>SheepStable</Name>
+    <DisplayName>Sheep Stable</DisplayName>
+
+    <Sizex>2</Sizex>
+    <Sizey>2</Sizey>
+    <BaseCost>6</BaseCost>
+  
+  </Structure>
+
+  <Structure>
+
+    <Name>CattleRanch</Name>
+    <DisplayName>Cattle Ranch</DisplayName>
+
+    <Sizex>2</Sizex>
+    <Sizey>2</Sizey>
+    <BaseCost>6</BaseCost>
+
+  </Structure>
+  
+  <Structure>
+
+    <Name>Claypit</Name>
+    <DisplayName>Claypit</DisplayName>
+
+    <Sizex>2</Sizex>
+    <Sizey>2</Sizey>
+    <BaseCost>3</BaseCost>
+
+    <BuildNearWater>true</BuildNearWater>
+
+  </Structure>
+
+  <Structure>
+
+    <Name>Brickworks</Name>
+    <DisplayName>Brickworks</DisplayName>
+
+    <Sizex>2</Sizex>
+    <Sizey>2</Sizey>
+    <BaseCost>3</BaseCost>
+
+  </Structure>
+
+  <Structure>
+
+    <Name>Warehouse</Name>
+    <DisplayName>Warehouse</DisplayName>
+
+    <Sizex>3</Sizex>
+    <Sizey>3</Sizey>
+    <BaseCost>8</BaseCost>
+
+
+  </Structure>
+  
+  <Structure>
+
+    <Name>House1b</Name>
+    <DisplayName>House</DisplayName>
+
+    <Sizex>2</Sizex>
+    <Sizey>2</Sizey>
+    <BaseCost>0</BaseCost>
+
+
+  </Structure>
+  
+  <Structure>
+
+    <Name>House2b</Name>
+    <DisplayName>House</DisplayName>
+
+    <Sizex>2</Sizex>
+    <Sizey>2</Sizey>
+    <BaseCost>0</BaseCost>
+    <CanDrag>false</CanDrag>
+    <HasWaterTiles>false</HasWaterTiles>
+    <HasRoadTiles>false</HasRoadTiles>
+    <BuiltOnce>false</BuiltOnce>
+
+  </Structure>
+  
+  <Structure>
+
+    <Name>House3b</Name>
+    <DisplayName>House</DisplayName>
+
+    <Sizex>2</Sizex>
+    <Sizey>2</Sizey>
+    <BaseCost>0</BaseCost>
+
+
+  </Structure>
+
+  <Structure>
+
+    <Name>HerbalistsHut</Name>
+    <DisplayName>Herbalist's Hut</DisplayName>
+
+    <Sizex>1</Sizex>
+    <Sizey>1</Sizey>
+    <BaseCost>4</BaseCost>
+
+  </Structure>
+
+  <Structure>
+
+    <Name>ZigguratSite</Name>
+    <DisplayName>Ziggurat Site</DisplayName>
+
+    <Sizex>6</Sizex>
+    <Sizey>8</Sizey>
+    <BaseCost>56</BaseCost>
+
+  </Structure>
+
+  <Structure>
+
+    <Name>Ziggurat</Name>
+    <DisplayName>Ziggurat</DisplayName>
+
+    <Sizex>6</Sizex>
+    <Sizey>8</Sizey>
+    <BaseCost>4</BaseCost>
+
+  </Structure>
+
+  <Structure>
+
+    <Name>Fence</Name>
+    <DisplayName>Fence</DisplayName>
+
+    <Sizex>1</Sizex>
+    <Sizey>1</Sizey>
+    <BaseCost>1</BaseCost>
+
+    <CanDrag>true</CanDrag>
+	<StraightLineDrag>true</StraightLineDrag>
+    
+  </Structure>
+  
+  <Structure>
+
+    <Name>FenceGate</Name>
+    <DisplayName>Fence Gate</DisplayName>
+
+    <Sizex>1</Sizex>
+    <Sizey>1</Sizey>
+    <BaseCost>1</BaseCost>
+
+    <CanDrag>true</CanDrag>
+
+  </Structure>
+  
+  <Structure>
+
+    <Name>StreetCleaners</Name>
+    <DisplayName>Street Cleaners</DisplayName>
+
+    <Sizex>1</Sizex>
+    <Sizey>1</Sizey>
+    <BaseCost>3</BaseCost>
+
+  </Structure>
+
+  <Structure>
+
+    <Name>StorageYard</Name>
+    <DisplayName>Storage Yard</DisplayName>
+
+    <Sizex>4 </Sizex>
+    <Sizey>4</Sizey>
+    <BaseCost>3</BaseCost>
+
+  </Structure>
+
+  <Structure>
+
+    <Name>LoggingCamp</Name>
+    <DisplayName>Logging Camp</DisplayName>
+
+    <Sizex>1</Sizex>
+    <Sizey>1</Sizey>
+    <BaseCost>3</BaseCost>
+
+  </Structure>
+
+  <Structure>
+
+    <Name>SandMine</Name>
+    <DisplayName>Sand Mine</DisplayName>
+
+    <Sizex>2</Sizex>
+    <Sizey>2</Sizey>
+    <BaseCost>3</BaseCost>
+
+    <PlaceOnTerrain>Sand</PlaceOnTerrain>
+
+  </Structure>
+
+  <Structure>
+
+    <Name>WTP</Name>
+    <DisplayName>Water Treatment</DisplayName>
+
+    <Sizex>3</Sizex>
+    <Sizey>3</Sizey>
+    <BaseCost>8</BaseCost>
+
+  </Structure>
+
+  <Structure>
+
+    <Name>WTPSite</Name>
+    <DisplayName>Water Treatment</DisplayName>
+
+    <Sizex>3</Sizex>
+    <Sizey>3</Sizey>
+    <BaseCost>8</BaseCost>
+
+    <BuildNearWater>true</BuildNearWater>
+
+  </Structure>
+  
+  <Structure>
+
+    <Name>Tavern</Name>
+    <DisplayName>Tavern</DisplayName>
+
+    <Sizex>2</Sizex>
+    <Sizey>2</Sizey>
+    <BaseCost>3</BaseCost>
+
+  </Structure>
+
+  <Structure>
+
+    <Name>Farmhouse</Name>
+    <DisplayName>Farmhouse</DisplayName>
+
+    <Sizex>2</Sizex>
+    <Sizey>2</Sizey>
+    <BaseCost>6</BaseCost>
+    
+  </Structure>
+
+  <Structure>
+
+    <Name>GrainCrop</Name>
+    <DisplayName>Grain Crop</DisplayName>
+
+    <Sizex>1</Sizex>
+    <Sizey>1</Sizey>
+    <BaseCost>1</BaseCost>
+    <CanDrag>true</CanDrag>
+    <PlaceNearby>Farmhouse</PlaceNearby>
+
+  </Structure>
+
+  <Structure>
+
+    <Name>CottonCrop</Name>
+    <DisplayName>Cotton Crop</DisplayName>
+
+    <Sizex>1</Sizex>
+    <Sizey>1</Sizey>
+    <BaseCost>1</BaseCost>
+    <CanDrag>true</CanDrag>
+    <PlaceNearby>Farmhouse</PlaceNearby>
+
+  </Structure>
+
+  <Structure>
+
+    <Name>FlaxCrop</Name>
+    <DisplayName>Flax Crop</DisplayName>
+
+    <Sizex>1</Sizex>
+    <Sizey>1</Sizey>
+    <BaseCost>1</BaseCost>
+    <CanDrag>true</CanDrag>
+    <PlaceNearby>Farmhouse</PlaceNearby>
+
+  </Structure>
+
+  <Structure>
+
+    <Name>Canal</Name>
+    <DisplayName>Canal</DisplayName>
+
+    <Sizex>1</Sizex>
+    <Sizey>1</Sizey>
+    <BaseCost>1</BaseCost>
+    <CanDrag>true</CanDrag>
+	  <StraightLineDrag>true</StraightLineDrag>
+
+  </Structure>
+  
+  <Structure>
+
+    <Name>MechanicShop</Name>
+    <DisplayName>Mechanic Shop</DisplayName>
+
+    <Sizex>2</Sizex>
+    <Sizey>3</Sizey>
+    <BaseCost>5</BaseCost>
+
+  </Structure>
+
+  <Structure>
+
+    <Name>LiquorStore</Name>
+    <DisplayName>Liquor Store</DisplayName>
+
+    <Sizex>1</Sizex>
+    <Sizey>1</Sizey>
+    <BaseCost>5</BaseCost>
+
+  </Structure>
+  
+  <Structure>
+
+    <Name>CigarShop</Name>
+    <DisplayName>Cigar Shop</DisplayName>
+
+    <Sizex>1</Sizex>
+    <Sizey>1</Sizey>
+    <BaseCost>5</BaseCost>
+
+  </Structure>
+
+</StructureDatabase>

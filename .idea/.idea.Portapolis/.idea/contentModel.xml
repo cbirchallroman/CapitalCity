@@ -1,0 +1,222 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ContentModelStore">
+    <e p="C:\Users\ambit\.Rider2019.1\system\extResources" t="IncludeRecursive" />
+    <e p="C:\Users\ambit\.Rider2019.1\system\resharper-host\Local\Transient\ReSharperHost\v191\SolutionCaches\_Portapolis.-2118864094.00" t="ExcludeRecursive" />
+    <e p="C:\Users\ambit\Desktop\Portapolis" t="IncludeRecursive">
+      <e p="Assembly-CSharp.csproj" t="IncludeRecursive" />
+      <e p="Assets" t="Include">
+        <e p="Data" t="Include">
+          <e p="ActionsXML.xml" t="Include" />
+          <e p="CampaignDatabase.xml" t="Include" />
+          <e p="ResourcesDatabase.xml" t="Include" />
+          <e p="StructureDatabase.xml" t="Include" />
+          <e p="WalkerDatabase.xml" t="Include" />
+        </e>
+        <e p="ItemValueUI.cs" t="Include" />
+        <e p="MinimapController.cs" t="Include" />
+        <e p="RandomModel.cs" t="Include" />
+        <e p="Resources" t="Include">
+          <e p="BuildingData" t="Include">
+            <e p="Roads" t="Include">
+              <e p="Roadblock.txt" t="Include" />
+            </e>
+            <e p="Water" t="Include">
+              <e p="Dock.txt" t="Include" />
+            </e>
+          </e>
+          <e p="Text" t="Include">
+            <e p="surnames.txt" t="Include" />
+          </e>
+        </e>
+        <e p="Scripts" t="Include">
+          <e p="Controllers" t="Include">
+            <e p="ActionController.cs" t="Include" />
+            <e p="AudioController.cs" t="Include" />
+            <e p="CameraController.cs" t="Include" />
+            <e p="CombatModeController.cs" t="Include" />
+            <e p="DifficultyController.cs" t="Include" />
+            <e p="DiplomacyController.cs" t="Include" />
+            <e p="HappinessController.cs" t="Include" />
+            <e p="ImmigrationController.cs" t="Include" />
+            <e p="InteractionController.cs" t="Include" />
+            <e p="LaborController.cs" t="Include" />
+            <e p="ModeController.cs" t="Include" />
+            <e p="MoneyController.cs" t="Include" />
+            <e p="MouseController.cs" t="Include" />
+            <e p="MusicController.cs" t="Include" />
+            <e p="NotificationController.cs" t="Include" />
+            <e p="ProductivityController.cs" t="Include" />
+            <e p="ReligionController.cs" t="Include" />
+            <e p="SaveController.cs" t="Include" />
+            <e p="ScenarioController.cs" t="Include" />
+            <e p="StartScreenMenu.cs" t="Include" />
+            <e p="TimeController.cs" t="Include" />
+            <e p="TradeController.cs" t="Include" />
+            <e p="UIObjectDatabase.cs" t="Include" />
+            <e p="WorldController.cs" t="Include" />
+          </e>
+          <e p="Data" t="Include">
+            <e p="Campaign.cs" t="Include" />
+            <e p="City.cs" t="Include" />
+            <e p="DictContainer.cs" t="Include" />
+            <e p="GameFile.cs" t="Include" />
+            <e p="ItemOrder.cs" t="Include" />
+            <e p="Node.cs" t="Include" />
+            <e p="Prole.cs" t="Include" />
+            <e p="Quarter.cs" t="Include" />
+            <e p="StructureData.cs" t="Include" />
+            <e p="Technology.cs" t="Include" />
+            <e p="WalkerData.cs" t="Include" />
+            <e p="WorldGenerator.cs" t="Include" />
+          </e>
+          <e p="Serialization" t="Include">
+            <e p="WorldSave.cs" t="Include" />
+          </e>
+          <e p="Static" t="Include">
+            <e p="CampaignManager.cs" t="Include" />
+            <e p="Difficulty.cs" t="Include" />
+            <e p="Enums.cs" t="Include" />
+            <e p="ResourcesDatabase.cs" t="Include" />
+            <e p="SaveLoadGame.cs" t="Include" />
+            <e p="StructureDatabase.cs" t="Include" />
+            <e p="WalkerDatabase.cs" t="Include" />
+          </e>
+          <e p="Tilemap" t="Include">
+            <e p="TileMap.cs" t="Include" />
+          </e>
+          <e p="UI" t="Include">
+            <e p="ActionButton.cs" t="Include" />
+            <e p="ActionEnabler.cs" t="Include" />
+            <e p="ActionSelecterController.cs" t="Include" />
+            <e p="CalendarUI.cs" t="Include" />
+            <e p="CampaignSelectMenu.cs" t="Include" />
+            <e p="CampaignUI.cs" t="Include" />
+            <e p="CityButton.cs" t="Include" />
+            <e p="DiplomacyMenu.cs" t="Include" />
+            <e p="EscapeMenuController.cs" t="Include" />
+            <e p="FarmhouseWindow.cs" t="Include" />
+            <e p="FinanceMenu.cs" t="Include" />
+            <e p="GeneratorWindow.cs" t="Include" />
+            <e p="HouseWindow.cs" t="Include" />
+            <e p="IngredientInfo.cs" t="Include" />
+            <e p="LaborAllocationMenu.cs" t="Include" />
+            <e p="LaborDivisionUI.cs" t="Include" />
+            <e p="LevelSelecterController.cs" t="Include" />
+            <e p="LoadFreshMap.cs" t="Include" />
+            <e p="LoadGameFileButton.cs" t="Include" />
+            <e p="LoadScenarioButton.cs" t="Include" />
+            <e p="MapSaveListGenerator.cs" t="Include" />
+            <e p="MarketValueUI.cs" t="Include" />
+            <e p="MenuController.cs" t="Include" />
+            <e p="Notifications.cs" t="Include" />
+            <e p="NotificationUI.cs" t="Include" />
+            <e p="ObjWindow.cs" t="Include" />
+            <e p="OpenEscapeMenu.cs" t="Include" />
+            <e p="PausePlay.cs" t="Include" />
+            <e p="PlacementMenu.cs" t="Include" />
+            <e p="QuarterlyReport.cs" t="Include" />
+            <e p="ScenarioGoal.cs" t="Include" />
+            <e p="ScenarioInfo.cs" t="Include" />
+            <e p="StorageItem_adv.cs" t="Include" />
+            <e p="StorageItem_smpl.cs" t="Include" />
+            <e p="StorageWindow.cs" t="Include" />
+            <e p="TooltipController.cs" t="Include" />
+            <e p="TradeDeal.cs" t="Include" />
+            <e p="WorkplaceMonthScheduler.cs" t="Include" />
+            <e p="WorkplaceWindow.cs" t="Include" />
+          </e>
+          <e p="Utilities" t="Include">
+            <e p="Priority Queue" t="Include">
+              <e p="FastPriorityQueue.cs" t="Include" />
+              <e p="FastPriorityQueueNode.cs" t="Include" />
+              <e p="GenericPriorityQueue.cs" t="Include" />
+              <e p="GenericPriorityQueueNode.cs" t="Include" />
+              <e p="IFixedSizePriorityQueue.cs" t="Include" />
+              <e p="IPriorityQueue.cs" t="Include" />
+              <e p="Properties" t="Include">
+                <e p="AssemblyInfo.cs" t="Include" />
+              </e>
+              <e p="SimplePriorityQueue.cs" t="Include" />
+              <e p="StablePriorityQueue.cs" t="Include" />
+              <e p="StablePriorityQueueNode.cs" t="Include" />
+            </e>
+            <e p="SimplePool.cs" t="Include" />
+            <e p="UsefulThings.cs" t="Include" />
+          </e>
+          <e p="World" t="Include">
+            <e p="Obj.cs" t="Include" />
+            <e p="Pathfinder.cs" t="Include" />
+            <e p="StorageBlock.cs" t="Include" />
+            <e p="Structures" t="Include">
+              <e p="Canal.cs" t="Include" />
+              <e p="ConstructionSite.cs" t="Include" />
+              <e p="Cottage.cs" t="Include" />
+              <e p="Crop.cs" t="Include" />
+              <e p="CulturalVenue.cs" t="Include" />
+              <e p="Distributer.cs" t="Include" />
+              <e p="EmptyLot.cs" t="Include" />
+              <e p="Farmhouse.cs" t="Include" />
+              <e p="Fence.cs" t="Include" />
+              <e p="Generator.cs" t="Include" />
+              <e p="House.cs" t="Include" />
+              <e p="InspectorsTower.cs" t="Include" />
+              <e p="LoggingCamp.cs" t="Include" />
+              <e p="Road.cs" t="Include" />
+              <e p="Roadblock.cs" t="Include" />
+              <e p="RubbleOnFire.cs" t="Include" />
+              <e p="Stable.cs" t="Include" />
+              <e p="StorageBuilding.cs" t="Include" />
+              <e p="Structure.cs" t="Include" />
+              <e p="TiledStructure.cs" t="Include" />
+              <e p="Well.cs" t="Include" />
+              <e p="Workplace.cs" t="Include" />
+              <e p="WTP.cs" t="Include" />
+            </e>
+            <e p="Walkers" t="Include">
+              <e p="Actors" t="Include">
+                <e p="Actor.cs" t="Include" />
+                <e p="Fireman.cs" t="Include" />
+                <e p="Lumberjack.cs" t="Include" />
+              </e>
+              <e p="Animals" t="Include">
+                <e p="Animal.cs" t="Include" />
+                <e p="FishingBoat.cs" t="Include" />
+                <e p="Livestock.cs" t="Include" />
+              </e>
+              <e p="Carryers" t="Include">
+                <e p="Caravan.cs" t="Include" />
+                <e p="Carryer.cs" t="Include" />
+                <e p="ExporterCaravan.cs" t="Include" />
+                <e p="GetterCart.cs" t="Include" />
+                <e p="GiverCart.cs" t="Include" />
+                <e p="ImporterCaravan.cs" t="Include" />
+              </e>
+              <e p="Emigrant.cs" t="Include" />
+              <e p="Follower.cs" t="Include" />
+              <e p="Immigrant.cs" t="Include" />
+              <e p="Random" t="Include">
+                <e p="Architect.cs" t="Include" />
+                <e p="Healer.cs" t="Include" />
+                <e p="Inspector.cs" t="Include" />
+                <e p="Mechanic.cs" t="Include" />
+                <e p="RandomWalker.cs" t="Include" />
+                <e p="ShopVender.cs" t="Include" />
+                <e p="StreetSweeper.cs" t="Include" />
+                <e p="Vender.cs" t="Include" />
+                <e p="WellWalker.cs" t="Include" />
+              </e>
+              <e p="Test.cs" t="Include" />
+              <e p="Walker.cs" t="Include" />
+            </e>
+            <e p="World.cs" t="Include" />
+          </e>
+        </e>
+      </e>
+      <e p="obj" t="ExcludeRecursive" />
+      <e p="packages" t="ExcludeRecursive" />
+      <e p="Portapolis.sln" t="IncludeFlat" />
+      <e p="Temp\bin" t="ExcludeRecursive" />
+    </e>
+  </component>
+</project>

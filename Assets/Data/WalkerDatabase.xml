@@ -1,0 +1,119 @@
+<WalkerDatabase>
+
+  <Walker>
+
+    <Name>Cow</Name>
+    <CanGoDiagonal>true</CanGoDiagonal>
+    <CanPassThrough>Crop</CanPassThrough>
+    
+  </Walker>
+  <Walker>
+
+    <Name>FishingBoat</Name>
+    <CanGoDiagonal>true</CanGoDiagonal>
+    <WaterWalker>true</WaterWalker>
+
+  </Walker>
+  <Walker>
+
+    <Name>Sheep</Name>
+    <CanGoDiagonal>true</CanGoDiagonal>
+    <CanPassThrough>Crop</CanPassThrough>
+
+  </Walker>
+  <Walker>
+
+    <Name>Architect</Name>
+    <RandomWalker>true</RandomWalker>
+
+  </Walker>
+  <Walker>
+
+    <Name>Inspector</Name>
+    <RandomWalker>true</RandomWalker>
+    <RoadWalker>true</RoadWalker>
+
+  </Walker>
+  <Walker>
+
+    <Name>LaborSeeker</Name>
+    <RandomWalker>true</RandomWalker>
+
+  </Walker>
+  <Walker>
+
+    <Name>Mechanic</Name>
+    <RandomWalker>true</RandomWalker>
+
+  </Walker>
+  <Walker>
+
+    <Name>StreetSweeper</Name>
+    <RandomWalker>true</RandomWalker>
+
+  </Walker>
+  <Walker>
+
+    <Name>Vender</Name>
+    <RandomWalker>true</RandomWalker>
+
+  </Walker>
+  <Walker>
+
+    <Name>WellWalker</Name>
+    <RandomWalker>true</RandomWalker>
+
+  </Walker>
+  <Walker>
+
+    <Name>WTPWalker</Name>
+    <RandomWalker>true</RandomWalker>
+
+  </Walker>
+  <Walker>
+
+    <Name>Emigrant</Name>
+    <CanGoDiagonal>true</CanGoDiagonal>
+    <CanPassThrough>House</CanPassThrough>
+
+  </Walker>
+  <Walker>
+
+    <Name>Exporter</Name>
+    <CanGoDiagonal>true</CanGoDiagonal>
+
+  </Walker>
+  <Walker>
+
+    <Name>Fireman</Name>
+    <CanGoDiagonal>true</CanGoDiagonal>
+    <CanPassThrough>Rubble</CanPassThrough>
+
+  </Walker>
+  <Walker>
+
+    <Name>GetterCart</Name>
+    <RoadWalker>true</RoadWalker>
+
+  </Walker>
+  <Walker>
+
+    <Name>GiverCart</Name>
+    <RoadWalker>true</RoadWalker>
+
+  </Walker>
+  <Walker>
+
+    <Name>Immigrant</Name>
+    <CanGoDiagonal>true</CanGoDiagonal>
+    <CanPassThrough>House</CanPassThrough>
+
+  </Walker>
+  <Walker>
+
+    <Name>Lumberjack</Name>
+    <CanGoDiagonal>true</CanGoDiagonal>
+    <CanPassThrough>Tree</CanPassThrough>
+
+  </Walker>
+</WalkerDatabase>

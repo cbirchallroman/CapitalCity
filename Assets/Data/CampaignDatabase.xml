@@ -1,0 +1,31 @@
+<CampaignDatabase>
+
+  <Campaign>
+
+    <Name>Fertile Crescent</Name>
+    <AllUnlocked>true</AllUnlocked>
+
+    <Levels>
+
+      <Scenario>B</Scenario>
+      <Scenario>Jesus~</Scenario>
+      <Scenario>Test</Scenario>
+
+    </Levels>
+
+  </Campaign>
+
+  <Campaign>
+
+    <Name>Gates of Heaven</Name>
+    <AllUnlocked>false</AllUnlocked>
+
+    <Levels>
+
+      <Scenario>Scenario 1</Scenario>
+    
+    </Levels>
+
+  </Campaign>
+
+</CampaignDatabase>

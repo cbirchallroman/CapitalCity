@@ -1,0 +1,30 @@
+<HouseEvolutionDatabase>
+
+	<House>
+
+		<Level>1</Level>
+
+	</House>
+	
+	<House>
+
+		<Level>2</Level>
+		<Water>1</Water>
+
+	</House>
+
+	<House>
+
+		<Level>3</Level>
+		<Food>1</Food>
+
+	</House>
+	
+	<House>
+
+		<Level>4</Level>
+		<
+
+	</House>
+
+</HouseEvolutionDatabase>

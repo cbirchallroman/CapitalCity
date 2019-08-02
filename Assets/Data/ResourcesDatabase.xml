@@ -1,0 +1,218 @@
+<ResourcesDatabsase>
+
+  <Resource>
+
+    <Name>Grain</Name>
+    <Days>96</Days>
+
+  </Resource>
+  
+  <Resource>
+
+    <Name>Potatoes</Name>
+
+  </Resource>
+
+  <Resource>
+
+    <Name>Fish</Name>
+
+  </Resource>
+
+  <Resource>
+
+    <Name>Mutton</Name>
+
+  </Resource>
+
+  <Resource>
+
+    <Name>Vegetables</Name>
+
+  </Resource>
+
+  <Resource>
+
+    <Name>Beef</Name>
+
+  </Resource>
+
+  <Resource>
+
+    <Name>Shoes</Name>
+    <Ingredient>25 Leather</Ingredient>
+
+  </Resource>
+
+  <Resource>
+
+    <Name>Coats</Name>
+    <Ingredient>100 Linen</Ingredient>
+
+  </Resource>
+
+  <Resource>
+
+    <Name>Carpet</Name>
+    <Ingredient>100 Yarn</Ingredient>
+
+  </Resource>
+
+  <Resource>
+
+    <Name>Trowsers</Name>
+    <Ingredient>100 Denim</Ingredient>
+
+  </Resource>
+
+  <Resource>
+
+    <Name>Pottery</Name>
+    <Ingredient>100 Clay</Ingredient>
+
+  </Resource>
+
+  <Resource>
+
+    <Name>Beer</Name>
+    <Ingredient>100 Grain</Ingredient>
+
+  </Resource>
+
+  <Resource>
+
+    <Name>Cigars</Name>
+    <Ingredient>100 Tobacco</Ingredient>
+
+  </Resource>
+
+  <Resource>
+
+    <Name>Glassware</Name>
+    <Ingredient>25 Sand</Ingredient>
+
+  </Resource>
+
+  <Resource>
+
+    <Name>Furniture</Name>
+    <Ingredient>100 Wood</Ingredient>
+    
+  </Resource>
+
+  <Resource>
+
+    <Name>Bricks</Name>
+    <Ingredient>100 Clay</Ingredient>
+
+  </Resource>
+
+  <Resource>
+
+    <Name>Clay</Name>
+
+  </Resource>
+  
+  <Resource>
+
+    <Name>Coal</Name>
+
+  </Resource>
+
+  <Resource>
+
+    <Name>Cotton</Name>
+
+  </Resource>
+
+  <Resource>
+
+    <Name>Flax</Name>
+
+  </Resource>
+
+  <Resource>
+
+    <Name>Leather</Name>
+
+  </Resource>
+
+  <Resource>
+
+    <Name>Linen</Name>
+
+  </Resource>
+
+  <Resource>
+
+    <Name>Ore</Name>
+
+  </Resource>
+
+  <Resource>
+
+    <Name>Paper</Name>
+    <Ingredient>20 Wood</Ingredient>
+
+  </Resource>
+
+  <Resource>
+
+    <Name>Sand</Name>
+
+  </Resource>
+
+  <Resource>
+
+    <Name>Spindles</Name>
+    <Ingredient>25 Steel</Ingredient>
+
+  </Resource>
+
+  <Resource>
+
+    <Name>Steel</Name>
+    <Ingredient>50 Ore</Ingredient>
+    <Ingredient>50 Coal</Ingredient>
+
+  </Resource>
+
+  <Resource>
+
+    <Name>Stone</Name>
+
+  </Resource>
+
+  <Resource>
+
+    <Name>Tobacco</Name>
+
+  </Resource>
+
+  <Resource>
+
+    <Name>Wood</Name>
+
+  </Resource>
+
+  <Resource>
+
+    <Name>Wool</Name>
+
+  </Resource>
+
+  <Resource>
+
+    <Name>Denim</Name>
+    <Ingredient>100 Cotton</Ingredient>
+
+  </Resource>
+
+  <Resource>
+
+    <Name>Yarn</Name>
+    <Ingredient>100 Wool</Ingredient>
+
+  </Resource>
+
+</ResourcesDatabsase>

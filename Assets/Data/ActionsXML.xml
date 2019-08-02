@@ -1,0 +1,74 @@
+<ActionsXML>
+
+  <Category>
+
+    <Act>place ArchitectsPost</Act>
+    <Act>place InspectorsTower</Act>
+    <Act>place MechanicShop</Act>
+
+  </Category>
+
+  <Category>
+
+    <Act>place CigarShop</Act>
+    <Act>place Grocer</Act>
+    <Act>place LiquorStore</Act>
+    <Act>place Market</Act>
+
+  </Category>
+  
+  <Category>
+
+    
+    <Act>place Granary</Act>
+    <Act>place StorageYard</Act>
+    <Act>place Warehouse</Act>
+
+  </Category>
+
+  <Category>
+
+    <Act>place Fountain</Act>
+    <Act>place StreetCleaners</Act>
+    <Act>place WTPSite</Act>
+
+  </Category>
+
+  <Category>
+
+    <Act>place Brewery</Act>
+    <Act>place Brickworks</Act>
+    <Act>place Potter</Act>
+
+  </Category>
+
+  <Category>
+
+    <Act>place Canal</Act>
+    <Act>place Claypit</Act>
+    <Act>place Dock</Act>
+    <Act>place LoggingCamp</Act>
+    <Act>place SandMine</Act>
+
+  </Category>
+
+  <Category>
+
+	<Act>open Crops</Act>
+    <Act>place CattleRanch</Act>
+    <Act>place Dock</Act>
+    <Act>place Farmhouse</Act>
+    <Act>place Fence</Act>
+    <Act>place SheepStable</Act>
+
+  </Category>
+  
+  <Category>
+
+    <Act>place CottonCrop</Act>
+    <Act>place FlaxCrop</Act>
+    <Act>place GrainCrop</Act>
+
+  </Category>
+
+</ActionsXML>
