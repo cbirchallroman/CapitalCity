@@ -36,7 +36,7 @@ public class Generator : Workplace {
 
 	//PRODUCTIVITY
 	public float BaseProductivity { get; set; }     //determined by machinery or lack thereof
-	public float ActualProductivity { get { return BaseProductivity * RelativeEmployment * RelativeWorkingDay * MachineryPerformance; } }
+	public float ActualProductivity { get { return BaseProductivity * WorkerEffectiveness * RelativeWorkingDay * MachineryPerformance; } }
 	public int BaseProductionCycle { get { return Mathf.RoundToInt(ResourcesDatabase.GetBaseDays(product) / BaseProductivity * RelativeStockpile); } }    //time to produce product without taking variables into account
 	public int ActualProductionCycle { get { return Mathf.RoundToInt(ResourcesDatabase.GetBaseDays(product) / ActualProductivity * RelativeStockpile); } }    //actual time to produce product
 	public float SocialProductivity { get { return ProductivityController.GetAverageProductivityEverywhere(product); } }    //social average time to produce
@@ -48,7 +48,6 @@ public class Generator : Workplace {
 
 	//RELATIVE STATS
 	public float RelativeWorkingDay { get { return ((float)WorkingDay) / BaseWorkingDay; } }
-	public float RelativeEmployment { get { return ((float)NumWorkers()) / BaseWorkers; } }
 	public float RelativeStockpile { get { return stockpile / 100f; } }
 	public int RelativeProductivity { get { return (int)((ActualProductivity > 0 ? ActualProductivity : BaseProductivity) / SocialProductivity * 100); } }  //percent efficiency relative to social average time
 
@@ -213,7 +212,7 @@ public class Generator : Workplace {
 
         ItemOrder io = new ItemOrder(stockpile, product);
 
-        SpawnGiver(io);
+        SpawnGiverToStorage(io);
 		if (!ActiveSmartWalker)
 			return;
         Producing = false;
@@ -250,7 +249,7 @@ public class Generator : Workplace {
 
         ItemOrder io = new ItemOrder(ByproductsMade, byproduct);
 
-        SpawnGiver(io);
+        SpawnGiverToStorage(io);
 		if (!ActiveSmartWalker)
 			return;
         ByproductsMade = 0;
@@ -350,7 +349,7 @@ public class Generator : Workplace {
 
                 ItemOrder io = new ItemOrder(IngredientNeeded(a), Ingredients[a]);
 
-                SpawnGetter(io);
+                SpawnGetterToStorage(io);
 
                 return;
 

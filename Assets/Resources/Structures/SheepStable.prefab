@@ -22,7 +22,7 @@ GameObject:
   - component: {fileID: 114637514423201732}
   m_Layer: 0
   m_Name: SheepStable
-  m_TagString: Untagged
+  m_TagString: Generator
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -161,9 +161,9 @@ MonoBehaviour:
   DisplayName: Sheep Stable
   defaultDesc: This is an object.
   resourcePath: Structures/SheepStable
-  randomModel: {fileID: 0}
   radiusOfInfluence: 0
-  rightclick: 1
+  openWindow: 1
+  randomModel: {fileID: 0}
   collapseRiskMax: 0
   fireRiskMax: 0
   canBeDemolished: 1
@@ -176,9 +176,9 @@ MonoBehaviour:
   workersMax: 1
   baseWages: 0.4
   laborDivision: 0
+  laborType: 0
   product: Mutton
   byproduct: Wool
-  baseProductivity: 1
-  machineryResource: 10
+  machineryType: 3
   spawnOnWater: 0
   spawnMax: 5

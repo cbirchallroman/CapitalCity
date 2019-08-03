@@ -75,7 +75,7 @@ public class StorageBuilding : Workplace {
                 ItemOrder io = new ItemOrder(EmptySpaceFor(a), a, typeStored);
 
                 //if building is found, send getter
-                SpawnGetter(io);
+                SpawnGetterToStorage(io);
 
             }
 
@@ -87,7 +87,7 @@ public class StorageBuilding : Workplace {
                 ItemOrder io = new ItemOrder(amountToRemove, a, typeStored);
 
 				//if building is found, remove stuff from inventory and send giver
-				Carryer cart = SpawnGiver(io);
+				Carryer cart = SpawnGiverToStorage(io);
 				if (!ActiveSmartWalker)
 					return;
 				StorageBuilding strg = (StorageBuilding)cart.Destination;

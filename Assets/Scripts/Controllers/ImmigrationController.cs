@@ -9,15 +9,19 @@ using System.IO;
 public class ImmigrationSave {
 
     public float timeDelta;
-    public int immigrantsThisMonth, totalImmigrants;
+    public int immigrantsThisMonth, immigrantsWaiting, physicalPref, intellectualPref, emotionalPref;
 	public List<Adult> Proles;
 
 
 	public ImmigrationSave(ImmigrationController ic) {
 
         timeDelta = ic.TimeDelta;
-        immigrantsThisMonth = ic.immigrantsThisMonth;
+		immigrantsWaiting = ic.immigrantsWaiting;
+		immigrantsThisMonth = ic.immigrantsThisMonth;
 
+		physicalPref = ic.physicalPref;
+		intellectualPref = ic.intellectualPref;
+		emotionalPref = ic.emotionalPref;
 
 	}
 
@@ -28,16 +32,21 @@ public class ImmigrationController : MonoBehaviour {
     public WorldController worldController;
 	public List<Structure> Requests { get; set; }
     public float TimeDelta { get; set; }
-    public int immigrantsThisMonth, immigrantsWaiting = 25;
-	
+	public int immigrantsThisMonth, immigrantsWaiting = 25, physicalPref = 60, intellectualPref = 20, emotionalPref = 20;
 
+	public int TotalPref { get { return physicalPref + intellectualPref + emotionalPref; } }
+	
     public float ImmigrationRate { get { return (TimeController.WeekTime * TimeController.MonthTime) / immigrantsThisMonth; } }
 
     public void Load(ImmigrationSave ic) {
 
         TimeDelta = ic.timeDelta;
-		immigrantsWaiting = ic.totalImmigrants;
+		immigrantsWaiting = ic.immigrantsWaiting;
         immigrantsThisMonth = ic.immigrantsThisMonth;
+
+		physicalPref = ic.physicalPref;
+		intellectualPref = ic.intellectualPref;
+		emotionalPref = ic.emotionalPref;
 
 	}
 
@@ -78,6 +87,20 @@ public class ImmigrationController : MonoBehaviour {
 
 	}
 
+	public LaborType GetRandomLaborPrefFromOutsideWorld() {
+
+		int roll = Random.Range(1, TotalPref);
+
+		if (roll <= physicalPref)
+			return LaborType.Physical;
+
+		else if (roll <= physicalPref + intellectualPref)
+			return LaborType.Intellectual;
+
+		return LaborType.Emotional;
+
+	}
+
     public void SpawnFreshImmigrant(Structure requester) {
 
         Structure mapEntrance = GameObject.FindGameObjectWithTag("MapEntrance").GetComponent<Structure>();
@@ -85,7 +108,9 @@ public class ImmigrationController : MonoBehaviour {
         if (mapEntrance == null)
             return;
 
-		SpawnImmigrant(new Node(mapEntrance), requester, new Adult(true, true));
+		//CREATE NEW IMMIGRANT WITH RANDOM LABOR PREF
+		Adult newInTown = new Adult(true, true, GetRandomLaborPrefFromOutsideWorld());
+		SpawnImmigrant(new Node(mapEntrance), requester, newInTown);
 		immigrantsWaiting--;
 
 	}

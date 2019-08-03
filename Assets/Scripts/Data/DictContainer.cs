@@ -7,6 +7,7 @@ public class DictContainer<T, A> {
 
     public List<T> keys;
     public List<A> values;
+	
 
     public DictContainer(Dictionary<T, A> blah) {
 
@@ -30,5 +31,33 @@ public class DictContainer<T, A> {
         return dict;
 
     }
+
+}
+
+//IF I CAN MAKE THIS FUNCTIONAL I CAN REPLACE ALL DICTIONARIES WITH THIS
+[System.Serializable]
+public class DictObject<T, A> {
+
+	T key;
+	A value;
+
+	public DictObject(T k, A v) {
+
+		key = k;
+		value = v;
+
+	}
+
+	public A GetValue() {
+
+		return value;
+
+	}
+
+	public void SetValue(A v) {
+
+		value = v;
+
+	}
 
 }

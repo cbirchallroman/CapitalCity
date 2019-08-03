@@ -21,7 +21,7 @@ public class Distributer : Workplace {
 			return;
 
 		ItemOrder io = new ItemOrder(stockpile - (int)AmountStored, item);
-		SpawnGetter(io);
+		SpawnGetterToStorage(io);
 
 	}
 

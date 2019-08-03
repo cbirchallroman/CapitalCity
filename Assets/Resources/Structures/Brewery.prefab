@@ -22,7 +22,7 @@ GameObject:
   - component: {fileID: 114082223501711212}
   m_Layer: 0
   m_Name: Brewery
-  m_TagString: Untagged
+  m_TagString: Generator
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -176,6 +176,7 @@ MonoBehaviour:
   workersMax: 4
   baseWages: 0.4
   laborDivision: 1
+  laborType: 0
   product: Beer
   byproduct: 
   machineryType: 3

@@ -42,6 +42,7 @@ public class WorldProgressSave : BasicWorldSave {
 	public PopulationSave population;
     public ImmigrationSave immigration;
     public TradeSave trade;
+	public ResearchSave research;
 	
 	public DictContainer<string, float> productivities;
 	public DictContainer<string, float> automation;
@@ -66,29 +67,30 @@ public class WorldProgressSave : BasicWorldSave {
 
     public WorldProgressSave(GameObject go) {
 
-        WorldController wc = go.GetComponent<WorldController>();
+        WorldController w = go.GetComponent<WorldController>();
 
-        world = wc.Map;
+        world = w.Map;
 
 		productivities = new DictContainer<string, float>(ProductivityController.productivities);
 		automation = new DictContainer<string, float>(ProductivityController.automationValue);
 
-		Events = wc.notifications.Events;
+		Events = w.notifications.Events;
 
 		//SAVE IN-GAME STUFF
-		time = new TimeSave(wc.timeController);
-		population = new PopulationSave(wc.population);
-        money = new MoneySave(wc.money);
-        camera = new CameraSave(wc.cameraController);
-        immigration = new ImmigrationSave(wc.immigration);
-        actionSelecter = new ActionSelecterControllerSave(wc.actionSelecter);
-        trade = new TradeSave(wc.trade);
-        diplomacy = new DiplomacySave(wc.diplomacy);
-        scenario = new ScenarioGoalsSave(wc.scenario);
+		time = new TimeSave(w.timeController);
+		population = new PopulationSave(w.population);
+        money = new MoneySave(w.money);
+        camera = new CameraSave(w.cameraController);
+        immigration = new ImmigrationSave(w.immigration);
+        actionSelecter = new ActionSelecterControllerSave(w.actionSelecter);
+        trade = new TradeSave(w.trade);
+        diplomacy = new DiplomacySave(w.diplomacy);
+        scenario = new ScenarioGoalsSave(w.scenario);
+		research = new ResearchSave(w.research);
 
         //SAVE OBJECTS FROM PARENT
         //structures
-        foreach(Transform t in wc.structures.transform) {
+        foreach(Transform t in w.structures.transform) {
 
             GameObject str = t.gameObject;
 
@@ -128,7 +130,7 @@ public class WorldProgressSave : BasicWorldSave {
         }
 
         //walkers
-        foreach(Transform t in wc.walkers.transform) {
+        foreach(Transform t in w.walkers.transform) {
 
             GameObject wlkr = t.gameObject;
 

@@ -22,13 +22,11 @@ public class GetterCart : Carryer {
             o.ExpectItem(Order);
         }
         
-
     }
 
     public override void OnceBackHome() {
 
         base.OnceBackHome();
-
         Origin.ReceiveItem(Order);
 
     }

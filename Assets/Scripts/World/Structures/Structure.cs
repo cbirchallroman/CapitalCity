@@ -551,7 +551,7 @@ public class Structure : Obj {
 
     }
 
-    public Carryer SpawnGetter(ItemOrder io) {
+    public Carryer SpawnGetterToStorage(ItemOrder io) {
 
 		List<Node> entrances = GetAdjRoadTiles();
 		if (entrances.Count == 0)
@@ -588,7 +588,7 @@ public class Structure : Obj {
 
 	}
 
-    public Carryer SpawnGiver(ItemOrder io) {
+    public Carryer SpawnGiverToStorage(ItemOrder io) {
 
 		List<Node> entrances = GetAdjRoadTiles();
 		if (entrances.Count == 0)

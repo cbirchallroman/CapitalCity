@@ -22,6 +22,7 @@ public class WorldController : MonoBehaviour {
     public MoneyController money;
     public NotificationController notifications;
 	public PopulationController population;
+	public ResearchController research;
     public ScenarioController scenario;
     public TileMap tilemap;
     public TimeController timeController;
@@ -180,6 +181,7 @@ public class WorldController : MonoBehaviour {
         trade.Load(w.trade);
         diplomacy.Load(w.diplomacy);
         scenario.Load(w.scenario);
+		research.Load(w.research);
 
 		ProductivityController.LoadProductivities(w.productivities, w.automation);
 		notifications.LoadEvents(w.Events);

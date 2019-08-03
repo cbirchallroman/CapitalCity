@@ -21,7 +21,7 @@ public class FarmhouseSave : WorkplaceSave {
 
 public class Farmhouse : Workplace {
     
-    public int TilesThatCanBeVisited { get { return tilesPerWorker * WorkerCount; } }
+    public int TilesThatCanBeVisited { get { return tilesPerWorker * WorkersCount; } }
     public int tilesPerWorker = 5;
     public string CurrentlyStoring { get; set; }
     public int Yield { get; set; }
@@ -100,7 +100,7 @@ public class Farmhouse : Workplace {
 
         ItemOrder io = new ItemOrder(Yield, CurrentlyStoring);
 		
-        SpawnGiver(io);
+        SpawnGiverToStorage(io);
 		if (!ActiveSmartWalker)
 			return;
         CurrentlyStoring = null;

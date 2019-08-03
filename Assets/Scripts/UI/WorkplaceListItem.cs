@@ -28,7 +28,7 @@ public class WorkplaceListItem : MonoBehaviour {
 
 		buildingName.text = Building.DisplayName;
 		wagesPerHour.text = MoneyController.symbol + Building.baseWages.ToString("n2") + "/hr";
-		workers.text = Building.WorkerCount + "/" + Building.workersMax + " Proles";
+		workers.text = Building.WorkersCount + "/" + Building.workersMax + " Proles";
 		wagesPerMonth.text = MoneyController.symbol + Building.WagesOverall.ToString("n2") + "/mo";
 
 	}

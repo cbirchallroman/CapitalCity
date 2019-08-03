@@ -48,7 +48,7 @@ public class WorkplaceWindow : ObjWindow {
 
 		Workplace wp = (Workplace)obj;
 		if (wp.ActiveBuilding) {
-			workers.text = wp.WorkerCount + "/" + wp.workersMax + " proles employed";
+			workers.text = wp.WorkersCount + "/" + wp.workersMax + " proles employed";
 			title.color = Color.white;
 		}
 		else {
@@ -85,7 +85,7 @@ public class WorkplaceWindow : ObjWindow {
 		Workplace wp = (Workplace)obj;
 
 		//update labor list ONLY if there's different # of workers than before
-		if (proleGrid.childCount == wp.WorkerCount)
+		if (proleGrid.childCount == wp.WorkersCount)
 			return;
 
 		foreach (Transform child in proleGrid)

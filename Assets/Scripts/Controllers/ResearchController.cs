@@ -2,47 +2,41 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ResearchControllerSave {
+public class ResearchSave {
 
-	public int researchPoints;
+	public int researchCounter;
+	public Technology currentTech;
 
-	public ResearchControllerSave(ResearchController rc) {
+	public ResearchSave(ResearchController rc) {
 
-		researchPoints = rc.researchPoints;
+		researchCounter = rc.researchCounter;
+		currentTech = rc.currentTech;
 
 	}
 
 }
 
 public class ResearchController : MonoBehaviour {
-
-	public int researchPoints;
+	
 	public int researchCounter;
 	public Technology currentTech;
 
 	//possible variables: machineBonus, hygieneBonus
 
-	public void Load(ResearchControllerSave rc) {
+	public void Load(ResearchSave rc) {
 
-		researchPoints = rc.researchPoints;
-
-	}
-
-	public void AddResearchPoints(int p) {
-
-		researchPoints += p;
+		researchCounter = rc.researchCounter;
+		currentTech = rc.currentTech;
 
 	}
 
-	public void SubtractResearchPoints(int p) {
+	//buildings should iterate once a month
+	public void IterateResearch(int points) {
 
-		researchPoints -= p;
+		if (currentTech == null)
+			return;
 
-	}
-
-	public void IterateResearch() {
-
-		researchCounter += researchPoints;
+		researchCounter += points;
 		if (researchCounter >= currentTech.cost)
 			FinishResearch();
 

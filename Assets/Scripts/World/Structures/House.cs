@@ -359,7 +359,7 @@ public class House : Structure {
 
 		p.MoveIntoHouse(this);
 		Residents.Add(p);
-		Debug.Log(p + " moved into " + this);
+		//Debug.Log(p + " moved into " + this);
 		if (Residents.Count > residentsMax)
 			Debug.Log("Not enough room in " + name + " for " + p);
 		Savings += p.personalSavings;

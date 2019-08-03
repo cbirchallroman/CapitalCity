@@ -180,6 +180,7 @@
     <Compile Include="Assets\Scripts\World\Structures\House.cs" />
     <Compile Include="Assets\Scripts\World\Structures\InspectorsTower.cs" />
     <Compile Include="Assets\Scripts\World\Structures\LoggingCamp.cs" />
+    <Compile Include="Assets\Scripts\World\Structures\ResearchLab.cs" />
     <Compile Include="Assets\Scripts\World\Structures\Road.cs" />
     <Compile Include="Assets\Scripts\World\Structures\Roadblock.cs" />
     <Compile Include="Assets\Scripts\World\Structures\RubbleOnFire.cs" />

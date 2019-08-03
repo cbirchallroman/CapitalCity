@@ -8,6 +8,7 @@ TagManager:
   - House
   - Fire
   - Tree
+  - Generator
   layers:
   - Default
   - TransparentFX

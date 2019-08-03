@@ -20,7 +20,7 @@ MonoBehaviour:
   m_ShowMode: 4
   m_Title: 
   m_RootView: {fileID: 5}
-  m_MinSize: {x: 950, y: 558}
+  m_MinSize: {x: 950, y: 300}
   m_MaxSize: {x: 10000, y: 10000}
 --- !u!114 &2
 MonoBehaviour:
@@ -93,10 +93,10 @@ MonoBehaviour:
     y: 605
     width: 1920
     height: 342
-  m_MinSize: {x: 362, y: 237}
-  m_MaxSize: {x: 8002, y: 4021}
+  m_MinSize: {x: 364, y: 237}
+  m_MaxSize: {x: 8004, y: 4021}
   vertical: 0
-  controlID: 117
+  controlID: 235
 --- !u!114 &5
 MonoBehaviour:
   m_ObjectHideFlags: 52
@@ -180,10 +180,10 @@ MonoBehaviour:
     y: 30
     width: 1920
     height: 947
-  m_MinSize: {x: 915, y: 508}
-  m_MaxSize: {x: 22010, y: 14042}
+  m_MinSize: {x: 917, y: 508}
+  m_MaxSize: {x: 22012, y: 14042}
   vertical: 0
-  controlID: 237
+  controlID: 233
 --- !u!114 &9
 MonoBehaviour:
   m_ObjectHideFlags: 52
@@ -204,10 +204,10 @@ MonoBehaviour:
     y: 0
     width: 1920
     height: 947
-  m_MinSize: {x: 915, y: 508}
-  m_MaxSize: {x: 22010, y: 14042}
+  m_MinSize: {x: 917, y: 508}
+  m_MaxSize: {x: 22012, y: 14042}
   vertical: 1
-  controlID: 238
+  controlID: 234
 --- !u!114 &10
 MonoBehaviour:
   m_ObjectHideFlags: 52
@@ -229,10 +229,10 @@ MonoBehaviour:
     y: 0
     width: 1920
     height: 605
-  m_MinSize: {x: 915, y: 271}
-  m_MaxSize: {x: 22010, y: 10021}
+  m_MinSize: {x: 917, y: 271}
+  m_MaxSize: {x: 22012, y: 10021}
   vertical: 0
-  controlID: 239
+  controlID: 62
 --- !u!114 &11
 MonoBehaviour:
   m_ObjectHideFlags: 52
@@ -251,8 +251,8 @@ MonoBehaviour:
     y: 0
     width: 1070
     height: 605
-  m_MinSize: {x: 200, y: 200}
-  m_MaxSize: {x: 4000, y: 4000}
+  m_MinSize: {x: 202, y: 221}
+  m_MaxSize: {x: 4002, y: 4021}
   m_ActualView: {fileID: 17}
   m_Panes:
   - {fileID: 17}
@@ -282,7 +282,7 @@ MonoBehaviour:
   m_MinSize: {x: 481, y: 221}
   m_MaxSize: {x: 8006, y: 4021}
   vertical: 0
-  controlID: 240
+  controlID: 63
 --- !u!114 &13
 MonoBehaviour:
   m_ObjectHideFlags: 52
@@ -351,8 +351,8 @@ MonoBehaviour:
     y: 0
     width: 1281
     height: 342
-  m_MinSize: {x: 100, y: 100}
-  m_MaxSize: {x: 4000, y: 4000}
+  m_MinSize: {x: 102, y: 121}
+  m_MaxSize: {x: 4002, y: 4021}
   m_ActualView: {fileID: 21}
   m_Panes:
   - {fileID: 21}
@@ -384,7 +384,7 @@ MonoBehaviour:
     height: 321
   m_PersistentViewDataDictionary: {fileID: 0}
   m_VertSplit:
-    ID: 32
+    ID: 150
     splitterInitialOffset: 0
     currentActiveSplitter: -1
     realSizes: 9800000099000000
@@ -885,7 +885,7 @@ MonoBehaviour:
     m_ShowAllHits: 0
     m_SearchArea: 1
     m_Folders:
-    - Assets/Scripts/Data
+    - Assets/Resources/Structures
   m_ViewMode: 0
   m_StartGridSize: 64
   m_LastFolders: []
@@ -897,7 +897,7 @@ MonoBehaviour:
     scrollPos: {x: 0, y: 0}
     m_SelectedIDs: 0a230000
     m_LastClickedID: 8970
-    m_ExpandedIDs: 0000000014060000aa0a0000320b0000ac0b0000ba0b00008a0c0000c80c00002c0d0000580d0000140f0000260f00003a0f00003e0f0000560f0000d40f0000e40f000004100000441000003a1100003c1100005c110000ac110000cc1100000c120000181200001a120000261200002a1300007e130000b813000082150000e61500001016000020160000561600006c1600000e52000010520000
+    m_ExpandedIDs: 0000000014060000ac0a0000340b0000ae0b0000bc0b00008c0c0000ca0c00002e0d00005a0d0000160f0000280f00003c0f0000400f0000580f0000e60f000006100000461000003c1100003e1100005e110000ae110000ce1100000e1200001a1200001c120000281200002c13000080130000ba13000084150000e81500001216000022160000581600006e1600000e52000010520000
     m_RenameOverlay:
       m_UserAcceptedRename: 0
       m_Name: 
@@ -922,10 +922,10 @@ MonoBehaviour:
       m_Icon: {fileID: 0}
       m_ResourceFile: 
   m_AssetTreeState:
-    scrollPos: {x: 0, y: 3082}
+    scrollPos: {x: 0, y: 1417.0679}
     m_SelectedIDs: 
     m_LastClickedID: 0
-    m_ExpandedIDs: ffffffff0000000014060000aa0a0000320b0000ac0b0000ba0b00008a0c0000c80c00002c0d0000580d0000140f0000260f00003a0f00003e0f0000560f0000d40f0000e40f000004100000441000003a1100003c1100005c110000ac110000cc1100000c120000181200001a120000261200002a1300007e130000b813000082150000e61500001016000020160000561600006c1600000e52000010520000
+    m_ExpandedIDs: ffffffff0000000014060000ac0a0000340b0000ae0b0000bc0b00008c0c0000ca0c00002e0d00005a0d0000160f0000280f00003c0f0000400f0000580f0000e60f000006100000461000003c1100003e1100005e110000ae110000ce1100000e1200001a1200001c120000281200002c13000080130000ba13000084150000e81500001216000022160000581600006e1600000e52000010520000
     m_RenameOverlay:
       m_UserAcceptedRename: 0
       m_Name: 
@@ -1007,23 +1007,23 @@ MonoBehaviour:
   m_PersistentViewDataDictionary: {fileID: 0}
   m_TreeViewState:
     scrollPos: {x: 0, y: 0}
-    m_SelectedIDs: 603dffff
-    m_LastClickedID: -49824
-    m_ExpandedIDs: e6fbffff00000000701d00001e280000
+    m_SelectedIDs: 
+    m_LastClickedID: 0
+    m_ExpandedIDs: e6fbffff000000005c1d0000a2200000f8210000
     m_RenameOverlay:
       m_UserAcceptedRename: 0
-      m_Name: 
-      m_OriginalName: 
+      m_Name: ScenarioController
+      m_OriginalName: ScenarioController
       m_EditFieldRect:
         serializedVersion: 2
         x: 0
         y: 0
         width: 0
         height: 0
-      m_UserData: 0
+      m_UserData: 8910
       m_IsWaitingForDelay: 0
       m_IsRenaming: 0
-      m_OriginalEventType: 11
+      m_OriginalEventType: 0
       m_IsRenamingFilename: 0
       m_ClientGUIView: {fileID: 14}
     m_SearchString: 
@@ -1111,18 +1111,20 @@ MonoBehaviour:
     m_Tooltip: 
   m_Pos:
     serializedVersion: 2
-    x: 1568
+    x: 1645
     y: 92
-    width: 352
-    height: 576
+    width: 275
+    height: 584
   m_PersistentViewDataDictionary: {fileID: 0}
-  m_InitialOpenURL: https://public-cdn.cloud.unity3d.com/editor/production/cloud/hub
+  m_InitialOpenURL: https://public-cdn.cloud.unity3d.com/editor/production/cloud/collab
   m_GlobalObjectTypeName: 
   m_RegisteredViewURLs:
   - https://public-cdn.cloud.unity3d.com/editor/production/cloud/hub
   - https://public-cdn.cloud.unity3d.com/editor/production/cloud/build
   - https://public-cdn.cloud.unity3d.com/editor/production/cloud/analytics
+  - https://public-cdn.cloud.unity3d.com/editor/production/cloud/collab
   m_RegisteredViewInstances:
+  - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}

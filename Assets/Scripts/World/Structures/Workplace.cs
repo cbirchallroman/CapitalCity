@@ -5,8 +5,8 @@ using UnityEngine;
 [System.Serializable]
 public class WorkplaceSave : StructureSave {
 
-    public int WorkerCount, timeToSpawnWalker, access, workingDay;
-    public bool activeBuilding, closedByPlayer;
+    public int WorkersCount, timeToSpawnWalker, access, workingDay;
+    public bool activeBuilding, closedByPlayer, HireNonPreferredProles;
     public bool[] activeSchedule;
     public Adult[] WorkerList, WorkerSave;
 
@@ -14,15 +14,16 @@ public class WorkplaceSave : StructureSave {
 
         Workplace w = go.GetComponent<Workplace>();
 
-        WorkerCount = w.WorkerCount;
+        WorkersCount = w.WorkersCount;
         timeToSpawnWalker = w.TimeToSpawnWalker;
         access = w.Access;
         workingDay = w.WorkingDay;
 
         activeBuilding = w.ActiveBuilding;
         closedByPlayer = w.ClosedByPlayer;
+		HireNonPreferredProles = w.HireNonPreferredProles;
 
-        activeSchedule = w.ActiveSchedule;
+		activeSchedule = w.ActiveSchedule;
         WorkerList = w.WorkerList;
         WorkerSave = w.WorkerSave;
 
@@ -44,7 +45,7 @@ public class Workplace : Structure {
     
     public Adult[] WorkerList { get; set; }
     public Adult[] WorkerSave { get; set; }
-    public int WorkerCount { get; set; }
+    public int WorkersCount { get; set; }
 
     public int NumWorkers() {
 
@@ -58,21 +59,24 @@ public class Workplace : Structure {
 
     public bool ActiveBuilding { get; set; }
     public bool ClosedByPlayer { get; set; }
+	public bool HireNonPreferredProles { get; set; }
 
     public bool[] ActiveSchedule { get; set; }
     public int WorkingDay { get; set; } //from 1 to 16
 	public int BaseWorkingDay { get { return 8; } }
-	public int BaseWorkers { get { return 4; } }
+	public int BaseWorkers { get { return 4; } }		//this is just how many workers a factory structure should be expected to have
+														//	we won't actually need this so long as we keep 4 in mind
 	public int FreeTime { get { return 16 - WorkingDay; } }
 
     public int Access { get; set; }
 
     //vars that come from other vars
     public virtual bool Operational { get { return EnoughWorkers && ActiveBuilding; } }
-    public bool EnoughWorkers { get { return WorkerCount > 0; } }
+    public bool EnoughWorkers { get { return WorkersCount > 0; } }
     public float WagesOverall { get { return WagesPerWorker * NumWorkers(); } }
     public float WagesPerWorker { get { return WorkingDay * baseWages; } }
     public float PercentEmployed { get { return (float)NumWorkers() / workersMax; } }
+	public float WorkerEffectiveness { get; set; }
 
     public override void Load(ObjSave o) {
         base.Load(o);
@@ -80,15 +84,16 @@ public class Workplace : Structure {
         //load vars for workplaces
         WorkplaceSave w = (WorkplaceSave)o;
 
-        WorkerCount = w.WorkerCount;
+        WorkersCount = w.WorkersCount;
         TimeToSpawnWalker = w.timeToSpawnWalker;
         Access = w.access;
         WorkingDay = w.workingDay;
         
         ActiveBuilding = w.activeBuilding;
         ClosedByPlayer = w.closedByPlayer;
+		HireNonPreferredProles = w.HireNonPreferredProles;
 
-        ActiveSchedule = w.activeSchedule;
+		ActiveSchedule = w.activeSchedule;
 
         //add workers back to laborcontroller
         ToggleLabor(ActiveBuilding);
@@ -109,6 +114,7 @@ public class Workplace : Structure {
         ToggleLabor(true);
         WorkingDay = BaseWorkingDay;
         WorkerList = new Adult[workersMax];
+		CalculateWorkerEffectiveness();
 
 		//labor.AddWorkplace(this);
 
@@ -134,7 +140,7 @@ public class Workplace : Structure {
         //spawn walker or laborseeker process
         if (!ActiveRandomWalker) {
 
-            if (WorkerCount < workersMax && ActiveBuilding)
+            if (WorkersCount < workersMax && ActiveBuilding)
                 SpawnLaborSeeker();
             else if (Operational && timeToSpawnWalkerMax != 0)
                 RandomWalkerCounter();
@@ -223,10 +229,10 @@ public class Workplace : Structure {
 
 		//clear worker's spot in list of workers
 		WorkerList[index] = null;
-        WorkerCount--;
-
-
-        return true;
+        WorkersCount--;
+		CalculateWorkerEffectiveness();
+			
+		return true;
 
     }
 
@@ -260,7 +266,7 @@ public class Workplace : Structure {
 
     public bool AddWorker(Adult p) {
 
-        if (WorkerCount >= workersMax)
+        if (WorkersCount >= workersMax)
             return false;
 
         bool hired = false;
@@ -271,14 +277,16 @@ public class Workplace : Structure {
                 p.JoinWork(this, i);
                 WorkerList[i] = p;
                 hired = true;
-                WorkerCount++;
+                WorkersCount++;
 				population.EmployProle(p);	//record change in population
 
             } 
 
         }
 
-        return hired;
+		CalculateWorkerEffectiveness();
+		
+		return hired;
 
     }
 
@@ -303,5 +311,17 @@ public class Workplace : Structure {
         money.SpendOnWages(WagesOverall);
 
     }
+
+	void CalculateWorkerEffectiveness() {
+
+		float sum = 0;
+		foreach (Adult w in WorkerList) {
+			if (w == null) continue;
+			sum += w.laborPref == laborType ? 1 : 0.75f;
+		}
+
+		WorkerEffectiveness = sum / workersMax;
+
+	}
 
 }

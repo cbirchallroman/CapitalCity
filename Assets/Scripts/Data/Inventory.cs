@@ -59,8 +59,6 @@ public class Inventory {
 
 	}
 
-
-
 }
 
 [System.Serializable]
@@ -75,6 +73,7 @@ public class InventorySlot {
 	public int TakenSpace { get { return amount + queue; } }
 	public int EmptySpace { get { return capacity - TakenSpace; } }
 	public bool IsBlankSlot { get { return item == -1 && amount == 0; } }
+	
 
 	public InventorySlot(Inventory inv) {
 

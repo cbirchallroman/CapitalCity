@@ -59,6 +59,7 @@ public class Obj : MonoBehaviour {
     public NotificationController notifications { get; set; }
 	public PopulationController population { get; set; }
 	public Pathfinder pathfinder { get; set; }
+	public ResearchController research { get; set; }
 
 	bool WindowOpen;
 
@@ -115,6 +116,7 @@ public class Obj : MonoBehaviour {
         notifications = world.notifications;
 		scenario = world.scenario;
 		population = world.population;
+		research = world.research;
 		pathfinder = new Pathfinder(world.Map);
 
 	}

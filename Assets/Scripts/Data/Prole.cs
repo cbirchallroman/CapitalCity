@@ -39,7 +39,7 @@ public class Person {
 
 			deltaDays = 0;
 			yearsOld++;
-			Debug.Log("Happy birthday to " + this + "!");
+			//Debug.Log("Happy birthday to " + this + "!");
 
 		}
 
@@ -127,6 +127,7 @@ public class Adult : Person {
     public Node homeNode, workNode;
 	public float personalSavings;
 	public List<Child> children;
+	public LaborType laborPref;
 
 	public bool SeekingWork { get { return !Employed && !Retired; } }
     public bool Employed { get { return workNode != null; } }
@@ -134,10 +135,11 @@ public class Adult : Person {
 
 	//add 10% death chance if diseased
 	//add 15% death chance if retired
+	//add X% death chance depending on work hours
 	public override int DeathChance { get { return (diseased ? 10 : 0) + (Retired ? 15 : 0) + WorkDeathRisk(); } }
 
 	//constructor
-	public Adult(bool randomAge, bool wChildren) : base(randomAge) {
+	public Adult(bool randomAge, bool wChildren, LaborType pref) : base(randomAge) {
 
 		yearsOld = randomAge ? Random.Range(comingOfAge, retirementAge - 1) : 0;
 		children = new List<Child>();
@@ -148,10 +150,10 @@ public class Adult : Person {
 			int numChildren = Random.Range(0, 3);	//max of 2 children
 			for (int i = 0; i < numChildren; i++)
 				children.Add(new Child(true, this));  //create children with random age
-			foreach(Child c in children)
-				Debug.Log(new Adult(c));
 
 		}
+
+		laborPref = pref;
 		
 	}
 
@@ -165,7 +167,7 @@ public class Adult : Person {
 
 	}
 
-	public Adult(Person person) {
+	Adult(Person person, LaborType pref) {
 
 		//we want same name, same age, same skin color, same ID
 		yearsOld = person.yearsOld;
@@ -174,6 +176,7 @@ public class Adult : Person {
 		name = person.name;
 		skinColor = person.skinColor;
 		ID = person.ID;
+		laborPref = pref;
 
 	}
     
@@ -193,8 +196,10 @@ public class Adult : Person {
 		if (!children.Contains(c))
 			Debug.LogError(this + " trying to grow up child " + c + " which is not its own");
 
+		//SOMEWHERE HERE DETERMINE RANDOM LABOR PREF FOR
+
 		children.Remove(c);
-		return new Adult(c);
+		return new Adult(c, LaborType.Physical);
 
 	}
 
@@ -317,7 +322,7 @@ public class Adult : Person {
 
 		int workingDay = wrk.WorkingDay;
 		int excess = workingDay - 8;
-		return excess > 0 ? excess : 0;
+		return excess > 0 ? excess * (wrk.laborType != laborPref ? 2 : 1) : 0;	//multiple risk by 2 if this prole does not prefer physical labor
 
 	}
 

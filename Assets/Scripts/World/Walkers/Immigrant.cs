@@ -16,7 +16,7 @@ public class Immigrant : Walker {
 		if (PersonData == null)
 			Debug.LogError(name + " activated without being assigned a prole");
 		//else
-			Debug.Log(PersonData + " moving into " + Destination);
+			Debug.Log(PersonData + " (Labor Pref: " + PersonData.laborPref + ") moving into " + Destination);
 
     }
 

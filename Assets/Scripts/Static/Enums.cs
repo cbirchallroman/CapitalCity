@@ -19,7 +19,7 @@ public enum TradeDirection { Export, Import, END }
 public enum BuildingType { Administration, Culture, Distribution, Health, Industry, Resources, Agriculture, Crops, END }
 public enum NaviType { Random, Leftward, Rightward, Straight, END }
 public enum MachineType { Water, Steam, Stove, END }
-public enum LaborType { Physical, Intellectual, Emotional }
+public enum LaborType { Physical, Intellectual, Emotional, END }
 
 public class Enums {
     public static Dictionary<string, Terrain> terrainDict = new Dictionary<string, Terrain>();

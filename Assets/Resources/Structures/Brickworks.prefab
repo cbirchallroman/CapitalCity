@@ -40,7 +40,7 @@ GameObject:
   - component: {fileID: 114687596160379006}
   m_Layer: 0
   m_Name: Brickworks
-  m_TagString: Untagged
+  m_TagString: Generator
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -164,6 +164,7 @@ MonoBehaviour:
   workersMax: 4
   baseWages: 0.4
   laborDivision: 1
+  laborType: 0
   product: Bricks
   byproduct: 
   machineryType: 0

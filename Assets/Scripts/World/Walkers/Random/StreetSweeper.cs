@@ -21,7 +21,7 @@ public class StreetSweeper : RandomWalker {
         if (!world.Map.IsUnblockedRoadAt(a, b))
             return;
 
-        world.Map.cleanliness[a, b] -= (int)(cleanRate * ((Workplace)Origin).PercentEmployed);
+        world.Map.cleanliness[a, b] -= (int)(cleanRate * ((Workplace)Origin).WorkerEffectiveness);
 
         if (world.Map.cleanliness[a, b] < 0)
             world.Map.cleanliness[a, b] = 0;

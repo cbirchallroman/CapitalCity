@@ -63,7 +63,7 @@ public class ConstructionSite : Structure {
 
                 ItemOrder io = new ItemOrder(IngredientNeeded(a), ingredients[a]);
 
-                SpawnGetter(io);
+                SpawnGetterToStorage(io);
 
                 return;
 
