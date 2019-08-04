@@ -122,8 +122,7 @@ public class MouseController : MonoBehaviour {
 	}
 
     void UpdateDragging(bool line) {
-
-        
+		
         Action act = actionController.currentAction;
         StructureData str = StructureDatabase.GetData(act.What);
         int sizex = str != null ? str.sizex : 1;
@@ -186,7 +185,7 @@ public class MouseController : MonoBehaviour {
 		// Clean up old drag previews
 		ClearDragPreviews();
 
-		//new previews
+		//New previews
         DragPreview();
 
         // End Drag

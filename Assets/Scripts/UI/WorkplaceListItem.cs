@@ -21,6 +21,7 @@ public class WorkplaceListItem : MonoBehaviour {
 
 		if (Building == null)
 			Destroy(this);
+		UpdateLabels();
 
 	}
 
@@ -36,7 +37,6 @@ public class WorkplaceListItem : MonoBehaviour {
 	public void IncreaseWages() {
 		
 		Building.baseWages += 0.05f;
-		UpdateLabels();
 
 	}
 
@@ -44,7 +44,6 @@ public class WorkplaceListItem : MonoBehaviour {
 
 		if(Building.baseWages > 0)
 			Building.baseWages -= 0.05f;
-		UpdateLabels();
 
 	}
 

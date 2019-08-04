@@ -498,7 +498,57 @@ public class Structure : Obj {
 
     }
 
-    public SimplePriorityQueue<StorageBuilding> FindStorageBuildingThatHas(ItemOrder io) {
+	public SimplePriorityQueue<Generator> FindGeneratorToAccept(ItemOrder io) {
+
+		int num = io.amount;
+		string item = io.GetItemName();
+
+		GameObject[] objs = GameObject.FindGameObjectsWithTag("Generator");
+		SimplePriorityQueue<Generator> queue = new SimplePriorityQueue<Generator>();
+
+		if (objs.Length == 0)
+			return queue;
+
+
+		foreach (GameObject go in objs) {
+
+			Generator gen = go.GetComponent<Generator>();
+
+
+			//if null, continue
+			if (gen == null)
+				continue;
+
+			if (!gen.Operational)
+				continue;
+
+			int index = gen.NeedsIngredient(item);
+
+			//only add to list if it needs this ingredient
+			if (index == -1)
+				continue;
+
+			//only add to list if it has an entrance
+			List<Node> entrancesHere = GetAdjRoadTiles();
+			List<Node> entrancesThere = gen.GetAdjRoadTiles();
+			if (entrancesHere.Count == 0 || entrancesThere.Count == 0)
+				continue;
+
+			//only add to list if it can accept amount
+			if (num > gen.IngredientNeeded(index))
+				continue;
+
+			float distance = entrancesHere[0].DistanceTo(entrancesThere[0]);
+
+			queue.Enqueue(gen, distance);
+
+		}
+
+		return queue;
+
+	}
+
+	public SimplePriorityQueue<StorageBuilding> FindStorageBuildingThatHas(ItemOrder io) {
 
 		int num = io.amount;
 		int item = io.item;
@@ -596,6 +646,43 @@ public class Structure : Obj {
 		Node start = entrances[0];
 
 		SimplePriorityQueue<StorageBuilding> queue = FindStorageBuildingToAccept(io);
+
+		for (int i = 0; queue.Count > 0 && i < 5 && !ActiveSmartWalker; i++) {
+
+			Structure strg = queue.Dequeue();
+			List<Node> exits = strg.GetAdjRoadTiles();
+			if (exits.Count == 0)
+				continue;
+
+			Queue<Node> path = pathfinder.FindPath(start, exits, "GiverCart");
+			if (path.Count == 0)
+				continue;
+
+			GameObject go = world.SpawnObject("Walkers", "GiverCart", start);
+
+			Carryer c = go.GetComponent<Carryer>();
+			c.world = world;
+			c.Order = io;
+			c.Origin = this;
+			c.Destination = strg;
+			c.Activate();
+			c.SetPath(path);
+			return c;
+
+		}
+
+		return null;
+
+	}
+
+	public Carryer SpawnGiverToGenerator(ItemOrder io) {
+
+		List<Node> entrances = GetAdjRoadTiles();
+		if (entrances.Count == 0)
+			return null;
+		Node start = entrances[0];
+
+		SimplePriorityQueue<Generator> queue = FindGeneratorToAccept(io);
 
 		for (int i = 0; queue.Count > 0 && i < 5 && !ActiveSmartWalker; i++) {
 

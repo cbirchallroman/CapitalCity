@@ -56,6 +56,9 @@ public class Generator : Workplace {
     public float SurplusValue { get { return ValueProduced - WagesOverall * ActualProductionCycle / TimeController.DaysInAMonth; } }
     public float SuperProfits { get { return ValueProduced * (ActualProductivity - SocialProductivity) / SocialProductivity;} }
 
+	//DELIVERY
+	public bool DontSendItemsToGenerators { get; set; }
+
     //INGREDIENTS
     public int[] IngredientsPer100 { get; set; }
     public int[] IngredientsStored { get; set; }
@@ -212,7 +215,10 @@ public class Generator : Workplace {
 
         ItemOrder io = new ItemOrder(stockpile, product);
 
-        SpawnGiverToStorage(io);
+		//try to send carryer to other generator first; then try to storage
+		if(SpawnGiverToGenerator(io) == null || DontSendItemsToGenerators)
+			SpawnGiverToStorage(io);
+
 		if (!ActiveSmartWalker)
 			return;
         Producing = false;
@@ -220,7 +226,8 @@ public class Generator : Workplace {
         if(!string.IsNullOrEmpty(byproduct))
             ByproductsMade += ByproductsStored;
 
-        //Deteriorate();
+		//only deteriorate machinery once this production cycle is finished
+        Deteriorate();
 
     }
 	
@@ -372,6 +379,15 @@ public class Generator : Workplace {
 		base.UponDestruction();
 
 		LeaveProductivityLists();
+
+	}
+
+	public int NeedsIngredient(string item) {
+
+		for (int index = 0; index < Ingredients.Length; index++)
+			if (Ingredients[index].Equals(item))
+				return index;
+		return -1;
 
 	}
 
