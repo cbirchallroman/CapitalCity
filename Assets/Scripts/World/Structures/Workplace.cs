@@ -40,6 +40,7 @@ public class Workplace : Structure {
     public float baseWages = .4f;
     public LaborDivision laborDivision;
 	public LaborType laborType = LaborType.Physical;
+	public string deathDesc = "died in a workplace accident.";
 
     public int TimeToSpawnWalker { get; set; }
     

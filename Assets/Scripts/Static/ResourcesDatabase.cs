@@ -121,7 +121,7 @@ public class ResourcesDatabase : MonoBehaviour {
 
             XmlNodeList children = stru.ChildNodes;
             string item = null;
-            int days = 32;
+            int days = 16;
             float price = 1;
             List<string> ingredients = new List<string>();
 

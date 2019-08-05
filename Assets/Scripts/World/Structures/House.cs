@@ -495,7 +495,7 @@ public class House : Structure {
     public Quality waterQualNeeded;
     public Quality waterQualWanted;
 
-    public int WaterMax { get { return HouseSize * 2; } }
+    public int WaterMax { get { return HouseSize * 4; } }
     public int WaterNeeded(int q) { return WaterMax - Water[q]; }
     public int WaterNeeded(Quality q) { return WaterNeeded((int)q); }
     public int WaterToConsume { get { return HouseSize; } }
@@ -506,6 +506,7 @@ public class House : Structure {
     }
 
     void ConsumeWater() {
+
         int consume = WaterToConsume;
         while (consume > 0 && WaterQual != 0) {
 
@@ -525,6 +526,7 @@ public class House : Structure {
                 WaterQual--;
             }
         }
+
     }
 
     /*************************************
@@ -536,7 +538,7 @@ public class House : Structure {
     public int foodTypesWant;
 	public bool WantsMoreFood { get { return NumOfFoods() < foodTypesWant; } }
 
-	public int FoodMax { get { return 6 * FoodToConsume / foodTypesWant; } }	//amount of each type to store (for 2 years)
+	public int FoodMax { get { return 24 * FoodToConsume / foodTypesWant; } }	//amount of each type to store (for 2 years/24 months)
 	public int FoodNeeded(int item) { return FoodMax - Food[item]; }			//amount needed per type
 	public int FoodToConsume { get { return Residents.Count; } }	//amount of each type to consume
 
@@ -585,7 +587,7 @@ public class House : Structure {
 	public GoodType[] goodsNeeded;
 	public GoodType goodWanted = GoodType.END;
 
-	public int GoodsMax { get { return 2 * HouseSize; } }
+	public int GoodsMax { get { return 4 * HouseSize; } }
     public int GoodsNeeded(int item) { return GoodsMax - Goods[item]; }
     public int GoodsToConsume { get { return HouseSize; } }
 	
