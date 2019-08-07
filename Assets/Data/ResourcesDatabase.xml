@@ -89,7 +89,7 @@
   <Resource>
 
     <Name>Glassware</Name>
-    <Ingredient>25 Sand</Ingredient>
+    <Ingredient>100 Sand</Ingredient>
 
   </Resource>
 
@@ -152,7 +152,7 @@
   <Resource>
 
     <Name>Paper</Name>
-    <Ingredient>20 Wood</Ingredient>
+    <Ingredient>25 Wood</Ingredient>
 
   </Resource>
 
@@ -172,8 +172,8 @@
   <Resource>
 
     <Name>Steel</Name>
-    <Ingredient>50 Ore</Ingredient>
-    <Ingredient>50 Coal</Ingredient>
+    <Ingredient>100 Ore</Ingredient>
+    <Ingredient>25 Coal</Ingredient>
 
   </Resource>
 

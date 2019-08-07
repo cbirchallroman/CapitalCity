@@ -229,9 +229,22 @@ public class Generator : Workplace {
 		//only deteriorate machinery once this production cycle is finished
         Deteriorate();
 
-    }
-	
-    void Deteriorate() {
+	}
+
+	public void ExportByproduct() {
+
+		ItemOrder io = new ItemOrder(ByproductsMade, byproduct);
+
+		if (SpawnGiverToGenerator(io) == null || DontSendItemsToGenerators)
+			SpawnGiverToStorage(io);
+		
+		if (!ActiveSmartWalker)
+			return;
+		ByproductsMade = 0;
+
+	}
+
+	void Deteriorate() {
 
 		if (MachineData == null)
 			return;
@@ -249,17 +262,6 @@ public class Generator : Workplace {
         if (io.item != (int)MachineryResource)
             Debug.LogError("Tried to receive " + (ResourceType)io.item + " instead of " + MachineryResource);
         Deterioration -= io.amount;
-
-    }
-
-    public void ExportByproduct() {
-
-        ItemOrder io = new ItemOrder(ByproductsMade, byproduct);
-
-        SpawnGiverToStorage(io);
-		if (!ActiveSmartWalker)
-			return;
-        ByproductsMade = 0;
 
     }
 

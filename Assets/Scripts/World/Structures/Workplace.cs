@@ -61,6 +61,7 @@ public class Workplace : Structure {
     public bool ActiveBuilding { get; set; }
     public bool ClosedByPlayer { get; set; }
 	public bool HireNonPreferredProles { get; set; }
+	public bool HireRetiredProles { get; set; }
 
     public bool[] ActiveSchedule { get; set; }
     public int WorkingDay { get; set; } //from 1 to 16
@@ -318,7 +319,8 @@ public class Workplace : Structure {
 		float sum = 0;
 		foreach (Adult w in WorkerList) {
 			if (w == null) continue;
-			sum += w.laborPref == laborType ? 1 : 0.75f;
+
+			sum += (w.laborPref == laborType ? 1 : 0.75f) * (w.Retired ? 1 : 0.75f);
 		}
 
 		WorkerEffectiveness = sum / workersMax;

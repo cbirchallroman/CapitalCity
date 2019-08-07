@@ -117,7 +117,7 @@ public class Person {
 [System.Serializable]
 public class Child : Person {
 
-	bool GrownUp { get { return yearsOld >= comingOfAge; } }
+	public bool GrownUp { get { return yearsOld >= comingOfAge; } }
 
 	//add 20% death chance if diseased
 	public override int DeathChanceFromDisease { get { return 20; } }
@@ -132,8 +132,6 @@ public class Child : Person {
 	}
 
 	public override void EveryBirthday() {
-
-		base.UpdateAge();
 
 		if (GrownUp)
 			Debug.Log(this + " should be an adult now");
@@ -233,8 +231,17 @@ public class Adult : Person {
 		base.EveryBirthday();
 
 		//quit work if too old
-		if (Retired) {
-			QuitWork();
+		if (Retired && Employed) {
+
+			GameObject go = world.GetBuildingAt(workNode);
+			workNode = unemploymentNode;
+
+			if (go == null)
+				Debug.LogError("Workplace at " + workNode + " for " + this + " does not exist");
+
+			Workplace wrk = go.GetComponent<Workplace>();
+			if(!wrk.HireRetiredProles)
+				QuitWork();
 		}
 
 	}
@@ -409,12 +416,15 @@ public class Adult : Person {
 
 		Workplace wrk = go.GetComponent<Workplace>();
 
+		//workplace accidents only happen with physical jobs
 		if (wrk.laborType != LaborType.Physical)
 			return 0;
 
 		int workingDay = wrk.WorkingDay;
 		int excess = workingDay - 8;
-		return excess > 0 ? excess * (wrk.laborType != laborPref ? 2 : 1) : 0;	//multiple risk by 2 if this prole does not prefer physical labor
+		if (Retired)
+			excess += (yearsOld - retirementAge + 1) * 2;	//add increased chance of accident if prole is retired (increases with age)
+		return excess > 0 ? excess * (wrk.laborType != laborPref ? 2 : 1) : 0;	//multiple total risk by 2 if this prole does not prefer physical labor
 
 	}
 

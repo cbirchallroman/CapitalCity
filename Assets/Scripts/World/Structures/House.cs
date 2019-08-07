@@ -144,8 +144,9 @@ public class House : Structure {
         CheckBiggerSize();
         cholera.SetActive(Diseased);
 		UpdateResidentsAge();
+		ThrowWaste();
 
-    }
+	}
 	
     public override void DoEveryMonth() {
 
@@ -155,8 +156,7 @@ public class House : Structure {
         ConsumeFood();
         ConsumeGoods();
         ConsumeCulture();
-        ThrowWaste();
-        CasualtyCounter();
+        SpreadDisease();
 
     }
 	
@@ -385,6 +385,12 @@ public class House : Structure {
 					p.children.Remove(c);
 					c.Kill();
 				}
+				else if (c.GrownUp) {
+
+					ReceiveImmigrant(new Adult(c, p.laborPref));	//change to account for random labor pref based on social conditioning
+					p.children.Remove(c);
+
+				}
 
 			}
 
@@ -405,9 +411,7 @@ public class House : Structure {
 			Adult res = Residents[i];
 			if (res.workNode != null)
 				continue;
-
-
-
+			
 		}
 
 	}
@@ -419,13 +423,13 @@ public class House : Structure {
     public float WaterModifier { get { return 1.6f - (float)WaterQual * .4f; } }
     public GameObject cholera;
     public bool Diseased { get; set; }
-    public int Waste { get { return HouseSize * 3; } }
+    public int Waste { get { return HouseSize; } }
     public int casualtyRiskMax { get { return (int)(20.0 * Difficulty.GetModifier()); } }
     public float CasualtyRisk { get; set; }
     public int diseaseLength = 12;
     public int MonthsLeftDiseased { get; set; }
 
-    void CasualtyCounter() {
+    void SpreadDisease() {
 
         if (!Diseased)
             return;
@@ -434,9 +438,6 @@ public class House : Structure {
 
         if (CasualtyRisk == 0)
             roll = 100;
-
-        //if (roll <= CasualtyRisk)
-            //CasualtyDeath();
 
         IncreaseCasualtyRisk();
         MonthsLeftDiseased--;
@@ -468,15 +469,15 @@ public class House : Structure {
 
         foreach(Node n in roads) {
 
-            int x = (int)n.x;
-            int y = (int)n.y;
-            int m = 1;
+            int x = n.x;
+            int y = n.y;
+            int mult = 1;
 
             if (Diseased)
-                m = 3;
+                mult = 3;
 
             if(world.Map.cleanliness[x, y] < 100)
-                world.Map.cleanliness[x, y] += Waste * m;
+                world.Map.cleanliness[x, y] += Waste * mult;
 
             if (world.Map.cleanliness[x, y] > 100)
                 world.Map.cleanliness[x, y] = 100;
