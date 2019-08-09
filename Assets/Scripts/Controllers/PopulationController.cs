@@ -30,8 +30,6 @@ public class PopulationController : MonoBehaviour {
 	public int Unemployed { get { return Population - Working; } }
 	public int UnemployedPercent { get { return (int)((float)Unemployed / Population * 100); } }
 	public int EmployedPercent { get { return (int)((float)Working / Population * 100); } }
-
-	public static string[] surnames, firstnames;
 	
 	public void Update() {
 
@@ -45,10 +43,6 @@ public class PopulationController : MonoBehaviour {
 	public void Start() {
 		
 		Proles = new List<Adult>();
-
-		//load surname database
-		firstnames = firstnameList.text.Split('\n');
-		surnames = surnameList.text.Split('\n');
 
 	}
 
@@ -80,20 +74,6 @@ public class PopulationController : MonoBehaviour {
 	public void UnemployProle(Adult p) {
 
 		Working--;
-
-	}
-
-	public static string GetRandomSurname() {
-
-		int rand = Random.Range(0, surnames.Length);
-		return surnames[rand];
-
-	}
-
-	public static string GetRandomFirstName() {
-
-		int rand = Random.Range(0, firstnames.Length);  //note: masc names are even, femme names are odd
-		return firstnames[rand];
 
 	}
 

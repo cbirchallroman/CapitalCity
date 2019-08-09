@@ -11,7 +11,7 @@ public class ImmigrationSave {
     public float timeDelta;
     public int immigrantsThisMonth, immigrantsWaiting, physicalPref, intellectualPref, emotionalPref;
 	public List<Adult> Proles;
-
+	public ImmigrantOrigin immigrantOrigin;
 
 	public ImmigrationSave(ImmigrationController ic) {
 
@@ -23,6 +23,8 @@ public class ImmigrationSave {
 		intellectualPref = ic.intellectualPref;
 		emotionalPref = ic.emotionalPref;
 
+		immigrantOrigin = ic.immigrantOrigin;
+
 	}
 
 }
@@ -33,12 +35,18 @@ public class ImmigrationController : MonoBehaviour {
 	public List<Structure> Requests { get; set; }
     public float TimeDelta { get; set; }
 	public int immigrantsThisMonth, immigrantsWaiting = 25, physicalPref = 60, intellectualPref = 20, emotionalPref = 20;
+	public ImmigrantOrigin immigrantOrigin = ImmigrantOrigin.American;
+	public string startingHouse = "House1s";
 
 	public int TotalPref { get { return physicalPref + intellectualPref + emotionalPref; } }
 	
-    public float ImmigrationRate { get { return (TimeController.WeekTime * TimeController.MonthTime) / immigrantsThisMonth; } }
+    public float ImmigrationRate { get { return ((float)TimeController.DaysInAMonth) / immigrantsThisMonth; } }
 
-    public void Load(ImmigrationSave ic) {
+	//immigration info
+	public static string[] surnames, firstnames, skincolors;
+	public static Float3d baseColor, maxColor;
+
+	public void Load(ImmigrationSave ic) {
 
         TimeDelta = ic.timeDelta;
 		immigrantsWaiting = ic.immigrantsWaiting;
@@ -48,11 +56,31 @@ public class ImmigrationController : MonoBehaviour {
 		intellectualPref = ic.intellectualPref;
 		emotionalPref = ic.emotionalPref;
 
+		immigrantOrigin = ic.immigrantOrigin;
+
 	}
 
-    public void Awake() {
+    public void Start() {
 
         Requests = new List<Structure>();
+		
+	}
+
+	//should take place after world creation or loading saved world, to make sure we have thr right immigrant origin
+	public void LoadImmigrantData() {
+
+		string origin = immigrantOrigin.ToString();
+
+		//load names
+		Debug.Log(((TextAsset)Resources.Load("Text/Firstnames/" + origin)).text);
+		firstnames = ((TextAsset)Resources.Load("Text/Firstnames/" + origin)).text.Split(' ', '\n');
+		surnames = ((TextAsset)Resources.Load("Text/Surnames/" + origin)).text.Split(' ', '\n');
+		skincolors = ((TextAsset)Resources.Load("Text/Skincolors/" + origin)).text.Split(' ', '\n');
+
+		if (skincolors.Length != 6)
+			Debug.LogError("Skin color file for " + origin + " immigrants is incomplete");
+		baseColor = new Float3d(float.Parse(skincolors[0]), float.Parse(skincolors[1]), float.Parse(skincolors[2]));
+		maxColor = new Float3d(float.Parse(skincolors[3]), float.Parse(skincolors[4]), float.Parse(skincolors[5]));
 
 	}
 
@@ -80,14 +108,57 @@ public class ImmigrationController : MonoBehaviour {
 
     public void NextImmigrant() {
 
-        Structure s = Requests[Random.Range(0, Requests.Count)];
-        if(s != null)
-            SpawnFreshImmigrant(s);
-        Requests.Remove(s);
+		//only proceed if there's a map entrance
+		Structure mapEntrance = GameObject.FindGameObjectWithTag("MapEntrance").GetComponent<Structure>();
+		if (mapEntrance == null)
+			Debug.LogError("Missing map entrance");
+
+		//we're going to pass this data into SpawnImmigrant(,,)
+		//	also, it may be later that we'll KNOW what immigrant is moving it, so it's good to have it separate and not call GetRandomImmigrant() as an argument itself
+		Node start = new Node(mapEntrance);
+		Structure requester = Requests[Random.Range(0, Requests.Count)];
+		Adult immigrant = GetRandomImmigrant();
+		
+		//if requester still exists, send an immigrant to it from the map entrance
+		if (requester != null) {
+			SpawnImmigrant(start, requester, immigrant);
+			immigrantsWaiting--;
+		}
+
+		//whether null or not, remove from list so it's not there anymore
+		Requests.Remove(requester);
+
+	}
+	
+	//NOTE: accent marks do not work!!!!
+	public static string GetRandomSurname() {
+
+		int rand = Random.Range(0, surnames.Length);
+		return surnames[rand];
 
 	}
 
-	public LaborType GetRandomLaborPrefFromOutsideWorld() {
+	public static string GetRandomFirstName() {
+
+		int rand = Random.Range(0, firstnames.Length);  //note: masc names are even, femme names are odd
+		return firstnames[rand];
+
+	}
+
+	public static Float3d GetRandomSkinColor() {
+
+		float random = Random.Range(0f, 1);
+
+		//random colors: base color plus some % of darkening
+		float r = baseColor.X + (maxColor.X - baseColor.X) * random;
+		float g = baseColor.Y + (maxColor.Y - baseColor.Y) * random;
+		float b = baseColor.Z + (maxColor.Z - baseColor.Z) * random;
+
+		return new Float3d(r / 255f, g / 255f, b / 255f);
+
+	}
+
+	public LaborType GetRandomLaborPref() {
 
 		int roll = Random.Range(1, TotalPref);
 
@@ -101,23 +172,18 @@ public class ImmigrationController : MonoBehaviour {
 
 	}
 
-    public void SpawnFreshImmigrant(Structure requester) {
+	public Adult GetRandomImmigrant() {
 
-        Structure mapEntrance = GameObject.FindGameObjectWithTag("MapEntrance").GetComponent<Structure>();
-
-        if (mapEntrance == null)
-            return;
-
-		//CREATE NEW IMMIGRANT WITH RANDOM LABOR PREF
-		Adult newInTown = new Adult(true, true, GetRandomLaborPrefFromOutsideWorld());
-		SpawnImmigrant(new Node(mapEntrance), requester, newInTown);
-		immigrantsWaiting--;
+		Adult prospect = new Adult(true, true, GetRandomLaborPref());
+		return prospect;
 
 	}
 
-	public void SpawnImmigrant(Node start, Structure house, Adult immigrant) {
+	public void SpawnImmigrant(Node start, Structure requester, Adult immigrant) {
 		
-		Node end = new Node(house);
+		//by the way: it's way easier to deal with the starting point as a node than a structure, especially because we don't need to know where the immigrant came from
+		//	no matter how weird that we instantiate 'end' here but not 'start'
+		Node end = new Node(requester);
 
 		Queue<Node> path = new Pathfinder(worldController.Map).FindPath(start, end, "Immigrant");
 		if (path.Count == 0)
@@ -127,7 +193,7 @@ public class ImmigrationController : MonoBehaviour {
 
 		Walker w = go.GetComponent<Walker>();
 		w.world = worldController;
-		w.Destination = house;
+		w.Destination = requester;
 		w.SetPath(path);
 		w.SetPersonData(immigrant);       //data for immigrant moving into house
 		w.Activate();
@@ -137,14 +203,6 @@ public class ImmigrationController : MonoBehaviour {
 	}
 
 	public void TryEmigrant(Adult emigrant) {
-
-		//GameObject go = worldController.Map.GetBuildingAt(emigrant.homeNode);
-		//if(go != null) {
-
-		//	House h = go.GetComponent<House>();
-		//	h.ActiveSmartWalker = true;
-
-		//}
 
 		//if there are other houses to move into, go to the closest one
 		if (Requests.Count > 0) {
@@ -174,15 +232,11 @@ public class ImmigrationController : MonoBehaviour {
 		//otherwise leave the map
 		SpawnEmigrant(emigrant);
 
-		//evict house at the very end to remove homeNode and remove prole data from house
-		//quit job too because they're leaving the city
-
 	}
 
 	public void SpawnEmigrant(Adult emigrant) {
 
 		GameObject mapExit = GameObject.FindGameObjectWithTag("MapExit");
-
 		if (mapExit == null)
 			return;
 		
@@ -204,6 +258,9 @@ public class ImmigrationController : MonoBehaviour {
 		w.SetPath(path);
 		w.Activate();
 
+
+		//evict house at the very end to remove homeNode and remove prole data from house
+		//quit job too because they're leaving the city
 		emigrant.EvictHouse(false);
 		emigrant.QuitWork();
 		//RemoveResidents(ExcessResidents);

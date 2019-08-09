@@ -12,8 +12,8 @@ public class ScenarioInfo : MonoBehaviour {
     
     void Start () {
         
-        scenarioName.text = scenario.levelName;
-        scenarioDescription.text = scenario.levelDesc;
+        scenarioName.text = scenario.goals.levelName;
+        scenarioDescription.text = scenario.goals.levelDesc;
 
         CreateGoalList();
 
@@ -62,7 +62,7 @@ public class ScenarioInfo : MonoBehaviour {
 
         if (scenario.HasStorageGoals) {
 
-            List<string> storageGoals = scenario.storageGoals;
+            List<string> storageGoals = scenario.goals.storageGoals;
 
             for(int i = 0; i < storageGoals.Count; i++) {
 

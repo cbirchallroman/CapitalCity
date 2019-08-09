@@ -9,7 +9,7 @@ public class BasicWorldSave {
     public ActionSelecterControllerSave actionSelecter;
     public MoneySave money;
     public DiplomacySave diplomacy;
-    public ScenarioGoalsSave scenario;
+    public ScenarioSave scenario;
     public List<StructureSave> structures = new List<StructureSave>();
 
     public BasicWorldSave() { }
@@ -22,7 +22,7 @@ public class BasicWorldSave {
         money = new MoneySave(wc.money);
         actionSelecter = new ActionSelecterControllerSave(wc.actionSelecter);
         diplomacy = new DiplomacySave(wc.diplomacy);
-        scenario = new ScenarioGoalsSave(wc.scenario);
+        scenario = new ScenarioSave(wc.scenario);
         foreach (Transform t in wc.structures.transform) {
 
             GameObject str = t.gameObject;
@@ -85,7 +85,7 @@ public class WorldProgressSave : BasicWorldSave {
         actionSelecter = new ActionSelecterControllerSave(w.actionSelecter);
         trade = new TradeSave(w.trade);
         diplomacy = new DiplomacySave(w.diplomacy);
-        scenario = new ScenarioGoalsSave(w.scenario);
+        scenario = new ScenarioSave(w.scenario);
 		research = new ResearchSave(w.research);
 
         //SAVE OBJECTS FROM PARENT

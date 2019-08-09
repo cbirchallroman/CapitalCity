@@ -218,17 +218,21 @@
     <Compile Include="Assets\Scripts\World\Walkers\Test.cs" />
     <Compile Include="Assets\Scripts\World\Walkers\Walker.cs" />
     <Compile Include="Assets\Scripts\World\World.cs" />
+    <None Include="Assets\Resources\Text\Firstnames\Caribbean.txt" />
     <None Include="Assets\Data\WalkerDatabase.xml" />
     <None Include="Assets\Data\CampaignDatabase.xml" />
-    <None Include="Assets\Resources\Text\firstnames.txt" />
+    <None Include="Assets\Resources\Text\Skincolors\Caribbean.txt" />
+    <None Include="Assets\Resources\Text\Firstnames\American.txt" />
+    <None Include="Assets\Resources\Text\Skincolors\American.txt" />
     <None Include="Assets\Data\StructureDatabase.xml" />
     <None Include="Assets\Resources\BuildingData\Water\Dock.txt" />
     <None Include="Assets\Data\ActionsXML.xml" />
     <None Include="Assets\Data\HouseEvolutionDatabase.xml" />
+    <None Include="Assets\Resources\Text\Surnames\Caribbean.txt" />
     <None Include="Assets\Data\MachineDatabase.xml" />
     <None Include="Assets\Resources\BuildingData\Roads\Roadblock.txt" />
     <None Include="Assets\Data\ResourcesDatabase.xml" />
-    <None Include="Assets\Resources\Text\surnames.txt" />
+    <None Include="Assets\Resources\Text\Surnames\American.txt" />
     <Reference Include="UnityEditor.StandardEvents">
       <HintPath>C:/Users/ambit/Desktop/CapitalCity/Library/ScriptAssemblies/UnityEditor.StandardEvents.dll</HintPath>
     </Reference>

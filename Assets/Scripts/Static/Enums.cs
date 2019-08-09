@@ -11,8 +11,7 @@ public enum Season { Spring, Summer, Autumn, Winter, END}
 public enum FoodType { Grain, Potatoes, Fish, Vegetables, Mutton, Beef, END }
 public enum GoodType { Shoes, Trowsers, Pottery, Glassware, Carpet, Furniture, Coats, Beer, Cigars, END }
 public enum ResourceType { Bricks, Clay, Coal, Cotton, Denim, Flax, Leather, Linen, Ore, Paper, Sand, Spindles, Steel, Stone, Wood, Tobacco, Wool, Yarn, END }
-public enum PeopleType { Proles, Capitalists, Criminals, Corpses, END }
-public enum ItemType { Food, Good, Resource, People, END }
+public enum ItemType { Food, Good, Resource, END }
 public enum Quality { None, Poor, Average, Great, Luxurious, END }
 public enum NotificationType { Event, Issue, GoodNews, Invasion, END }
 public enum TradeDirection { Export, Import, END }
@@ -20,6 +19,8 @@ public enum BuildingType { Administration, Culture, Distribution, Health, Indust
 public enum NaviType { Random, Leftward, Rightward, Straight, END }
 public enum MachineType { Water, Steam, Stove, END }
 public enum LaborType { Physical, Intellectual, Emotional, END }
+public enum ImmigrantOrigin { American, Caribbean }
+public enum Attitude { Miserable, Bored, Anxious, END }
 
 public class Enums {
     public static Dictionary<string, Terrain> terrainDict = new Dictionary<string, Terrain>();
@@ -44,9 +45,6 @@ public class Enums {
 
         for (int x = 0; x < (int)ResourceType.END; x++)
             resourceDict[(ResourceType)x + ""] = new Node(x, (int)ItemType.Resource);
-
-        for (int x = 0; x < (int)PeopleType.END; x++)
-            peopleDict[(PeopleType)x + ""] = new Node(x, (int)ItemType.People);
 
 		for (int x = 0; x < (int)BuildingType.END; x++)
 			categoryDict[(BuildingType)x + ""] = (BuildingType)x;

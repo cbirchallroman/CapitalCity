@@ -20246,6 +20246,8 @@ MonoBehaviour:
   physicalPref: 34
   intellectualPref: 33
   emotionalPref: 33
+  immigrantOrigin: 1
+  startingHouse: House1s
 --- !u!4 &955919402
 Transform:
   m_ObjectHideFlags: 0
@@ -29572,13 +29574,14 @@ MonoBehaviour:
   infoPage: {fileID: 1217658023}
   victoryPage: {fileID: 208538286}
   bankruptPage: {fileID: 1339351956}
-  levelName: 
-  levelDesc: 
-  housingGoalAmount: 0
-  housingGoalLevel: 20
-  populationGoal: 0
-  prosperityGoal: 0
-  storageGoals: []
+  goals:
+    levelName: 
+    levelDesc: 
+    housingAmount: 0
+    housingLevel: 1
+    population: 0
+    prosperity: 0
+    storageGoals: []
 --- !u!1 &1454471295
 GameObject:
   m_ObjectHideFlags: 0

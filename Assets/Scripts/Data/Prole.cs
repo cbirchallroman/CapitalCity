@@ -12,6 +12,7 @@ public class Person {
 	public World world;
 
 	public readonly int ageInterval = TimeController.DaysInAYear;
+	public readonly int subInterval = TimeController.DaysInAMonth;
 	public readonly int comingOfAge = 16;
 	public readonly int retirementAge = 65;
 	
@@ -26,9 +27,9 @@ public class Person {
 
 		deltaDays = randomAge? Random.Range(0, ageInterval) : 0;
 
-		surname = PopulationController.GetRandomSurname();
-		name = PopulationController.GetRandomFirstName();
-		skinColor = GetSkinColor();
+		surname = ImmigrationController.GetRandomSurname();
+		name = ImmigrationController.GetRandomFirstName();
+		skinColor = ImmigrationController.GetRandomSkinColor();
 		ID = surname + name + Random.Range(0, 100);
 
 	}
@@ -36,10 +37,10 @@ public class Person {
 	public void UpdateAge() {
 
 		deltaDays++;
-		if (deltaDays % TimeController.DaysInAMonth == 0)
+		if (deltaDays % subInterval == 0)	//basically, every month
 			EveryMonth();
 
-		if(deltaDays == ageInterval) {
+		if(deltaDays == ageInterval) {		//basically, every year
 
 			deltaDays = 0;
 			yearsOld++;
@@ -66,24 +67,6 @@ public class Person {
 
 	public virtual void EveryBirthday() {
 		
-
-	}
-
-	Float3d GetSkinColor() {
-
-		float start_r = 61f / 255f;
-		float start_g = 28f / 255f;
-		float start_b = 10f / 255f;
-		float diff_r = (229f - 61) / 255f;
-		float diff_g = (186f - 28) / 255f;
-		float diff_b = (84f - 10) / 255f;
-
-		float percent = Random.Range(0f, 1);
-		diff_r *= percent;
-		diff_g *= percent;
-		diff_b *= percent;
-
-		return new Float3d(start_r + diff_r, start_g + diff_g, start_b + diff_b);
 
 	}
 

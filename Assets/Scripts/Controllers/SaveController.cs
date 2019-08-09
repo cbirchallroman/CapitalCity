@@ -50,7 +50,7 @@ public class SaveController : MonoBehaviour {
 
     public void SaveScenario() {
 
-        SaveLoadMap.SaveScenario(worldController.gameObject, worldController.scenario.levelName);
+        SaveLoadMap.SaveScenario(worldController.gameObject, worldController.scenario.goals.levelName);
 
     }
 

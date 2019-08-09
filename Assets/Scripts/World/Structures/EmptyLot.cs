@@ -4,8 +4,6 @@ using UnityEngine;
 
 public class EmptyLot : Structure {
 
-    public string house;
-
     public override void DoEveryDay() {
 
         if (RoadAccess() && !ActiveSmartWalker && !immigration.Contains(this))
@@ -18,7 +16,7 @@ public class EmptyLot : Structure {
 		//demolish this and build new house
 		float rot = transform.position.y;
 		world.Demolish(X, Y);
-        world.SpawnStructure(house, X, Y, rot);
+        world.SpawnStructure(immigration.startingHouse, X, Y, rot);
 
         House newHouse = world.Map.GetBuildingAt(X, Y).GetComponent<House>();
         newHouse.FreshHouse(immigrant);

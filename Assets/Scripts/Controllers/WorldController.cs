@@ -132,6 +132,8 @@ public class WorldController : MonoBehaviour {
         ProductivityController.LoadCompetitors(diplomacy.cities);
         ProductivityController.UpdateProductivities();
 
+		immigration.LoadImmigrantData();
+
 		WalkerGrid = Map.size.CreateArrayOfSize < List<Walker> > ();
 
 	}
