@@ -9,7 +9,7 @@ public class HouseSave : StructureSave {
     public int Prosperity, Culture, MonthsLeftDiseased, Corpses;
     public float CasualtyRisk, Savings;
 
-    public List<Adult> Residents;
+    public List<Prole> Residents;
 
     public int[] Water, Food, Goods;
     public Quality WaterQual { get; set; }
@@ -62,7 +62,7 @@ public class House : Structure {
     public int desirabilityWanted;
 	public int HouseSize { get { return Sizex; } }
 	public float Savings { get; set; }
-    public List<Adult> Residents { get; set; }
+    public List<Prole> Residents { get; set; }
 	public int Corpses { get; set; }
     
     //public int ExcessResidents { get { return Residents - residentsMax; } }
@@ -119,7 +119,7 @@ public class House : Structure {
 		//proles who move out receive a fraction of the house's total savings to take with them
 		if (Residents.Count > residentsMax) {
 
-			Adult mover = Residents[Residents.Count - 1];
+			Prole mover = Residents[Residents.Count - 1];
 
 			mover.personalSavings += Savings / Residents.Count;
 			Savings -= mover.personalSavings;
@@ -258,13 +258,13 @@ public class House : Structure {
         Food = ArrayFunctions.CombineArrays(Food, h1.Food, h2.Food, h3.Food);
 
         //combine stats
-        foreach (Adult p in h1.Residents)
+        foreach (Prole p in h1.Residents)
             Residents.Add(p);
-        foreach (Adult p in h2.Residents)
+        foreach (Prole p in h2.Residents)
             Residents.Add(p);
-        foreach (Adult p in h3.Residents)
+        foreach (Prole p in h3.Residents)
             Residents.Add(p);
-        foreach (Adult p in Residents)
+        foreach (Prole p in Residents)
             Debug.Log(p.workNode);
 
         world.Demolish(h1.X, h1.Y);
@@ -306,7 +306,7 @@ public class House : Structure {
 
     }
 
-    public void FreshHouse(Adult firstResident) {
+    public void FreshHouse(Prole firstResident) {
 
         //Residents = res;
         Water = new int[(int)Quality.END];
@@ -314,7 +314,7 @@ public class House : Structure {
         Food = new int[(int)FoodType.END];
         Goods = new int[(int)GoodType.END];
         VenueAccess = new Dictionary<string, int>();
-        Residents = new List<Adult>();
+        Residents = new List<Prole>();
 
 		//CREATE NEW RESIDENT HAPPENS RIGHT HERE
         ReceiveImmigrant(firstResident);
@@ -330,7 +330,7 @@ public class House : Structure {
 			return;
 
 		//ONLY DO THIS IF HOUSE IS NOT EVOLVING OR DEVOLVING
-		foreach (Adult mover in Residents) {
+		foreach (Prole mover in Residents) {
 
 			//p.QuitWork();
 			mover.personalSavings += Savings / Residents.Count;
@@ -353,7 +353,7 @@ public class House : Structure {
 
     }
 
-	public override void ReceiveImmigrant(Adult p) {
+	public override void ReceiveImmigrant(Prole p) {
 
 		p.MoveIntoHouse(this);
 		Residents.Add(p);
@@ -371,7 +371,7 @@ public class House : Structure {
 		//iterate backwards to not have any problems with removing residents or children
 		for(int i = Residents.Count - 1; i >= 0; i--) {
 
-			Adult p = Residents[i];
+			Prole p = Residents[i];
 			p.UpdateAge();
 
 			for (int j = p.children.Count - 1; j >= 0; j--) {
@@ -385,7 +385,7 @@ public class House : Structure {
 				}
 				else if (c.GrownUp) {
 
-					ReceiveImmigrant(new Adult(c, p.laborPref));	//change to account for random labor pref based on social conditioning
+					ReceiveImmigrant(new Prole(c, p.laborPref));	//change to account for random labor pref based on social conditioning
 					p.children.Remove(c);
 
 				}
@@ -406,7 +406,7 @@ public class House : Structure {
 		//spawn walker or laborseeker process
 		for(int i = 0; i < Residents.Count && !ActiveRandomWalker; i++) {
 
-			Adult res = Residents[i];
+			Prole res = Residents[i];
 			if (res.workNode != null)
 				continue;
 			
@@ -449,7 +449,7 @@ public class House : Structure {
 		cholera.SetActive(true);
 
 		//each individual in the house is diseased
-		foreach(Adult a in Residents) {
+		foreach(Prole a in Residents) {
 			foreach (Child c in a.children)
 				c.diseased = true;
 			a.diseased = true;
@@ -464,7 +464,7 @@ public class House : Structure {
 		cholera.SetActive(false);
 
 		//each individual in the house is cured
-		foreach (Adult a in Residents) {
+		foreach (Prole a in Residents) {
 			foreach (Child c in a.children)
 				c.diseased = false;
 			a.diseased = false;

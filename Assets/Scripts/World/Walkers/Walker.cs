@@ -17,7 +17,7 @@ public class WalkerSave : ObjSave {
     public WalkerSave follower;
     public Float3d skin;
 	public WalkerData data;
-	public Adult PersonData;
+	public Prole PersonData;
 
 	public WalkerSave(GameObject go) : base(go) {
 
@@ -91,7 +91,7 @@ public class Walker : Obj {
     public Node Direction { get; set; }
 
 	public WalkerData data = null;
-	public Adult PersonData { get; set; }
+	public Prole PersonData { get; set; }
 
 	public NaviType preferredRandomNavigation = NaviType.Random;
 
@@ -483,7 +483,7 @@ public class Walker : Obj {
 
 	}
 
-	public void SetPersonData(Adult p) {
+	public void SetPersonData(Prole p) {
 
 		PersonData = p;
 

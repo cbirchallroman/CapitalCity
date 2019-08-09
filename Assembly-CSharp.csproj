@@ -179,6 +179,7 @@
     <Compile Include="Assets\Scripts\World\Structures\Generator.cs" />
     <Compile Include="Assets\Scripts\World\Structures\House.cs" />
     <Compile Include="Assets\Scripts\World\Structures\InspectorsTower.cs" />
+    <Compile Include="Assets\Scripts\World\Structures\Jobcentre.cs" />
     <Compile Include="Assets\Scripts\World\Structures\LoggingCamp.cs" />
     <Compile Include="Assets\Scripts\World\Structures\ResearchLab.cs" />
     <Compile Include="Assets\Scripts\World\Structures\Road.cs" />

@@ -21,7 +21,7 @@ public class Pathfinder {
 	}
 
 	public Queue<Node> FindPath(Node start, List<Node> ends, string name) {
-
+		
 		WalkerData walker = WalkerDatabase.GetData(name);
 		return FindPath(start, ends, walker);
 
@@ -37,9 +37,11 @@ public class Pathfinder {
 	}
 
 	public Queue<Node> FindPath(Node start, List<Node> ends, WalkerData walker) {
-		
+
+		Queue<Node> path = new Queue<Node>();
+
 		if (ends.Count == 0)
-			Debug.LogError("No exits to choose from");
+			return path;
 
 		Dictionary<Node, float> G_scores = new Dictionary<Node, float>();
 		Dictionary<Node, Node> nexts = new Dictionary<Node, Node>();
@@ -57,7 +59,6 @@ public class Pathfinder {
 		}
 
 		//create path of nodes and array of visited nodes
-		Queue<Node> path = new Queue<Node>();
 		bool[,] visited = map.size.CreateArrayOfSize<bool>();
 
 		//while there are unvisited nodes in the queue

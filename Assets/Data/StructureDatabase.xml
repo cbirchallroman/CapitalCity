@@ -656,4 +656,15 @@
 
   </Structure>
 
+	<Structure>
+
+		<Name>Jobcentre</Name>
+		<DisplayName>Jobcentre</DisplayName>
+
+		<Sizex>2</Sizex>
+		<Sizey>2</Sizey>
+		<BaseCost>5</BaseCost>
+
+	</Structure>
+
 </StructureDatabase>

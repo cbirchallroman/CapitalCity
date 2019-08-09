@@ -120,7 +120,7 @@ public class RandomWalker : Walker {
 
             }
 
-            foreach(Adult p in h.Residents) {
+            foreach(Prole p in h.Residents) {
 
 				if (p == null)
 					continue;

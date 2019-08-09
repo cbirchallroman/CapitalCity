@@ -7,7 +7,7 @@ public class ProleInfo : MonoBehaviour {
 	
 	public Text employeeName;
 	public Workplace WP { get; set; }
-	public Adult Employee { get; set; }
+	public Prole Employee { get; set; }
 
 	private void Start() {
 

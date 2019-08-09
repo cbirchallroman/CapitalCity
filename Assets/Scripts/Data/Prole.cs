@@ -34,7 +34,7 @@ public class Person {
 
 	}
 
-	public void UpdateAge() {
+	public virtual void UpdateAge() {
 
 		deltaDays++;
 		if (deltaDays % subInterval == 0)	//basically, every month
@@ -105,7 +105,7 @@ public class Child : Person {
 	//add 20% death chance if diseased
 	public override int DeathChanceFromDisease { get { return 20; } }
 
-	public Child(bool randomAge, Adult parent) : base(randomAge) {
+	public Child(bool randomAge, Prole parent) : base(randomAge) {
 
 		yearsOld = randomAge ? Random.Range(0, comingOfAge - 1) : 0;
 		surname = parent.surname;
@@ -124,7 +124,7 @@ public class Child : Person {
 }
 
 [System.Serializable]
-public class Adult : Person {
+public class Prole : Person {
 	
     public int workIndex;
     public Node homeNode, workNode;
@@ -150,11 +150,14 @@ public class Adult : Person {
 	public int DeathChanceFromAge { get { return 15; } }
 
 	//constructor
-	public Adult(bool randomAge, bool wChildren, LaborType pref) : base(randomAge) {
+	public Prole(bool randomAge, bool wChildren, LaborType pref) : base(randomAge) {
 
+		//default status
 		workNode = unemploymentNode;
 		homeNode = unemploymentNode;
-		yearsOld = randomAge ? Random.Range(comingOfAge, retirementAge - 1) : 0;
+
+		//random years old if we need
+		yearsOld = randomAge ? Random.Range(comingOfAge, retirementAge - 1) : comingOfAge;
 		children = new List<Child>();
 
 		//if prole moves into the city with children
@@ -170,12 +173,19 @@ public class Adult : Person {
 
 	}
 
-	public Adult(Person person, LaborType pref) {
+	public Prole(Person person, LaborType pref) {
 
-		//we want same name, same age, same skin color, same ID
+		//default status
 		workNode = unemploymentNode;
 		homeNode = unemploymentNode;
 
+		//if coming from a child, make a new children list
+		if (person is Child)
+			children = new List<Child>();
+		else if (person is Prole || person is Prospect)		//this is atrocious but we need it because prospects convert back and forth
+			children = ((Prole)person).children;
+
+		//we want same name, same age, same skin color, same ID
 		yearsOld = person.yearsOld;
 		deltaDays = person.deltaDays;
 		surname = person.surname;
@@ -263,7 +273,7 @@ public class Adult : Person {
 
     public override bool Equals(object obj) {
 
-        Adult pr = (Adult)obj;
+        Prole pr = (Prole)obj;
         return ID == pr.ID;
 
 	}
@@ -274,7 +284,7 @@ public class Adult : Person {
 
 	}
 
-	public Adult GrowUpChild(Child c) {
+	public Prole GrowUpChild(Child c) {
 
 		if (!children.Contains(c))
 			Debug.LogError(this + " trying to grow up child " + c + " which is not its own");
@@ -282,7 +292,7 @@ public class Adult : Person {
 		//SOMEWHERE HERE DETERMINE RANDOM LABOR PREF FOR
 
 		children.Remove(c);
-		return new Adult(c, LaborType.Physical);
+		return new Prole(c, LaborType.Physical);
 
 	}
 
@@ -408,6 +418,30 @@ public class Adult : Person {
 		if (Retired)
 			excess += (yearsOld - retirementAge + 1) * 2;	//add increased chance of accident if prole is retired (increases with age)
 		return excess > 0 ? excess * (wrk.laborType != laborPref ? 2 : 1) : 0;	//multiple total risk by 2 if this prole does not prefer physical labor
+
+	}
+
+}
+
+[System.Serializable]
+public class Prospect : Prole {
+
+	public int countdown;
+	public bool hired, rejected;
+
+	public Prospect(Person person, LaborType lt) : base(person, lt) {
+
+		countdown = TimeController.DaysInASeason;
+
+	}
+
+	public override void UpdateAge() {
+
+		base.UpdateAge();
+
+		countdown--;
+		if (countdown <= 0 || Retired)     //if countdown is over or got too old, leave the city
+			rejected = true;
 
 	}
 
