@@ -385,7 +385,7 @@ public class House : Structure {
 				}
 				else if (c.GrownUp) {
 
-					ReceiveImmigrant(new Prole(c, p.laborPref));	//change to account for random labor pref based on social conditioning
+					ReceiveImmigrant(p.GrowUpChild(c));	//change to account for random labor pref based on social conditioning
 					p.children.Remove(c);
 
 				}

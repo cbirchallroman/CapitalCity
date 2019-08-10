@@ -226,12 +226,7 @@ public class ImmigrationController : MonoBehaviour {
 
 		foreach (Structure house in houses) {
 
-			//if this structure has no entrances, continue
-			List<Node> entrancesThere = house.GetAdjRoadTiles();
-			if (entrancesThere.Count == 0)
-				continue;
-
-			float distance = start.DistanceTo(entrancesThere[0]);
+			float distance = start.DistanceTo(new Node(house));
 
 			queue.Enqueue(house, distance);
 
@@ -246,7 +241,10 @@ public class ImmigrationController : MonoBehaviour {
 		//if there are other houses to move into, go to the closest one
 		if (Requests.Count > 0) {
 
-			Structure str = FindClosestHouses(emigrant.homeNode).Dequeue();
+			SimplePriorityQueue<Structure> houses = FindClosestHouses(emigrant.homeNode);
+			if (houses.Count == 0)
+				return;
+			Structure str = houses.Dequeue();
 			SpawnImmigrant(emigrant.homeNode, str, emigrant);
 			Requests.Remove(str);
 			return;

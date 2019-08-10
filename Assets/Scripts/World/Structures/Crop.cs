@@ -63,6 +63,12 @@ public class Crop : Structure {
 
 	}
 
+	public override float GetAutomationValue(string item) {
+
+		return 0;
+
+	}
+
 	public override void DoEveryDay() {
 
         if (planted && !ReadyForHarvest)

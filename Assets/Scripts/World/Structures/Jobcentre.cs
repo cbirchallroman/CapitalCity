@@ -1,11 +1,12 @@
-﻿using System.Collections;
+﻿using Priority_Queue;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 [System.Serializable]
 public class JobcentreSave : StructureSave {
 
-	public List<Prospect> Prospects;
+	public List<Prole> Prospects;
 
 	public JobcentreSave(GameObject go) : base(go) {
 
@@ -21,10 +22,13 @@ public class Jobcentre : Structure {
 
 	[Header("Jobcenter")]
 	public int maxProspects = 4;
-	public List<Prospect> Prospects { get; set; }
+	public List<Prole> Prospects { get; set; }
 	public int[] ProspectCounters { get; set; }
 	public int ProspectsExpecting { get; set; }
-	public int ProspectWaitTime { get { return TimeController.DaysInASeason * 3; } }
+
+	public bool HireHighPhy { get; set; }
+	public bool HireHighInt { get; set; }
+	public bool HireHighEmo { get; set; }
 
 	public override void Load(ObjSave o) {
 
@@ -38,8 +42,11 @@ public class Jobcentre : Structure {
 	public override void Activate() {
 
 		base.Activate();
-		Prospects = new List<Prospect>();
+		Prospects = new List<Prole>();
 		ProspectCounters = new int[maxProspects];
+		HireHighPhy = true;
+		HireHighInt = true;
+		HireHighEmo = true;
 
 	}
 
@@ -47,16 +54,21 @@ public class Jobcentre : Structure {
 
 		base.DoEveryDay();
 
-		//TEMPORARY TEST FOR MAKING SURE THAT PROSPECTS WILL GO FROM HERE TO A NEW HOUSE IF THERE IS A HOUSE TO GO TO
-		//if we have any prospects waiting for a job
-		
-		for(int i = Prospects.Count - 1; i >= 0; i--) {
+		SendOutProspects();
+		GetAnotherProspect();
 
-			Prospect prospect = Prospects[i];
+	}
+
+	void SendOutProspects() {
+		
+		//iterate backwards to avoid problems from removing prospects
+		for (int i = Prospects.Count - 1; i >= 0; i--) {
+
+			Prole prospect = Prospects[i];
 
 			if (prospect.rejected)  //send prospect out of it is rejected or now too old to work or has waited for too long (regardless of hire status)
-				RejectProspect(prospect);
-			else if (prospect.hired)
+				SendAwayProspect(prospect);
+			else if (prospect.accepted)
 				HireProspect(prospect);
 
 			prospect.UpdateAge();   //here we can have the prospect age and also countdown to leaving if they waited for too long
@@ -65,12 +77,19 @@ public class Jobcentre : Structure {
 
 	}
 
-	public override void DoEveryWeek() {
-		
+	void GetAnotherProspect() {
+
 		//if there's any space for prospects left
-		if(Prospects.Count + ProspectsExpecting < maxProspects) {
+		if (Prospects.Count + ProspectsExpecting < maxProspects) {
 
 			Prole prospect = immigration.GetRandomImmigrant();
+
+			if (prospect.HighestValue() == LaborType.Physical && !HireHighPhy)
+				return;
+			if (prospect.HighestValue() == LaborType.Intellectual && !HireHighInt)
+				return;
+			if (prospect.HighestValue() == LaborType.Emotional && !HireHighEmo)
+				return;
 
 			//get immigrant to this building from outside
 			immigration.SpawnImmigrant(this, prospect);
@@ -79,13 +98,12 @@ public class Jobcentre : Structure {
 			ProspectsExpecting++;
 
 		}
-		
+
 	}
 
-	public override void ReceiveImmigrant(Prole immigrant) {
+	public override void ReceiveImmigrant(Prole prospect) {
 
-		Prospect prospect = new Prospect(immigrant, immigrant.laborPref);
-		prospect.hired = true;	//JUST FOR NOW, WE'RE GOING TO ASSUME THAT THEY'RE GOING TO ALWAYS BE HIRED UNLESS TOO OLD; add player control later
+		prospect.StartWaitCountdown();
 		Prospects.Add(prospect);
 		ProspectsExpecting--;
 
@@ -95,20 +113,35 @@ public class Jobcentre : Structure {
 
 	}
 
-	void HireProspect(Prospect prospect) {
+	public void AcceptProspect(Prole prospect) {
+
+		prospect.accepted = true;
+		prospect.rejected = false;
+
+	}
+
+	public void RejectProspect(Prole prospect) {
+
+		prospect.accepted = false;
+		prospect.rejected = true;
+
+	}
+
+	void HireProspect(Prole prospect) {
 
 		if (immigration.Requests.Count == 0)
 			return;     //if there's no house looking for a resident, don't keep looking
 
 		//get start node, an adjacent road tile
-		List<Node> entrances = GetAdjRoadTiles();
-		if (entrances.Count == 0)
-			return;
-		Node start = entrances[0];
+		Node start = new Node(this);
 
 		//get closest requester from immigration controller
 		//	we know we'll get at least one result bc we already checked that there's more than zero houses in line
-		Structure requester = immigration.FindClosestHouses(start).Dequeue();
+		SimplePriorityQueue<Structure> houses = immigration.FindClosestHouses(start);
+		if (houses.Count == 0)
+			return;
+		Structure requester = houses.Dequeue();
+		prospect.waitCountdown = 0;
 
 		//send immigrant from here to that house
 		immigration.SpawnImmigrant(start, requester, prospect);
@@ -121,7 +154,7 @@ public class Jobcentre : Structure {
 
 	}
 
-	void RejectProspect(Prospect prospect) {
+	void SendAwayProspect(Prole prospect) {
 
 		//get start node, an adjacent road tile
 		List<Node> entrances = GetAdjRoadTiles();
@@ -137,9 +170,15 @@ public class Jobcentre : Structure {
 
 	}
 
-	void RemoveProspectFromArray(Prospect prospect) {
+	void RemoveProspectFromArray(Prole prospect) {
 
 		Prospects.Remove(prospect);
+
+	}
+
+	public override void OpenWindow() {
+
+		OpenWindow(UIObjectDatabase.GetUIElement("JobcentreWindow"));
 
 	}
 

@@ -125,6 +125,7 @@
     <Compile Include="Assets\Scripts\UI\HouseWindow.cs" />
     <Compile Include="Assets\Scripts\UI\IngredientInfo.cs" />
     <Compile Include="Assets\Scripts\UI\ItemValueUI.cs" />
+    <Compile Include="Assets\Scripts\UI\JobcentreWindow.cs" />
     <Compile Include="Assets\Scripts\UI\LevelSelecterController.cs" />
     <Compile Include="Assets\Scripts\UI\LoadFreshMap.cs" />
     <Compile Include="Assets\Scripts\UI\LoadGameFileButton.cs" />
@@ -138,6 +139,7 @@
     <Compile Include="Assets\Scripts\UI\OpenEscapeMenu.cs" />
     <Compile Include="Assets\Scripts\UI\PausePlay.cs" />
     <Compile Include="Assets\Scripts\UI\ProleInfo.cs" />
+    <Compile Include="Assets\Scripts\UI\ProspectInfo.cs" />
     <Compile Include="Assets\Scripts\UI\QuarterlyReport.cs" />
     <Compile Include="Assets\Scripts\UI\ScenarioGoal.cs" />
     <Compile Include="Assets\Scripts\UI\ScenarioInfo.cs" />

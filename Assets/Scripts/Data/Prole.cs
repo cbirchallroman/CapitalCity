@@ -125,12 +125,21 @@ public class Child : Person {
 
 [System.Serializable]
 public class Prole : Person {
-	
-    public int workIndex;
-    public Node homeNode, workNode;
-	public float personalSavings;
+
+	//PERSONAL STUFF
+	public Node homeNode;
 	public List<Child> children;
+	public float personalSavings;
+	public int physique, intellect, emotion;
 	public LaborType laborPref;
+
+	//WAITING FOR ACCEPTANCE STUFF
+	public int waitCountdown;
+	public bool accepted, rejected;
+
+	//WORK STUFF
+	public Node workNode;
+	public int workIndex;
 
 	public bool SeekingWork { get { return !Employed && !Retired; } }
     public bool Employed { get { return !workNode.Equals(unemploymentNode); } }
@@ -169,7 +178,8 @@ public class Prole : Person {
 
 		}
 
-		laborPref = pref;
+		//roll random stats, taking pref into account
+		RollStats(laborPref);
 
 	}
 
@@ -182,8 +192,6 @@ public class Prole : Person {
 		//if coming from a child, make a new children list
 		if (person is Child)
 			children = new List<Child>();
-		else if (person is Prole || person is Prospect)		//this is atrocious but we need it because prospects convert back and forth
-			children = ((Prole)person).children;
 
 		//we want same name, same age, same skin color, same ID
 		yearsOld = person.yearsOld;
@@ -192,7 +200,33 @@ public class Prole : Person {
 		name = person.name;
 		skinColor = person.skinColor;
 		ID = person.ID;
+
+		//roll random stats, taking pref into account
+		RollStats(laborPref);
+
+	}
+
+	public void RollStats(LaborType pref) {
+
+		physique = Random.Range(1, 7) + Random.Range(1, 7) + Random.Range(1, 7);
+		intellect = Random.Range(1, 7) + Random.Range(1, 7) + Random.Range(1, 7);
+		emotion = Random.Range(1, 7) + Random.Range(1, 7) + Random.Range(1, 7);
+
+		//TAKE PREF INTO ACCOUNT IN A WAY THAT ISN'T THIS
 		laborPref = pref;
+
+	}
+
+	public override void UpdateAge() {
+
+		base.UpdateAge();
+
+		//only do if prole is waiting for a job at the job centre
+		if (waitCountdown > 0) {
+			waitCountdown--;
+			if (waitCountdown <= 0 || Retired)     //if countdown is over or got too old, leave the city
+				rejected = true;
+		}
 
 	}
 
@@ -292,7 +326,10 @@ public class Prole : Person {
 		//SOMEWHERE HERE DETERMINE RANDOM LABOR PREF FOR
 
 		children.Remove(c);
-		return new Prole(c, LaborType.Physical);
+
+		Prole grownup = new Prole(c, LaborType.Physical);
+
+		return grownup;
 
 	}
 
@@ -421,27 +458,32 @@ public class Prole : Person {
 
 	}
 
-}
+	public LaborType HighestValue() {
 
-[System.Serializable]
-public class Prospect : Prole {
+		if (physique > intellect && physique > emotion)
+			return LaborType.Physical;
 
-	public int countdown;
-	public bool hired, rejected;
+		else if (intellect > physique && intellect > emotion)
+			return LaborType.Intellectual;
 
-	public Prospect(Person person, LaborType lt) : base(person, lt) {
+		else if (emotion > physique && emotion > intellect)
+			return LaborType.Emotional;
 
-		countdown = TimeController.DaysInASeason;
+		return LaborType.END;
+
+	}
+	
+	public int WaitTime { get { return TimeController.DaysInASeason; } }
+
+	public void StartWaitCountdown() {
+		
+		waitCountdown = WaitTime;
 
 	}
 
-	public override void UpdateAge() {
+	public float WaitTimePercent() {
 
-		base.UpdateAge();
-
-		countdown--;
-		if (countdown <= 0 || Retired)     //if countdown is over or got too old, leave the city
-			rejected = true;
+		return (float)(WaitTime - waitCountdown) / WaitTime;
 
 	}
 
