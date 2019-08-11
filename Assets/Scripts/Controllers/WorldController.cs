@@ -257,32 +257,36 @@ public class WorldController : MonoBehaviour {
                 int m = a - x;
                 int n = b - y;
 
-                if (Map.OutOfBounds(a, b))
-                    return false;
+				if (Map.OutOfBounds(a, b))
+					return false;
 
-                //if building has road tiles beneath
-                else if (data.hasRoadTiles) {
+				//if building has road tiles beneath
+				else if (data.hasRoadTiles) {
 
-                    int[,] roads = ArrayFunctions.RotatedArray(data.roadTiles, buildingRotation);
+					int[,] roads = ArrayFunctions.RotatedArray(data.roadTiles, buildingRotation);
 
-                    //if there should be a road at this tile
-                    if(roads[m, n] == 1) {
+					//if there should be a road at this tile
+					if (roads[m, n] == 1) {
 
-                        //if no structure at all, return false
-                        if (string.IsNullOrEmpty(Map.structures[a, b]))
-                            return false;
+						//if no structure at all, return false
+						if (string.IsNullOrEmpty(Map.structures[a, b]))
+							return false;
 
-                        //else if there's not a road here or it does not contain "Road", return false
-                        else if (Map.roads[a, b] != 2 || !Map.GetBuildingNameAt(a, b).Contains("Road_"))
-                            return false;
+						//else if there's not a road here or it does not contain "Road", return false
+						else if (Map.roads[a, b] != 2 || !Map.GetBuildingNameAt(a, b).Contains("Road_"))
+							return false;
 
-                    }
+					}
 
-                }
+				}
 
-                //else if there's a structure on this tile when there shouldn't be
-                else if(!string.IsNullOrEmpty(Map.structures[a, b]))
-                    return false;
+				//else if there's a walker on this tile (make sure that walker grid exists before checking for a list on it
+				else if (WalkerGrid != null) { if (WalkerGrid[a, b] != null)
+					return false; }
+
+				//else if there's a structure on this tile when there shouldn't be
+				else if (!string.IsNullOrEmpty(Map.structures[a, b]))
+					return false;
 
                 if (data.hasWaterTiles) {
 
