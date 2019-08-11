@@ -5,15 +5,9 @@ using UnityEngine;
 [System.Serializable]
 public class World {
 
-    public float frequency = 3;
-    public float water = 20;
-    public float lush = 10;
-    public float grass = 10;
-    public float mud = 10;
-    public float sand = 50;
-
     public Node size;
     public int[,] terrain, roads, cleanliness, desirability;
+	public float[,] elevation;
     public string[,] structures;
 
     public World(float x, float y) : this(new Node((int)x, (int)y)) { }
@@ -27,70 +21,6 @@ public class World {
         structures = sz.CreateArrayOfSize<string>();
         desirability = sz.CreateArrayOfSize<int>();
 
-    }
-
-    public void RandomizeTerrain() {
-
-        float offset = Random.Range(0, 1000);
-
-        for (int x = 0; x < size.x; x++)
-            for (int y = 0; y < size.y; y++) {
-
-                float nx = x / size.x * frequency + offset;
-                float ny = y / size.y * frequency + offset;
-
-                float noise = Mathf.PerlinNoise(nx, ny);
-
-                noise *= 100;
-                
-                if(noise < water)
-                    terrain[x,y] = 0;
-                else if(noise < lush + water)
-                    terrain[x, y] = 1;
-                else if (noise < grass + lush + water)
-                    terrain[x, y] = 2;
-                else if (noise < mud + grass + lush + water)
-                    terrain[x, y] = 3;
-                else
-                    terrain[x, y] = 4;
-
-            }
-
-    }
-
-	public void RandomizeElevation() {
-
-		float offset = Random.Range(0, 1000);
-
-		for (int x = 0; x < size.x; x++)
-			for (int y = 0; y < size.y; y++) {
-
-				float nx = x / size.x * frequency + offset;
-				float ny = y / size.y * frequency + offset;
-
-				float noise = Mathf.PerlinNoise(nx, ny);
-
-				noise *= 100;
-
-				if (noise < water)
-					terrain[x, y] = 0;
-				else if (noise < lush + water)
-					terrain[x, y] = 1;
-				else if (noise < grass + lush + water)
-					terrain[x, y] = 2;
-				else if (noise < mud + grass + lush + water)
-					terrain[x, y] = 3;
-				else
-					terrain[x, y] = 4;
-
-			}
-
-	}
-
-    public void PlainTerrain() {
-        for (int x = 0; x < size.x; x++)
-            for (int y = 0; y < size.y; y++)
-                terrain[x, y] = (int)Terrain.Grass;
     }
 
     public bool OutOfBounds(int x, int y) {

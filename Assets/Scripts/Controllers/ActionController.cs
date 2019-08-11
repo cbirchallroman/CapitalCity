@@ -113,13 +113,22 @@ public class ActionController : MonoBehaviour {
         string d = act.Do;
         string w = act.What;
 
+		//NON-BUILDING PLACEMENT COMMANDS
 		if (d == "open")
 			selecterController.ShowActions(w);
 
 		else if (d == "paint")
 			world.PaintTerrain(w, x, y);
 
-		else if (w == "Fence" && world.Map.IsUnblockedRoadAt(x, y)) {
+		else if (d == "demolish" || d == "unplace")
+			world.Demolish(x, y);
+
+		else if (d == "rebuild")
+			world.LoadMapObject(act.data);
+
+		//EXCEPTIONS TO BUILDING PLACEMENT
+		//if we're building a fence and there's a plain road here, build a gate instead
+		if (w == "Fence" && world.Map.IsUnblockedRoadAt(x, y)) {
 
 			//buildingroadblock = true;
 			world.Demolish(x, y);
@@ -128,17 +137,14 @@ public class ActionController : MonoBehaviour {
 				buildingRotation = 90;
 
 			world.SpawnStructure("FenceGate", x, y, buildingRotation);
+			return;	//don't keep going
 
 		}
 
-		else if (d == "place")
+		//BASIC BUILDING PLACEMENT
+		//switch to 'if' and not 'else if' because not mutually exclusive with placing a road
+		if (d == "place")
 			world.SpawnStructure(w, x, y, buildingRotation);
-
-		else if (d == "demolish" || d == "unplace")
-			world.Demolish(x, y);
-
-		else if (d == "rebuild")
-			world.LoadMapObject(act.data);
 
     }
 
