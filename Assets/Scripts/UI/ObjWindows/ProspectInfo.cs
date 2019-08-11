@@ -46,7 +46,7 @@ public class ProspectInfo : MonoBehaviour {
 
 		jobcentre.AcceptProspect(prospect);
 		accept.interactable = false;
-		reject.interactable = false;
+		reject.interactable = true;
 		countdown.color = Color.green;
 
 	}
@@ -54,8 +54,9 @@ public class ProspectInfo : MonoBehaviour {
 	public void Reject() {
 
 		jobcentre.RejectProspect(prospect);
-		accept.interactable = false;
+		accept.interactable = true;
 		reject.interactable = false;
+		countdown.color = Color.red;
 
 	}
 

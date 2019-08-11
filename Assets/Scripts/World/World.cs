@@ -55,12 +55,37 @@ public class World {
                     terrain[x, y] = 4;
 
             }
-                
-
-        terrain[0, 0] = (int)Terrain.Grass;
-        terrain[(int)size.x - 1, (int)size.y - 1] = (int)Terrain.Grass;
 
     }
+
+	public void RandomizeElevation() {
+
+		float offset = Random.Range(0, 1000);
+
+		for (int x = 0; x < size.x; x++)
+			for (int y = 0; y < size.y; y++) {
+
+				float nx = x / size.x * frequency + offset;
+				float ny = y / size.y * frequency + offset;
+
+				float noise = Mathf.PerlinNoise(nx, ny);
+
+				noise *= 100;
+
+				if (noise < water)
+					terrain[x, y] = 0;
+				else if (noise < lush + water)
+					terrain[x, y] = 1;
+				else if (noise < grass + lush + water)
+					terrain[x, y] = 2;
+				else if (noise < mud + grass + lush + water)
+					terrain[x, y] = 3;
+				else
+					terrain[x, y] = 4;
+
+			}
+
+	}
 
     public void PlainTerrain() {
         for (int x = 0; x < size.x; x++)
