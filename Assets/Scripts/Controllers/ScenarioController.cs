@@ -136,7 +136,6 @@ public class ScenarioController : MonoBehaviour {
 
         }
 
-
     }
 
     private void Start() {

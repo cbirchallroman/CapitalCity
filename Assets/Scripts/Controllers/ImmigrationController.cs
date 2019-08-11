@@ -72,9 +72,9 @@ public class ImmigrationController : MonoBehaviour {
 		string origin = immigrantOrigin.ToString();
 
 		//load names
-		firstnames = ((TextAsset)Resources.Load("Text/Firstnames/" + origin)).text.Split(' ', '\n');
-		surnames = ((TextAsset)Resources.Load("Text/Surnames/" + origin)).text.Split(' ', '\n');
-		skincolors = ((TextAsset)Resources.Load("Text/Skincolors/" + origin)).text.Split(' ', '\n');
+		firstnames = ((TextAsset)Resources.Load("ImmigrantData/Firstnames/" + origin)).text.Split(' ', '\n');
+		surnames = ((TextAsset)Resources.Load("ImmigrantData/Surnames/" + origin)).text.Split(' ', '\n');
+		skincolors = ((TextAsset)Resources.Load("ImmigrantData/Skincolors/" + origin)).text.Split(' ', '\n');
 
 		if (skincolors.Length != 6)
 			Debug.LogError("Skin color file for " + origin + " immigrants is incomplete");

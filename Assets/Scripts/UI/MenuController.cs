@@ -33,6 +33,7 @@ public class MenuController : MonoBehaviour {
 
         if (mainPage != null)
             OpenMenu(mainPage);
+
     }
 
     private void Update() {

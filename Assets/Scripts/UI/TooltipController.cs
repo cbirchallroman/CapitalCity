@@ -11,7 +11,7 @@ public class TooltipController : MonoBehaviour {
 	public static Text tooltipText;
 	
 	// Use this for initialization
-	void Start() {
+	void Awake() {
 		tooltipText = tooltipTB;
         tooltipText.text = "";
     }
