@@ -29,6 +29,7 @@ public class Jobcentre : Structure {
 	public bool HireHighPhy { get; set; }
 	public bool HireHighInt { get; set; }
 	public bool HireHighEmo { get; set; }
+	public bool Active { get { return HireHighEmo || HireHighInt || HireHighPhy; } }
 
 	public override void Load(ObjSave o) {
 
@@ -54,7 +55,22 @@ public class Jobcentre : Structure {
 
 		base.DoEveryDay();
 
+		if (!Active) {
+
+			if (Prospects.Count > 0)
+				SendAwayAllProspects();	//if there's still people here, send them away
+			return;
+
+		}	//only proceed if the jobcentre is active
+
 		SendOutProspects();
+
+	}
+
+	public override void DoEveryWeek() {
+
+		base.DoEveryWeek();
+
 		GetAnotherProspect();
 
 	}
@@ -79,16 +95,20 @@ public class Jobcentre : Structure {
 
 	void GetAnotherProspect() {
 
-		//if there's any space for prospects left
-		if (Prospects.Count + ProspectsExpecting < maxProspects) {
+		if (!Active)
+			return;
+
+		//if there's any space for prospects left and if there's any empty houses
+		if (Prospects.Count + ProspectsExpecting < maxProspects && immigration.Requests.Count > 0) {
 
 			Prole prospect = immigration.GetRandomImmigrant();
 
-			if (prospect.HighestValue() == LaborType.Physical && !HireHighPhy)
+			LaborType prospectPref = prospect.HighestValue();
+			if (prospectPref == LaborType.Physical && !HireHighPhy)
 				return;
-			if (prospect.HighestValue() == LaborType.Intellectual && !HireHighInt)
+			if (prospectPref == LaborType.Intellectual && !HireHighInt)
 				return;
-			if (prospect.HighestValue() == LaborType.Emotional && !HireHighEmo)
+			if (prospectPref == LaborType.Emotional && !HireHighEmo)
 				return;
 
 			//get immigrant to this building from outside
@@ -167,6 +187,13 @@ public class Jobcentre : Structure {
 
 		//remove prospect from array
 		RemoveProspectFromArray(prospect);
+
+	}
+
+	void SendAwayAllProspects() {
+
+		for (int i = Prospects.Count - 1; i >= 0; i--)
+			SendAwayProspect(Prospects[i]);
 
 	}
 

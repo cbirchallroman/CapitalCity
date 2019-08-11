@@ -131,7 +131,7 @@ public class Prole : Person {
 	public List<Child> children;
 	public float personalSavings;
 	public int physique, intellect, emotion;
-	public LaborType laborPref;
+	//public LaborType laborPref;
 
 	//WAITING FOR ACCEPTANCE STUFF
 	public int waitCountdown;
@@ -179,7 +179,7 @@ public class Prole : Person {
 		}
 
 		//roll random stats, taking pref into account
-		RollStats(laborPref);
+		RollStats(pref);
 
 	}
 
@@ -202,7 +202,7 @@ public class Prole : Person {
 		ID = person.ID;
 
 		//roll random stats, taking pref into account
-		RollStats(laborPref);
+		RollStats(pref);
 
 	}
 
@@ -212,8 +212,7 @@ public class Prole : Person {
 		intellect = Random.Range(1, 7) + Random.Range(1, 7) + Random.Range(1, 7);
 		emotion = Random.Range(1, 7) + Random.Range(1, 7) + Random.Range(1, 7);
 
-		//TAKE PREF INTO ACCOUNT IN A WAY THAT ISN'T THIS
-		laborPref = pref;
+		//TAKE PREF INTO ACCOUNT SOMEHOW
 
 	}
 
@@ -449,27 +448,45 @@ public class Prole : Person {
 		//workplace accidents only happen with physical jobs
 		if (wrk.laborType != LaborType.Physical)
 			return 0;
+		
+		int excess = wrk.WorkingDay - 8;
+		int riskFromExcess = excess > 0 ? excess : 0;	//risk from working for too many hours
 
-		int workingDay = wrk.WorkingDay;
-		int excess = workingDay - 8;
-		if (Retired)
-			excess += (yearsOld - retirementAge + 1) * 2;	//add increased chance of accident if prole is retired (increases with age)
-		return excess > 0 ? excess * (wrk.laborType != laborPref ? 2 : 1) : 0;	//multiple total risk by 2 if this prole does not prefer physical labor
+		int minus = GetLaborBonus(LaborType.Physical) * -1;
+		int riskFromPhysique = minus < 0 ? (minus + 1) : 0;        //risk from having weaker physique
+
+		int ageDiff = yearsOld - retirementAge;
+		int riskFromAge = ageDiff > 0 ? (ageDiff + 1) : 0;		//risk from being too old to work physically
+
+		return riskFromAge + riskFromExcess + riskFromPhysique;	//multiple total risk by 2 if this prole does not prefer physical labor
 
 	}
 
 	public LaborType HighestValue() {
 
-		if (physique > intellect && physique > emotion)
+		if (physique >= intellect && physique >= emotion)
 			return LaborType.Physical;
 
-		else if (intellect > physique && intellect > emotion)
+		else if (intellect >= physique && intellect >= emotion)
 			return LaborType.Intellectual;
 
-		else if (emotion > physique && emotion > intellect)
+		else if (emotion >= physique && emotion >= intellect)
 			return LaborType.Emotional;
 
 		return LaborType.END;
+
+	}
+
+	public int GetLaborScore(LaborType lt) {
+
+		if (lt == LaborType.Physical)
+			return physique;
+		else if (lt == LaborType.Intellectual)
+			return intellect;
+		else if (lt == LaborType.Emotional)
+			return emotion;
+
+		return -1;
 
 	}
 	
@@ -484,6 +501,29 @@ public class Prole : Person {
 	public float WaitTimePercent() {
 
 		return (float)(WaitTime - waitCountdown) / WaitTime;
+
+	}
+
+	public int GetLaborBonus(LaborType lt) {
+
+		int score = GetLaborScore(lt);
+
+		//exceptions to the rule for extremes
+		if (score == 18)
+			return 3;
+		if (score == 1)
+			return -4;
+
+		return (int)((float)(score - 10) / 3);	//each point in bonus represents +5% in productivity
+
+	}
+
+	public float GetWorkerEffectiveness(LaborType lt) {
+		
+		float eff = Retired ? .75f : 1;   //retired status makes worker less effective
+		float bonus = GetLaborBonus(lt);
+		eff += bonus * .05f;  //each bonus point is equal to +5% productivity
+		return eff;
 
 	}
 

@@ -38,7 +38,6 @@ public class Workplace : Structure {
     public int timeToSpawnWalkerMax;
     public int workersMax = 1;
     public float baseWages = .4f;
-    public LaborDivision laborDivision;
 	public LaborType laborType = LaborType.Physical;
 	public string deathDesc = "died in a workplace accident.";
 
@@ -318,9 +317,10 @@ public class Workplace : Structure {
 
 		float sum = 0;
 		foreach (Prole w in WorkerList) {
-			if (w == null) continue;
 
-			sum += (w.laborPref == laborType ? 1 : 0.75f) * (w.Retired ? 1 : 0.75f);
+			if (w != null)
+				sum += w.GetWorkerEffectiveness(laborType);
+
 		}
 
 		WorkerEffectiveness = sum / workersMax;

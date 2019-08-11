@@ -217,14 +217,13 @@ public class ImmigrationController : MonoBehaviour {
 	}
 
 	public SimplePriorityQueue<Structure> FindClosestHouses(Node start) {
-
-		List<Structure> houses = Requests;
+		
 		SimplePriorityQueue<Structure> queue = new SimplePriorityQueue<Structure>();
 
-		if (houses.Count == 0)
+		if (Requests.Count == 0)
 			return queue;
 
-		foreach (Structure house in houses) {
+		foreach (Structure house in Requests) {
 
 			float distance = start.DistanceTo(new Node(house));
 
