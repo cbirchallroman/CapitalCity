@@ -8,14 +8,15 @@ public class TutorialController : MonoBehaviour {
 	public Transform contentGrid;
 	public Text title;
 	public int tutorialNum = -1;
-	public GameObject tutorialPage;
-	public MenuController scenarioMenu;
+	public MenuController tutorialMenu;
+	public GameObject openTutorial;
 
 	bool hasTutorial { get { return tutorialNum != -1; } }
 
 	private void Start() {
 
 		LoadTutorialContents(tutorialNum);
+		openTutorial.SetActive(hasTutorial);
 
 	}
 
@@ -27,7 +28,7 @@ public class TutorialController : MonoBehaviour {
 		string[] contents = ((TextAsset)Resources.Load("TutorialData/" + num)).text.Split('\n');
 
 		//first line of the file is the title
-		title.text = "Tutorial: " + contents[0];
+		title.text = "TUTORIAL: " + contents[0];
 
 		//TAKE EACH ITEM FROM ARRAY AND TURN INTO A CONTENT ELEMENT, THEN SET PARENT TO CONTENTGRID
 		for(int i = 1; i < contents.Length; i++) {
@@ -49,8 +50,8 @@ public class TutorialController : MonoBehaviour {
 	}
 
 	void CreateHeaderBox(string line) {
-
-		line = line.Remove(0);	//remove the # character from the beginning
+		
+		line = line.Substring(1, line.Length - 1);   //remove the # character from the beginning
 
 		GameObject go = Instantiate((GameObject)Resources.Load("TutorialUI/Header"));
 		go.transform.SetParent(contentGrid);
@@ -72,8 +73,7 @@ public class TutorialController : MonoBehaviour {
 
 	void CreateImageBox(string line) {
 
-		line = line.Substring(1, line.Length - 1);   //remove the # character from the beginning
-		Debug.Log(line);
+		line = line.Substring(1, line.Length - 1);   //remove the ! character from the beginning
 
 		GameObject go = Instantiate((GameObject)Resources.Load("TutorialUI/Image"));
 		go.transform.SetParent(contentGrid);
@@ -85,13 +85,13 @@ public class TutorialController : MonoBehaviour {
 
 	public void OpenTutorial() {
 
-		scenarioMenu.OpenMenu(tutorialPage);
+		tutorialMenu.OpenMenu();
 
 	}
 
 	public void CloseTutorial() {
 
-		scenarioMenu.CloseMenu();
+		tutorialMenu.CloseMenu();
 
 	}
 

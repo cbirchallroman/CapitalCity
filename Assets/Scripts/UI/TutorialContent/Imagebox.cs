@@ -8,8 +8,9 @@ public class Imagebox : MonoBehaviour {
 	public Image box;
 
 	public void SetImage(string line) {
-		
-		box.sprite = Resources.Load<Sprite>("TutorialImages/" + line);
+
+		int img = int.Parse(line);
+		box.sprite = Resources.Load<Sprite>("TutorialImages/" + img);
 		//box.sprite = Resources.Load<Sprite>("Sprites/beef");
 		box.SetNativeSize();
 

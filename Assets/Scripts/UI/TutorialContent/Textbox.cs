@@ -8,7 +8,7 @@ public class Textbox : MonoBehaviour {
 	public Text box;
 
 	public void SetText(string content) {
-
+		
 		box.text = content;
 
 	}

@@ -99,7 +99,7 @@ public class Jobcentre : Structure {
 			return;
 
 		//if there's any space for prospects left and if there's any empty houses
-		if (Prospects.Count + ProspectsExpecting < maxProspects && immigration.Requests.Count > 0) {
+		if (Prospects.Count + ProspectsExpecting < maxProspects /* && immigration.Requests.Count > 0 */) {
 
 			Prole prospect = immigration.GetRandomImmigrant();
 
@@ -176,14 +176,8 @@ public class Jobcentre : Structure {
 
 	void SendAwayProspect(Prole prospect) {
 
-		//get start node, an adjacent road tile
-		List<Node> entrances = GetAdjRoadTiles();
-		if (entrances.Count == 0)
-			return;
-		Node start = entrances[0];
-
 		//send emigrant from here
-		immigration.SpawnEmigrant(start, prospect);
+		immigration.SpawnEmigrant(new Node(this), prospect);
 
 		//remove prospect from array
 		RemoveProspectFromArray(prospect);

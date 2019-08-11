@@ -37,8 +37,8 @@ public class Generator : Workplace {
 	//PRODUCTIVITY
 	public float BaseProductivity { get; set; }     //determined by machinery or lack thereof
 	public float ActualProductivity { get { return BaseProductivity * WorkerEffectiveness * RelativeWorkingDay * MachineryPerformance; } }
-	public int BaseProductionCycle { get { return Mathf.RoundToInt(ResourcesDatabase.GetBaseDays(product) / BaseProductivity * RelativeStockpile); } }    //time to produce product without taking variables into account
-	public int ActualProductionCycle { get { return Mathf.RoundToInt(ResourcesDatabase.GetBaseDays(product) / ActualProductivity * RelativeStockpile); } }    //actual time to produce product
+	public int BaseProductionCycle { get { return Mathf.RoundToInt(ResourcesDatabase.GetBaseDays(product) / BaseProductivity * RelativeStockpile * RelativeWorkerStrength); } }    //time to produce product without taking variables into account
+	public int ActualProductionCycle { get { return Mathf.RoundToInt(ResourcesDatabase.GetBaseDays(product) / ActualProductivity * RelativeStockpile * RelativeWorkerStrength); } }    //actual time to produce product
 	public float SocialProductivity { get { return ProductivityController.GetAverageProductivityEverywhere(product); } }    //social average time to produce
 	
 	//PRODUCTION
@@ -50,6 +50,7 @@ public class Generator : Workplace {
 	public float RelativeWorkingDay { get { return ((float)WorkingDay) / BaseWorkingDay; } }
 	public float RelativeStockpile { get { return stockpile / 100f; } }
 	public int RelativeProductivity { get { return (int)((ActualProductivity > 0 ? ActualProductivity : BaseProductivity) / SocialProductivity * 100); } }  //percent efficiency relative to social average time
+	public float RelativeWorkerStrength { get { return (float)workersMax / BaseWorkers; } }
 
 	//ECONOMICS
 	public float ValueProduced { get { return ResourcesDatabase.GetBasePrice(product, stockpile); } }

@@ -280,15 +280,18 @@ public class WorldController : MonoBehaviour {
 
 				}
 
-				//else if there's a walker on this tile (make sure that walker grid exists before checking for a list on it
-				else if (WalkerGrid != null) { if (WalkerGrid[a, b] != null)
-					return false; }
-
 				//else if there's a structure on this tile when there shouldn't be
-				else if (!string.IsNullOrEmpty(Map.structures[a, b]))
+				else if (!string.IsNullOrEmpty(Map.structures[a, b])) {
 					return false;
+				}
 
-                if (data.hasWaterTiles) {
+				//else if there's a walker on this tile (make sure that walker grid exists before checking for a list on it)
+				else if (WalkerGrid != null) {
+					if (WalkerGrid[a, b] != null)
+						return false;
+				}
+				
+				if (data.hasWaterTiles) {
 
                     int[,] water = ArrayFunctions.RotatedArray(data.waterTiles, buildingRotation);
 
