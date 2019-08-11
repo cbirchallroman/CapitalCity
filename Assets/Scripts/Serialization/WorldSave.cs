@@ -11,6 +11,7 @@ public class BasicWorldSave {
     public DiplomacySave diplomacy;
     public ScenarioSave scenario;
     public List<StructureSave> structures = new List<StructureSave>();
+	public List<string> Whitelist;
 
     public BasicWorldSave() { }
 
@@ -23,6 +24,8 @@ public class BasicWorldSave {
         actionSelecter = new ActionSelecterControllerSave(wc.actionSelecter);
         diplomacy = new DiplomacySave(wc.diplomacy);
         scenario = new ScenarioSave(wc.scenario);
+		Whitelist = ResourcesDatabase.Whitelist;
+
         foreach (Transform t in wc.structures.transform) {
 
             GameObject str = t.gameObject;

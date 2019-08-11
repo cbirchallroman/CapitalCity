@@ -43,6 +43,9 @@ public class StorageWindow : WorkplaceWindow {
 		int even = 0;
 		foreach (string item in sorted) {
 
+			if (!ResourcesDatabase.ItemAllowed(item))
+				continue;
+
 			Node n = Enums.GetItemData(item);
 			int index = n.x;
 

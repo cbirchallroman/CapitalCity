@@ -174,7 +174,7 @@ public class Pathfinder {
 
 		//otherwise check if there is a building
 		else if (map.IsBuildingAt(a, b))
-			CheckBuildingAt(a, b, walker);
+			return CheckBuildingAt(a, b, walker);
 
 		//return false if there's water
 		return map.terrain[a, b] != (int)Terrain.Water;

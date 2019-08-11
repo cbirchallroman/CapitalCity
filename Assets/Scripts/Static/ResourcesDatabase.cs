@@ -12,15 +12,61 @@ public class ResourcesDatabase : MonoBehaviour {
 		//50 is ideally how much we want to be contributed through each month of production
 		//each production cycle lasts a month by default, depending on the item
 
-    public static Dictionary<string, float> Prices = new Dictionary<string, float>();
+    public static Dictionary<string, float> BasePrices = new Dictionary<string, float>();
     public static Dictionary<string, int> BaseDays = new Dictionary<string, int>();
     public static Dictionary<string, string[]> Ingredients = new Dictionary<string, string[]>();
+	public static List<string> Whitelist;
 
     // Use this for initialization
     void Awake () {
 
         ReadItemsFromDatabase();
 		
+	}
+
+	public static void CreateWhitelist() {
+
+		Whitelist = new List<string>();
+
+		//this is just a test whitelist but also useful to see what we have
+		AddToWhitelist("Grain");
+		AddToWhitelist("Pork");
+		AddToWhitelist("Sand");
+		AddToWhitelist("Wood");
+		AddToWhitelist("Bricks");
+		AddToWhitelist("Pottery");
+		AddToWhitelist("Beer");
+		AddToWhitelist("Cigars");
+		AddToWhitelist("Beef");
+		AddToWhitelist("Leather");
+
+	}
+
+	public static void AddToWhitelist(string item) {
+
+		if(!Whitelist.Contains(item))
+			Whitelist.Add(item);
+
+		//add ingredients for item in case they were left off
+		foreach (string ingredient in Ingredients[item]) {
+
+			AddToWhitelist(ingredient.Split(' ')[1]);
+		}
+
+	}
+
+	public static void LoadWhitelist(List<string> Whitelist) {
+
+
+
+	}
+
+	public static bool ItemAllowed(string item) {
+
+		if (Whitelist.Count == 0)
+			return true;	//if whitelist is empty, assume everything is okay
+		return Whitelist.Contains(item);
+
 	}
 
 	public static string[] GetIngredients(string item) {
@@ -108,7 +154,7 @@ public class ResourcesDatabase : MonoBehaviour {
 	}
 
     void ReadItemsFromDatabase() {
-
+		
         XmlDocument doc = new XmlDocument();
 
         using (StringReader s = new StringReader(database.text)) {
@@ -140,7 +186,7 @@ public class ResourcesDatabase : MonoBehaviour {
                 Debug.LogError("Empty name for item in resources database");
             Ingredients[item] = ingredients.ToArray();
             BaseDays[item] = days;
-            Prices[item] = price;
+            BasePrices[item] = price;
             
 
         }

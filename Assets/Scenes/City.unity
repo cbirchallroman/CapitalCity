@@ -6274,6 +6274,7 @@ MonoBehaviour:
     exports:
     - Grain
     - Leather
+    - Beef
     imports:
     - Cigars
     - Pottery
@@ -12135,6 +12136,36 @@ Prefab:
       propertyPath: m_SizeDelta.y
       value: -120
       objectReference: {fileID: 0}
+    - target: {fileID: 224390987330478474, guid: 54d02813e86fbf449b1c286f4fa91c23,
+        type: 2}
+      propertyPath: m_AnchoredPosition.y
+      value: -2
+      objectReference: {fileID: 0}
+    - target: {fileID: 224390987330478474, guid: 54d02813e86fbf449b1c286f4fa91c23,
+        type: 2}
+      propertyPath: m_SizeDelta.y
+      value: -4
+      objectReference: {fileID: 0}
+    - target: {fileID: 224488561192977344, guid: 54d02813e86fbf449b1c286f4fa91c23,
+        type: 2}
+      propertyPath: m_AnchoredPosition.y
+      value: -24.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 224377875923910262, guid: 54d02813e86fbf449b1c286f4fa91c23,
+        type: 2}
+      propertyPath: m_AnchoredPosition.y
+      value: -24.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 224160268466645898, guid: 54d02813e86fbf449b1c286f4fa91c23,
+        type: 2}
+      propertyPath: m_AnchoredPosition.y
+      value: -24.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 224547401321430360, guid: 54d02813e86fbf449b1c286f4fa91c23,
+        type: 2}
+      propertyPath: m_AnchoredPosition.y
+      value: -24.5
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 54d02813e86fbf449b1c286f4fa91c23, type: 2}
   m_IsPrefabAsset: 0
@@ -14265,7 +14296,7 @@ Transform:
   - {fileID: 1041889708}
   - {fileID: 1322247095}
   m_Father: {fileID: 0}
-  m_RootOrder: 5
+  m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &668952061
 GameObject:
@@ -18529,7 +18560,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: -8, y: 29}
+  m_SizeDelta: {x: -8, y: 28}
   m_Pivot: {x: 0.5, y: 0}
 --- !u!114 &947598105
 MonoBehaviour:
@@ -24590,7 +24621,7 @@ Transform:
   - {fileID: 1715290603}
   - {fileID: 920714220}
   m_Father: {fileID: 0}
-  m_RootOrder: 6
+  m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1337668387
 GameObject:

@@ -78,6 +78,7 @@ public class WorldController : MonoBehaviour {
         if (notifications != null)
             notifications.FreshEvents();
         ProductivityController.CreateProductivities();
+		ResourcesDatabase.CreateWhitelist();
 
 	}
 
@@ -178,6 +179,9 @@ public class WorldController : MonoBehaviour {
         if (notifications != null)
             notifications.FreshEvents();
 
+		//load whitelist for items
+		ResourcesDatabase.LoadWhitelist(w.Whitelist);
+
     }
 
     public void LoadSavedGame(WorldProgressSave w) {
@@ -196,6 +200,9 @@ public class WorldController : MonoBehaviour {
 
 		ProductivityController.LoadProductivities(w.productivities, w.automation);
 		notifications.LoadEvents(w.Events);
+
+		//load whitelist for items
+		ResourcesDatabase.LoadWhitelist(w.Whitelist);
 
 		//GO THROUGH LISTS OF OBJECTS AND ACTIVATE THEM USING THE LOADMAPOBJECT() FUNCTION
 		//structures

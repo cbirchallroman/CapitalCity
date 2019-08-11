@@ -41,24 +41,14 @@ public class Animal : Walker {
 
     }
 
-    void Update() {
+	public override void DoEveryStep() {
 
-        TimeDelta += Time.deltaTime;
+		UpdateRandomMovement();
 
-        Move();
+		//delete animal if on tile it's not supposed to be on
+		if (!pathfinder.CanGoTo(X, Y, data))
+			DestroySelf();
 
-        if (TimeDelta > MovementTime) {
-
-            TimeDelta = 0;
-
-            UpdateRandomMovement();
-
-            //delete animal if on tile it's not supposed to be on
-            if (!pathfinder.CanGoTo(X, Y, data))
-                DestroySelf();
-            
-        }
-
-    }
+	}
 
 }

@@ -17,6 +17,9 @@ public class MarketValueUI : MonoBehaviour {
 		int even = 0;
 		foreach (string item in items) {
 
+			if (!ResourcesDatabase.ItemAllowed(item))
+				continue;
+
 			GameObject go = Instantiate(UIObjectDatabase.GetUIElement("ItemValueUI"));
 			go.transform.SetParent(grid.transform);
 

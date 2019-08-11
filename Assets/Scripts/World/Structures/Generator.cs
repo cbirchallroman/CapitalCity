@@ -312,7 +312,6 @@ public class Generator : Workplace {
 		if(Fuel != ResourceType.END) {
 			int fuelIndex = length - 1;
 			Ingredients[fuelIndex] = Fuel + "";
-
 		}
 
 		if(Fuel != ResourceType.END)
