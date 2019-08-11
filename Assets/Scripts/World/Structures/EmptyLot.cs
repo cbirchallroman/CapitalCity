@@ -11,7 +11,7 @@ public class EmptyLot : Structure {
 
     }
 
-    void TurnIntoHouse(Adult immigrant) {
+    void TurnIntoHouse(Prole immigrant) {
 
 		//demolish this and build new house
 		float rot = transform.position.y;
@@ -32,7 +32,7 @@ public class EmptyLot : Structure {
         return false;
     }
 
-	public override void ReceiveImmigrant(Adult p) {
+	public override void ReceiveImmigrant(Prole p) {
 
 		TurnIntoHouse(p);
 

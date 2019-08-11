@@ -34,7 +34,7 @@ public class Person {
 
 	}
 
-	public void UpdateAge() {
+	public virtual void UpdateAge() {
 
 		deltaDays++;
 		if (deltaDays % subInterval == 0)	//basically, every month
@@ -105,7 +105,7 @@ public class Child : Person {
 	//add 20% death chance if diseased
 	public override int DeathChanceFromDisease { get { return 20; } }
 
-	public Child(bool randomAge, Adult parent) : base(randomAge) {
+	public Child(bool randomAge, Prole parent) : base(randomAge) {
 
 		yearsOld = randomAge ? Random.Range(0, comingOfAge - 1) : 0;
 		surname = parent.surname;
@@ -124,13 +124,22 @@ public class Child : Person {
 }
 
 [System.Serializable]
-public class Adult : Person {
-	
-    public int workIndex;
-    public Node homeNode, workNode;
-	public float personalSavings;
+public class Prole : Person {
+
+	//PERSONAL STUFF
+	public Node homeNode;
 	public List<Child> children;
-	public LaborType laborPref;
+	public float personalSavings;
+	public int physique, intellect, emotion;
+	//public LaborType laborPref;
+
+	//WAITING FOR ACCEPTANCE STUFF
+	public int waitCountdown;
+	public bool accepted, rejected;
+
+	//WORK STUFF
+	public Node workNode;
+	public int workIndex;
 
 	public bool SeekingWork { get { return !Employed && !Retired; } }
     public bool Employed { get { return !workNode.Equals(unemploymentNode); } }
@@ -150,11 +159,14 @@ public class Adult : Person {
 	public int DeathChanceFromAge { get { return 15; } }
 
 	//constructor
-	public Adult(bool randomAge, bool wChildren, LaborType pref) : base(randomAge) {
+	public Prole(bool randomAge, bool wChildren, LaborType pref) : base(randomAge) {
 
+		//default status
 		workNode = unemploymentNode;
 		homeNode = unemploymentNode;
-		yearsOld = randomAge ? Random.Range(comingOfAge, retirementAge - 1) : 0;
+
+		//random years old if we need
+		yearsOld = randomAge ? Random.Range(comingOfAge, retirementAge - 1) : comingOfAge;
 		children = new List<Child>();
 
 		//if prole moves into the city with children
@@ -166,23 +178,54 @@ public class Adult : Person {
 
 		}
 
-		laborPref = pref;
+		//roll random stats, taking pref into account
+		RollStats(pref);
 
 	}
 
-	public Adult(Person person, LaborType pref) {
+	public Prole(Person person, LaborType pref) {
 
-		//we want same name, same age, same skin color, same ID
+		//default status
 		workNode = unemploymentNode;
 		homeNode = unemploymentNode;
 
+		//if coming from a child, make a new children list
+		if (person is Child)
+			children = new List<Child>();
+
+		//we want same name, same age, same skin color, same ID
 		yearsOld = person.yearsOld;
 		deltaDays = person.deltaDays;
 		surname = person.surname;
 		name = person.name;
 		skinColor = person.skinColor;
 		ID = person.ID;
-		laborPref = pref;
+
+		//roll random stats, taking pref into account
+		RollStats(pref);
+
+	}
+
+	public void RollStats(LaborType pref) {
+
+		physique = Random.Range(1, 7) + Random.Range(1, 7) + Random.Range(1, 7);
+		intellect = Random.Range(1, 7) + Random.Range(1, 7) + Random.Range(1, 7);
+		emotion = Random.Range(1, 7) + Random.Range(1, 7) + Random.Range(1, 7);
+
+		//TAKE PREF INTO ACCOUNT SOMEHOW
+
+	}
+
+	public override void UpdateAge() {
+
+		base.UpdateAge();
+
+		//only do if prole is waiting for a job at the job centre
+		if (waitCountdown > 0) {
+			waitCountdown--;
+			if (waitCountdown <= 0 || Retired)     //if countdown is over or got too old, leave the city
+				rejected = true;
+		}
 
 	}
 
@@ -263,7 +306,7 @@ public class Adult : Person {
 
     public override bool Equals(object obj) {
 
-        Adult pr = (Adult)obj;
+        Prole pr = (Prole)obj;
         return ID == pr.ID;
 
 	}
@@ -274,7 +317,7 @@ public class Adult : Person {
 
 	}
 
-	public Adult GrowUpChild(Child c) {
+	public Prole GrowUpChild(Child c) {
 
 		if (!children.Contains(c))
 			Debug.LogError(this + " trying to grow up child " + c + " which is not its own");
@@ -282,7 +325,10 @@ public class Adult : Person {
 		//SOMEWHERE HERE DETERMINE RANDOM LABOR PREF FOR
 
 		children.Remove(c);
-		return new Adult(c, LaborType.Physical);
+
+		Prole grownup = new Prole(c, LaborType.Physical);
+
+		return grownup;
 
 	}
 
@@ -402,12 +448,82 @@ public class Adult : Person {
 		//workplace accidents only happen with physical jobs
 		if (wrk.laborType != LaborType.Physical)
 			return 0;
+		
+		int excess = wrk.WorkingDay - 8;
+		int riskFromExcess = excess > 0 ? excess : 0;	//risk from working for too many hours
 
-		int workingDay = wrk.WorkingDay;
-		int excess = workingDay - 8;
-		if (Retired)
-			excess += (yearsOld - retirementAge + 1) * 2;	//add increased chance of accident if prole is retired (increases with age)
-		return excess > 0 ? excess * (wrk.laborType != laborPref ? 2 : 1) : 0;	//multiple total risk by 2 if this prole does not prefer physical labor
+		int minus = GetLaborBonus(LaborType.Physical) * -1;
+		int riskFromPhysique = minus < 0 ? (minus + 1) : 0;        //risk from having weaker physique
+
+		int ageDiff = yearsOld - retirementAge;
+		int riskFromAge = ageDiff > 0 ? (ageDiff + 1) : 0;		//risk from being too old to work physically
+
+		return riskFromAge + riskFromExcess + riskFromPhysique;	//multiple total risk by 2 if this prole does not prefer physical labor
+
+	}
+
+	public LaborType HighestValue() {
+
+		if (physique >= intellect && physique >= emotion)
+			return LaborType.Physical;
+
+		else if (intellect >= physique && intellect >= emotion)
+			return LaborType.Intellectual;
+
+		else if (emotion >= physique && emotion >= intellect)
+			return LaborType.Emotional;
+
+		return LaborType.END;
+
+	}
+
+	public int GetLaborScore(LaborType lt) {
+
+		if (lt == LaborType.Physical)
+			return physique;
+		else if (lt == LaborType.Intellectual)
+			return intellect;
+		else if (lt == LaborType.Emotional)
+			return emotion;
+
+		return -1;
+
+	}
+	
+	public int WaitTime { get { return TimeController.DaysInASeason; } }
+
+	public void StartWaitCountdown() {
+		
+		waitCountdown = WaitTime;
+
+	}
+
+	public float WaitTimePercent() {
+
+		return (float)(WaitTime - waitCountdown) / WaitTime;
+
+	}
+
+	public int GetLaborBonus(LaborType lt) {
+
+		int score = GetLaborScore(lt);
+
+		//exceptions to the rule for extremes
+		if (score == 18)
+			return 3;
+		if (score == 1)
+			return -4;
+
+		return (int)((float)(score - 10) / 3);	//each point in bonus represents +5% in productivity
+
+	}
+
+	public float GetWorkerEffectiveness(LaborType lt) {
+		
+		float eff = Retired ? .75f : 1;   //retired status makes worker less effective
+		float bonus = GetLaborBonus(lt);
+		eff += bonus * .05f;  //each bonus point is equal to +5% productivity
+		return eff;
 
 	}
 

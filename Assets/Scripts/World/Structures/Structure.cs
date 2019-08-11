@@ -718,7 +718,7 @@ public class Structure : Obj {
 
     }
 
-	public virtual void ReceiveImmigrant(Adult p) {
+	public virtual void ReceiveImmigrant(Prole p) {
 
 		Debug.LogError(name + " received prole " + p + " and can't do anything with it");
 

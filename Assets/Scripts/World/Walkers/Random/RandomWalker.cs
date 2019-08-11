@@ -120,11 +120,11 @@ public class RandomWalker : Walker {
 
             }
 
-            foreach(Adult p in h.Residents) {
+            foreach(Prole p in h.Residents) {
 
 				if (p == null)
 					continue;
-				if (p.laborPref != w.laborType && !w.HireNonPreferredProles)	//if this prole's labor type is not preferred and we will not hire proles with unpreferred types, continue
+				if (p.GetLaborBonus(w.laborType) < 0 && !w.HireNonPreferredProles)	//if this prole's labor type is not preferred and we will not hire proles with unpreferred types, continue
 					continue;
                 if (p.SeekingWork)
                     w.AddWorker(p);

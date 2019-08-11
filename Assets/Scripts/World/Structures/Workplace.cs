@@ -8,7 +8,7 @@ public class WorkplaceSave : StructureSave {
     public int WorkersCount, timeToSpawnWalker, access, workingDay;
     public bool activeBuilding, closedByPlayer, HireNonPreferredProles;
     public bool[] activeSchedule;
-    public Adult[] WorkerList, WorkerSave;
+    public Prole[] WorkerList, WorkerSave;
 
     public WorkplaceSave(GameObject go) : base(go) {
 
@@ -38,14 +38,13 @@ public class Workplace : Structure {
     public int timeToSpawnWalkerMax;
     public int workersMax = 1;
     public float baseWages = .4f;
-    public LaborDivision laborDivision;
 	public LaborType laborType = LaborType.Physical;
 	public string deathDesc = "died in a workplace accident.";
 
     public int TimeToSpawnWalker { get; set; }
     
-    public Adult[] WorkerList { get; set; }
-    public Adult[] WorkerSave { get; set; }
+    public Prole[] WorkerList { get; set; }
+    public Prole[] WorkerSave { get; set; }
     public int WorkersCount { get; set; }
 
     public int NumWorkers() {
@@ -115,7 +114,7 @@ public class Workplace : Structure {
             ActiveSchedule[a] = true;
         ToggleLabor(true);
         WorkingDay = BaseWorkingDay;
-        WorkerList = new Adult[workersMax];
+        WorkerList = new Prole[workersMax];
 		CalculateWorkerEffectiveness();
 
 		//labor.AddWorkplace(this);
@@ -183,7 +182,7 @@ public class Workplace : Structure {
         
         else if (!b && ActiveBuilding) {
             ActiveBuilding = false;
-            WorkerSave = new Adult[workersMax];
+            WorkerSave = new Prole[workersMax];
             WorkerList.CopyTo(WorkerSave, 0);
             RemoveAllWorkers();
             //labor.RemoveLaborReq(laborDivision, workersMax);
@@ -247,7 +246,7 @@ public class Workplace : Structure {
 
     public void RehireWorkers() {
 
-        foreach(Adult p in WorkerSave) {
+        foreach(Prole p in WorkerSave) {
 
             //if null spot, continue
             if (p == null)
@@ -266,7 +265,7 @@ public class Workplace : Structure {
 
     }
 
-    public bool AddWorker(Adult p) {
+    public bool AddWorker(Prole p) {
 
         if (WorkersCount >= workersMax)
             return false;
@@ -302,7 +301,7 @@ public class Workplace : Structure {
 
     void PayWages() {
 
-        foreach(Adult p in WorkerList) {
+        foreach(Prole p in WorkerList) {
 
             if (p == null)
                 continue;
@@ -317,10 +316,11 @@ public class Workplace : Structure {
 	void CalculateWorkerEffectiveness() {
 
 		float sum = 0;
-		foreach (Adult w in WorkerList) {
-			if (w == null) continue;
+		foreach (Prole w in WorkerList) {
 
-			sum += (w.laborPref == laborType ? 1 : 0.75f) * (w.Retired ? 1 : 0.75f);
+			if (w != null)
+				sum += w.GetWorkerEffectiveness(laborType);
+
 		}
 
 		WorkerEffectiveness = sum / workersMax;

@@ -93,7 +93,7 @@ public class WorkplaceWindow : ObjWindow {
 
 		int even = 0;
 		//instantiate worker list
-		foreach (Adult p in wp.WorkerList) {
+		foreach (Prole p in wp.WorkerList) {
 
 			if (p == null)
 				continue;

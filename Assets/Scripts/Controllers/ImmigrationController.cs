@@ -10,7 +10,7 @@ public class ImmigrationSave {
 
     public float timeDelta;
     public int immigrantsThisMonth, immigrantsWaiting, physicalPref, intellectualPref, emotionalPref;
-	public List<Adult> Proles;
+	public List<Prole> Proles;
 	public ImmigrantOrigin immigrantOrigin;
 
 	public ImmigrationSave(ImmigrationController ic) {
@@ -72,7 +72,6 @@ public class ImmigrationController : MonoBehaviour {
 		string origin = immigrantOrigin.ToString();
 
 		//load names
-		Debug.Log(((TextAsset)Resources.Load("Text/Firstnames/" + origin)).text);
 		firstnames = ((TextAsset)Resources.Load("Text/Firstnames/" + origin)).text.Split(' ', '\n');
 		surnames = ((TextAsset)Resources.Load("Text/Surnames/" + origin)).text.Split(' ', '\n');
 		skincolors = ((TextAsset)Resources.Load("Text/Skincolors/" + origin)).text.Split(' ', '\n');
@@ -93,16 +92,16 @@ public class ImmigrationController : MonoBehaviour {
     
     private void Update() {
 
-		if(immigrantsWaiting != 0)
-			TimeDelta += Time.deltaTime;
+		//if(immigrantsWaiting != 0)
+		//	TimeDelta += Time.deltaTime;
 
-        if (TimeDelta >= ImmigrationRate) {
+  //      if (TimeDelta >= ImmigrationRate) {
 
-            TimeDelta = 0;
-            if (Requests.Count > 0)
-                NextImmigrant();
+  //          TimeDelta = 0;
+  //          if (Requests.Count > 0)
+  //              NextImmigrant();
 
-		}
+		//}
 
 	}
 
@@ -115,13 +114,12 @@ public class ImmigrationController : MonoBehaviour {
 
 		//we're going to pass this data into SpawnImmigrant(,,)
 		//	also, it may be later that we'll KNOW what immigrant is moving it, so it's good to have it separate and not call GetRandomImmigrant() as an argument itself
-		Node start = new Node(mapEntrance);
-		Structure requester = Requests[Random.Range(0, Requests.Count)];
-		Adult immigrant = GetRandomImmigrant();
+		Structure requester = GetRandomRequester();
+		Prole immigrant = GetRandomImmigrant();
 		
 		//if requester still exists, send an immigrant to it from the map entrance
 		if (requester != null) {
-			SpawnImmigrant(start, requester, immigrant);
+			SpawnImmigrant(requester, immigrant);
 			immigrantsWaiting--;
 		}
 
@@ -172,20 +170,36 @@ public class ImmigrationController : MonoBehaviour {
 
 	}
 
-	public Adult GetRandomImmigrant() {
+	public Prole GetRandomImmigrant() {
 
-		Adult prospect = new Adult(true, true, GetRandomLaborPref());
+		Prole prospect = new Prole(true, true, GetRandomLaborPref());
 		return prospect;
 
 	}
 
-	public void SpawnImmigrant(Node start, Structure requester, Adult immigrant) {
+	public Structure GetRandomRequester() {
+
+		return Requests[Random.Range(0, Requests.Count)];
+
+	}
+
+	public void SpawnImmigrant(Structure requester, Prole immigrant) {
+		
+		//only proceed if there's a map entrance
+		Structure mapEntrance = GameObject.FindGameObjectWithTag("MapEntrance").GetComponent<Structure>();
+		if (mapEntrance == null)
+			Debug.LogError("Missing map entrance");
+
+		SpawnImmigrant(new Node(mapEntrance), requester, immigrant);
+
+	}
+
+	public void SpawnImmigrant(Node start, Structure requester, Prole immigrant) {
 		
 		//by the way: it's way easier to deal with the starting point as a node than a structure, especially because we don't need to know where the immigrant came from
 		//	no matter how weird that we instantiate 'end' here but not 'start'
-		Node end = new Node(requester);
-
-		Queue<Node> path = new Pathfinder(worldController.Map).FindPath(start, end, "Immigrant");
+		
+		Queue<Node> path = new Pathfinder(worldController.Map).FindPath(start, new Node(requester), "Immigrant");
 		if (path.Count == 0)
 			return;
 
@@ -202,26 +216,33 @@ public class ImmigrationController : MonoBehaviour {
 
 	}
 
-	public void TryEmigrant(Adult emigrant) {
+	public SimplePriorityQueue<Structure> FindClosestHouses(Node start) {
+		
+		SimplePriorityQueue<Structure> queue = new SimplePriorityQueue<Structure>();
+
+		if (Requests.Count == 0)
+			return queue;
+
+		foreach (Structure house in Requests) {
+
+			float distance = start.DistanceTo(new Node(house));
+
+			queue.Enqueue(house, distance);
+
+		}
+
+		return queue;
+
+	}
+
+	public void TryEmigrant(Prole emigrant) {
 
 		//if there are other houses to move into, go to the closest one
 		if (Requests.Count > 0) {
 
-			SimplePriorityQueue<Structure, float> houses = new SimplePriorityQueue<Structure, float>();
-
-			int tries = 15;		//number of houses total we'll enqueue
-			foreach (Structure s in Requests) {
-				if (s == null) {
-					Requests.Remove(s);
-					continue;
-				}
-
-				houses.Enqueue(s, emigrant.homeNode.DistanceTo(new Node(s)));
-				tries--;
-				if (tries <= 0)
-					break;
-			}
-
+			SimplePriorityQueue<Structure> houses = FindClosestHouses(emigrant.homeNode);
+			if (houses.Count == 0)
+				return;
 			Structure str = houses.Dequeue();
 			SpawnImmigrant(emigrant.homeNode, str, emigrant);
 			Requests.Remove(str);
@@ -234,19 +255,25 @@ public class ImmigrationController : MonoBehaviour {
 
 	}
 
-	public void SpawnEmigrant(Adult emigrant) {
+	public void SpawnEmigrant(Prole emigrant) {
+
+		SpawnEmigrant(emigrant.homeNode, emigrant);
+
+	}
+
+	public void SpawnEmigrant(Node start, Prole emigrant) {
 
 		GameObject mapExit = GameObject.FindGameObjectWithTag("MapExit");
 		if (mapExit == null)
 			return;
-		
+
 		Node end = new Node(mapExit.GetComponent<Structure>());
 
-		Queue<Node> path = new Pathfinder(worldController.Map).FindPath(emigrant.homeNode, end, "Emigrant");
+		Queue<Node> path = new Pathfinder(worldController.Map).FindPath(start, end, "Emigrant");
 		if (path.Count == 0)
 			return;
 
-		GameObject go = worldController.SpawnObject("Walkers", "Emigrant", emigrant.homeNode);
+		GameObject go = worldController.SpawnObject("Walkers", "Emigrant", start);
 		//GameObject go = Instantiate(Resources.Load<GameObject>("Walkers/Emigrant"));
 		//go.transform.position = mapExit.transform.position;
 		//go.name = "Emigrant";
@@ -257,7 +284,6 @@ public class ImmigrationController : MonoBehaviour {
 		w.SetPersonData(emigrant);
 		w.SetPath(path);
 		w.Activate();
-
 
 		//evict house at the very end to remove homeNode and remove prole data from house
 		//quit job too because they're leaving the city

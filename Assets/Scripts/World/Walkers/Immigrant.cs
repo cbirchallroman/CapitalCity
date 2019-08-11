@@ -16,14 +16,14 @@ public class Immigrant : Walker {
 		if (PersonData == null)
 			Debug.LogError(name + " activated without being assigned a prole");
 		//else
-			Debug.Log(PersonData + " (Labor Pref: " + PersonData.laborPref + ") moving into " + Destination);
+			Debug.Log(PersonData + " moving into " + Destination);
 
     }
 
 	public override void DoEveryStep() {
 
 		if (!pathfinder.CanGoTo(X, Y, data))
-			SendNewImmigrant();
+			FindPathTo(new Node(Destination));
 
 		//if there's no house to go to, go to map exit
 		if (Destination == null && !data.ReturningHome)

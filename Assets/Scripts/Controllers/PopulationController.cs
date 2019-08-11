@@ -7,7 +7,7 @@ using UnityEngine.UI;
 public class PopulationSave {
 
 	public int Working;
-	public List<Adult> Proles;
+	public List<Prole> Proles;
 
 	public PopulationSave(PopulationController pc) {
 
@@ -20,7 +20,7 @@ public class PopulationSave {
 
 public class PopulationController : MonoBehaviour {
 
-	public List<Adult> Proles { get; set; }
+	public List<Prole> Proles { get; set; }
 	public TextAsset firstnameList;
 	public TextAsset surnameList;
 	public Text popLabel;
@@ -42,7 +42,7 @@ public class PopulationController : MonoBehaviour {
 
 	public void Start() {
 		
-		Proles = new List<Adult>();
+		Proles = new List<Prole>();
 
 	}
 
@@ -53,25 +53,25 @@ public class PopulationController : MonoBehaviour {
 
 	}
 
-	public void AddProle(Adult p) {
+	public void AddProle(Prole p) {
 
 		Proles.Add(p);
 
 	}
 
-	public void RemoveProle(Adult p) {
+	public void RemoveProle(Prole p) {
 
 		Proles.Add(p);
 
 	}
 
-	public void EmployProle(Adult p) {
+	public void EmployProle(Prole p) {
 
 		Working++;
 
 	}
 
-	public void UnemployProle(Adult p) {
+	public void UnemployProle(Prole p) {
 
 		Working--;
 
