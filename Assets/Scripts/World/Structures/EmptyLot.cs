@@ -16,9 +16,11 @@ public class EmptyLot : Structure {
 		//demolish this and build new house
 		float rot = transform.position.y;
 		world.Demolish(X, Y);
-        world.SpawnStructure(immigration.startingHouse, X, Y, rot);
+        Structure str = world.SpawnStructure(immigration.startingHouse, X, Y, rot);
 
-        House newHouse = world.Map.GetBuildingAt(X, Y).GetComponent<House>();
+		Debug.Log(str);
+
+        House newHouse = str.GetComponent<House>();
         newHouse.FreshHouse(immigrant);
 
     }

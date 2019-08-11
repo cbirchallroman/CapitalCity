@@ -8,7 +8,29 @@ public class Road : TiledStructure {
     public int desirabilityWanted;
 	public bool connectToOutside;
 
-    public override bool NeighborCondition(int a, int b) { return world.Map.IsRoadAt(a, b) || (world.Map.OutOfBounds(a, b) && connectToOutside); }
+    public override bool NeighborCondition(int a, int b) {
+
+		//if out of bounds, only connect if you're supposed to connect to the outside
+		if(world.Map.OutOfBounds(a, b)) {
+			if (!connectToOutside)
+				return false;
+		}
+
+		//else check if there might be a ramp here
+		else if(world.Map.elevation[a, b] != world.Map.elevation[X, Y]) {
+
+			string str = world.Map.GetBuildingNameAt(a, b);
+			if (!string.IsNullOrEmpty(str))
+				if (str.Contains("Ramp"))
+					return true;    //only return true if there's a ramp at that spot
+
+			//otherwise don't
+			return false;
+
+		}
+
+		return world.Map.IsRoadAt(a, b);
+	}
 
     public override void Activate() {
 

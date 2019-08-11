@@ -5,13 +5,16 @@ EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Scenes:
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/MainMenu_Mobile.unity
     guid: cad048c64bfe6fc438fa16f80e28d439
-  - enabled: 1
-    path: Assets/Scenes/City_Mobile.unity
-    guid: 02924a3b5d97edb4daa00d5662383303
-  - enabled: 1
+  - enabled: 0
+    path: 
+    guid: 00000000000000000000000000000000
+  - enabled: 0
     path: Assets/Scenes/City_Desktop.unity
     guid: 157d762c3fe89df4c9a6901e3c251b16
+  - enabled: 1
+    path: Assets/Scenes/City.unity
+    guid: e57a202ed19587d49ac4b612b6c0cbb2
   m_configObjects: {}

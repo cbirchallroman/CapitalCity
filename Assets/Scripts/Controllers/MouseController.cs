@@ -228,11 +228,15 @@ public class MouseController : MonoBehaviour {
         //if the object is grabbed, move it to the mouse coords
         if (preview != null) {
 
-			prevTrans.position = mouseCoords.GetVector3();
+			//set position including elevation
+			Vector3 pos = mouseCoords.GetVector3();
+			pos.y = worldController.GetObjectFloat((int)pos.x, (int)pos.z);
+			prevTrans.position = pos;
 
             //if action is a strucutre, align it
             Action act = actionController.currentAction;
             if (act.Do == "place") {
+
                 StructureData data = StructureDatabase.GetData(act.What);
 
                 int sizex = data.sizex;
@@ -266,6 +270,7 @@ public class MouseController : MonoBehaviour {
 					prevTrans.eulerAngles = new Vector3(0, actionController.buildingRotation, 0);
 
 				prevTrans.position += new Vector3(alignx, 0, aligny);
+
             }
 
 			Material mat = new Material(canDo);
@@ -302,7 +307,7 @@ public class MouseController : MonoBehaviour {
 
 			//display preview of action at tile
 			GameObject go = actionController.GetPreview(act);
-			go.transform.position = new Vector3(x, 0, y);
+			go.transform.position = new Vector3(x, worldController.GetObjectFloat(x, y), y);	//don't for
 			dragPreviewGameObjects.Add(go);
 
 			//align preview

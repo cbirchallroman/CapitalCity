@@ -64,10 +64,12 @@ public class WorldController : MonoBehaviour {
         
         Map = new World(size);
         Map.terrain = mapGenerator.GetRandomTerrain(size);
-		if (!MakeMapEntranceExit(szx, szy)) {
-			CreateWorld();
-			return;
-		}
+		//Map.elevation = mapGenerator.GetRandomElevation(size);
+		Map.elevation = new float[szx, szy];
+
+		//until we've successfully placed the map entrance/exit, keep trying
+		bool success = false;
+		do { success = MakeMapEntranceExit(szx, szy); } while (!success);	
 
         money.Money = 10000;
         
@@ -81,10 +83,17 @@ public class WorldController : MonoBehaviour {
 
 	bool MakeMapEntranceExit(int szx, int szy) {
 
+		//start by deleting everything in the structures list
+		foreach(Transform child in structures.transform) {
+
+			Structure str = child.GetComponent<Structure>();
+			this.Destroy(str.X, str.Y);
+
+		}
+
+		//random spots for the entrance and exit
 		Node entranceSpot = new Node(0, Random.Range(2, szx - 2));
 		Node exitSpot = new Node(szx - 1, Random.Range(2, szy - 2));
-		//Node entranceSpot = new Node(0, 0);
-		//Node exitSpot = new Node(szx - 1, szy-1);
 
 		Queue<Node> path = new Pathfinder(Map).FindPath(entranceSpot, exitSpot, "");
 		if (path.Count == 0)
@@ -250,6 +259,8 @@ public class WorldController : MonoBehaviour {
             sizey = tempszx;
         }
 
+		float elevation = Map.elevation[x, y];
+
         for (int a = x; a < x + sizex; a++)
             for (int b = y; b < y + sizey; b++) {
 
@@ -287,9 +298,13 @@ public class WorldController : MonoBehaviour {
 
 				//else if there's a walker on this tile (make sure that walker grid exists before checking for a list on it)
 				else if (WalkerGrid != null) {
-					if (WalkerGrid[a, b] != null)
+					if (WalkerGrid[a, b] != null && !type.Contains("House"))
 						return false;
 				}
+
+				//else if the elevation is different
+				if (Map.elevation[a, b] != elevation)
+					return false;
 				
 				if (data.hasWaterTiles) {
 
@@ -380,6 +395,58 @@ public class WorldController : MonoBehaviour {
 
         }
 
+		////CHECK IF THIS IS A ROAD SO WE CAN BUILD A RAMP IF NEEDED
+		//if (type == "Road") {
+
+		//	List<Node> checks = new List<Node>();
+
+		//	//check N, S, E, W of this tile for any kind of road
+		//	//	POSSIBLE ISSUE: THIS WOULDN'T CHECK ALL POSSIBLE CASES
+		//	if (Map.IsRoadAt(x - 1, y)) {
+		//		checks.Add(new Node(-1, 0));
+		//	}
+		//	else if (Map.IsRoadAt(x + 1, y)) {
+		//		checks.Add(new Node(+1, 0));
+		//	}
+		//	else if (Map.IsRoadAt(x, y - 1)) {
+		//		checks.Add(new Node(0, -1));
+		//	}
+
+		//	else if (Map.IsRoadAt(x, y + 1)) {
+		//		checks.Add(new Node(0, +1));
+		//	}
+
+		//	//save local elevation
+		//	float localElev = Map.elevation[x, y];
+
+		//	//check each possible case, then check for a tile on the opposite end that's higher/shorter than the tile we're on
+		//	foreach (Node c in checks) {
+
+		//		int flip_a = c.x * -1;
+		//		int flip_b = c.y * -1;    //these are the coordinates where there would be a cliff
+		//		int a = x + flip_a;
+		//		int b = y + flip_b;
+
+		//		//if out of bounds, don't check
+		//		if (Map.OutOfBounds(a, b))
+		//			continue;
+
+		//		float hereElev = Map.elevation[a, b];
+
+		//		//if the elevation here is different than at our tile, build a ramp instead
+		//		if (hereElev > localElev)
+		//			Debug.Log("Ramp should be at " + x + " " + y);
+		//		//else if (localElev > hereElev)
+		//		//	Debug.Log("Ramp should be at " + a + " " + b);
+
+		//		//don't keep going
+		//		//return;
+
+		//	}
+
+
+		//}
+
 		GameObject go = SpawnObject("Structures", type, x, y, buildingRotation);
         go.transform.position += new Vector3(alignx, 0, aligny);
 
@@ -391,7 +458,7 @@ public class WorldController : MonoBehaviour {
         //rename the area it takes up to its name
         Map.RenameArea(go.name, x, y, sizex, sizey);
 
-        Structure s = go.GetComponent<Structure>();
+		Structure s = go.GetComponent<Structure>();
         if (s == null)
             Debug.LogError(type + " has no structure component");
         s.X = x;
@@ -553,11 +620,15 @@ public class WorldController : MonoBehaviour {
 
 	public GameObject SpawnObject(string path, string name, int x, int y, float r) {
 
+		//modify elevation
 		Vector3 pos = new Vector3(x, 0, y);
+		pos.y = GetObjectFloat(x, y);
+
 		Vector3 rot = new Vector3(0, r, 0);
 		GameObject go = Resources.Load<GameObject>(path + "/" + name);
 		GameObject clone = Instantiate(go, pos, Quaternion.Euler(rot));
 		clone.name = go.name;
+
 		return clone;
 
 	}
@@ -620,6 +691,12 @@ public class WorldController : MonoBehaviour {
 			walkers += w + " ";
 
 		Debug.Log(walkers);
+	}
+
+	public float GetObjectFloat(int x, int y) {
+
+		return Map.elevation[x, y] * 0.5f;
+
 	}
 
 }
