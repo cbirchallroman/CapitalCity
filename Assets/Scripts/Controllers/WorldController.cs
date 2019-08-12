@@ -69,7 +69,7 @@ public class WorldController : MonoBehaviour {
 
 		//until we've successfully placed the map entrance/exit, keep trying
 		bool success = false;
-		do { success = MakeMapEntranceExit(szx, szy); } while (!success);	
+		do { success = CreateMapEntrance(szx, szy); } while (!success);	
 
         money.Money = 10000;
         
@@ -82,27 +82,22 @@ public class WorldController : MonoBehaviour {
 
 	}
 
-	bool MakeMapEntranceExit(int szx, int szy) {
+	bool CreateMapEntrance(int szx, int szy) {
 
-		//start by deleting everything in the structures list
-		//if(GameObject.FindGameObjectWithTag("MapEntrance"))
-
-
-		////random spots for the entrance and exit
+		//try to find a place for the mapentrance until it is found
 		Node entranceSpot = new Node(0, Random.Range(2, szx - 2));
-		//Node endOfPath = entranceSpot;
-		//endOfPath.y += 5;
+		Structure m1 = SpawnStructure("MapEntrance", entranceSpot.x, entranceSpot.y, 0);
 
-		//Queue<Node> path = new Pathfinder(Map).FindPath(entranceSpot, endOfPath, "");
-		//if (path.Count == 0)
-		//	return false;
+		if (m1 == null)
+			return false;
+		
+		//make roads out from the mapentrance as far as possible
+		for(int i = 1; i < 11; i++) {
 
-		//make 
-		Structure m1 = null;
-		do { m1 = SpawnStructure("MapEntrance", entranceSpot.x, entranceSpot.y, 0); } while (m1 == null);
+			if (SpawnStructure("Road", i, entranceSpot.y, 0) == null)
+				break;
 
-   //     for(Node spot = path.Dequeue(); path.Count > 0; spot = path.Dequeue())
-			//SpawnStructure("Road", spot.x, spot.y, 0);
+		}
 
 		cameraController.MoveCameraTo(m1.X, m1.Y);
 		return true;
