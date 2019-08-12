@@ -85,29 +85,24 @@ public class WorldController : MonoBehaviour {
 	bool MakeMapEntranceExit(int szx, int szy) {
 
 		//start by deleting everything in the structures list
-		foreach(Transform child in structures.transform) {
+		//if(GameObject.FindGameObjectWithTag("MapEntrance"))
 
-			Structure str = child.GetComponent<Structure>();
-			this.Destroy(str.X, str.Y);
 
-		}
-
-		//random spots for the entrance and exit
+		////random spots for the entrance and exit
 		Node entranceSpot = new Node(0, Random.Range(2, szx - 2));
-		Node exitSpot = new Node(szx - 1, Random.Range(2, szy - 2));
+		//Node endOfPath = entranceSpot;
+		//endOfPath.y += 5;
 
-		Queue<Node> path = new Pathfinder(Map).FindPath(entranceSpot, exitSpot, "");
-		if (path.Count == 0)
-			return false;
+		//Queue<Node> path = new Pathfinder(Map).FindPath(entranceSpot, endOfPath, "");
+		//if (path.Count == 0)
+		//	return false;
 
-		Structure m1 = SpawnStructure("MapEntrance", entranceSpot.x, entranceSpot.y, 0);
-		Structure m2 = SpawnStructure("MapExit", exitSpot.x, exitSpot.y, 0);
+		//make 
+		Structure m1 = null;
+		do { m1 = SpawnStructure("MapEntrance", entranceSpot.x, entranceSpot.y, 0); } while (m1 == null);
 
-        if (m1 == null || m2 == null)
-            return false;
-
-        for(Node spot = path.Dequeue(); path.Count > 0; spot = path.Dequeue())
-			SpawnStructure("Road", spot.x, spot.y, 0);
+   //     for(Node spot = path.Dequeue(); path.Count > 0; spot = path.Dequeue())
+			//SpawnStructure("Road", spot.x, spot.y, 0);
 
 		cameraController.MoveCameraTo(m1.X, m1.Y);
 		return true;
@@ -403,56 +398,60 @@ public class WorldController : MonoBehaviour {
         }
 
 		////CHECK IF THIS IS A ROAD SO WE CAN BUILD A RAMP IF NEEDED
-		//if (type == "Road") {
+		if (type == "Road") {
 
-		//	List<Node> checks = new List<Node>();
+			List<Node> checks = new List<Node>();
 
-		//	//check N, S, E, W of this tile for any kind of road
-		//	//	POSSIBLE ISSUE: THIS WOULDN'T CHECK ALL POSSIBLE CASES
-		//	if (Map.IsRoadAt(x - 1, y)) {
-		//		checks.Add(new Node(-1, 0));
-		//	}
-		//	else if (Map.IsRoadAt(x + 1, y)) {
-		//		checks.Add(new Node(+1, 0));
-		//	}
-		//	else if (Map.IsRoadAt(x, y - 1)) {
-		//		checks.Add(new Node(0, -1));
-		//	}
+			//v1: checked according to whether there's a road on the opposite tile
+			//v2: just add adjacent tiles so long as they exist;
+			//	in this case we don't actually have to flip and could just add nodes, but it's good to leave what we had
 
-		//	else if (Map.IsRoadAt(x, y + 1)) {
-		//		checks.Add(new Node(0, +1));
-		//	}
+			//check N, S, E, W of this tile for any kind of road
+			//	POSSIBLE ISSUE: THIS WOULDN'T CHECK ALL POSSIBLE CASES
+			//if (Map.IsRoadAt(x - 1, y)) {
+				checks.Add(new Node(-1, 0));
+			//}
+			//else if (Map.IsRoadAt(x + 1, y)) {
+				checks.Add(new Node(+1, 0));
+			//}
+			//else if (Map.IsRoadAt(x, y - 1)) {
+				checks.Add(new Node(0, -1));
+			//}
 
-		//	//save local elevation
-		//	float localElev = Map.elevation[x, y];
+			//else if (Map.IsRoadAt(x, y + 1)) {
+				checks.Add(new Node(0, +1));
+			//}
 
-		//	//check each possible case, then check for a tile on the opposite end that's higher/shorter than the tile we're on
-		//	foreach (Node c in checks) {
+			//save local elevation
+			float localElev = Map.elevation[x, y];
 
-		//		int flip_a = c.x * -1;
-		//		int flip_b = c.y * -1;    //these are the coordinates where there would be a cliff
-		//		int a = x + flip_a;
-		//		int b = y + flip_b;
+			//check each possible case, then check for a tile on the opposite end that's higher/shorter than the tile we're on
+			foreach (Node c in checks) {
 
-		//		//if out of bounds, don't check
-		//		if (Map.OutOfBounds(a, b))
-		//			continue;
+				int flip_a = c.x * -1;
+				int flip_b = c.y * -1;    //these are the coordinates where there would be a cliff
+				int a = x + flip_a;
+				int b = y + flip_b;
 
-		//		float hereElev = Map.elevation[a, b];
+				//if out of bounds, don't check
+				if (Map.OutOfBounds(a, b))
+					continue;
 
-		//		//if the elevation here is different than at our tile, build a ramp instead
-		//		if (hereElev > localElev)
-		//			Debug.Log("Ramp should be at " + x + " " + y);
-		//		//else if (localElev > hereElev)
-		//		//	Debug.Log("Ramp should be at " + a + " " + b);
+				float hereElev = Map.elevation[a, b];
 
-		//		//don't keep going
-		//		//return;
+				//if the elevation here is different than at our tile, build a ramp instead
+				if (hereElev > localElev)
+					Debug.Log("Ramp should be at " + x + "_" + y + " to " + a + "_" + b);
+				//else if (localElev > hereElev)
+				//	Debug.Log("Ramp should be at " + a + " " + b);
 
-		//	}
+				//don't keep going
+				//return;
+
+			}
 
 
-		//}
+		}
 
 		GameObject go = SpawnObject("Structures", type, x, y, buildingRotation);
         go.transform.position += new Vector3(alignx, 0, aligny);

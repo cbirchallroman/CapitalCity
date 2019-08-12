@@ -263,11 +263,11 @@ public class ImmigrationController : MonoBehaviour {
 
 	public void SpawnEmigrant(Node start, Prole emigrant) {
 
-		GameObject mapExit = GameObject.FindGameObjectWithTag("MapExit");
-		if (mapExit == null)
+		GameObject mapEntrance = GameObject.FindGameObjectWithTag("MapEntrance");
+		if (mapEntrance == null)
 			return;
 
-		Node end = new Node(mapExit.GetComponent<Structure>());
+		Node end = new Node(mapEntrance.GetComponent<Structure>());
 
 		Queue<Node> path = new Pathfinder(worldController.Map).FindPath(start, end, "Emigrant");
 		if (path.Count == 0)
@@ -280,7 +280,7 @@ public class ImmigrationController : MonoBehaviour {
 
 		Walker w = go.GetComponent<Walker>();
 		w.world = worldController;
-		w.Destination = mapExit.GetComponent<Structure>();
+		w.Destination = mapEntrance.GetComponent<Structure>();
 		w.SetPersonData(emigrant);
 		w.SetPath(path);
 		w.Activate();

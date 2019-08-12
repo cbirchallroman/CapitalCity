@@ -263,19 +263,6 @@
 
   <Structure>
 
-    <Name>MapExit</Name>
-    <DisplayName>Map Exit</DisplayName>
-
-    <Sizex>1</Sizex>
-    <Sizey>1</Sizey>
-    <BaseCost>0</BaseCost>
-
-    <BuiltOnce>true</BuiltOnce>
-
-  </Structure>
-
-  <Structure>
-
     <Name>Roadblock</Name>
     <DisplayName>Roadblock</DisplayName>
 
