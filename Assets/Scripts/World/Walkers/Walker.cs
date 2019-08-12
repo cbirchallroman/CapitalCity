@@ -354,12 +354,12 @@ public class Walker : Obj {
 
     public void LeaveMap() {
 
-        Structure mapExit = GameObject.FindGameObjectWithTag("MapExit").GetComponent<Structure>();
-        if (mapExit == null)
+        Structure mapEntrance = GameObject.FindGameObjectWithTag("MapEntrance").GetComponent<Structure>();
+        if (mapEntrance == null)
             DestroySelf();
 
         Node start = new Node(this);
-        Node end = new Node(mapExit);
+        Node end = new Node(mapEntrance);
 
         Path = pathfinder.FindPath(start, end, name);
 		data.ReturningHome = true;

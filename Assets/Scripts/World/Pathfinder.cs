@@ -197,7 +197,7 @@ public class Pathfinder {
 		//do not go through if there is a map entrance; we won't count these for roadwalker roads
 		string str = map.GetBuildingNameAt(a, b);
 		if(!string.IsNullOrEmpty(str))
-			if (str.Contains("MapEntrance") || str.Contains("MapExit"))
+			if (str.Contains("MapEntrance"))
 				return false;
 
 		return map.IsUnblockedRoadAt(a, b);
@@ -220,7 +220,7 @@ public class Pathfinder {
 
 		string str = map.GetBuildingNameAt(a, b);
 
-		if (str.Contains("MapEntrance") || str.Contains("MapExit"))
+		if (str.Contains("MapEntrance"))
 			return true;
 
 		if (map.IsRoadAt(a, b))
