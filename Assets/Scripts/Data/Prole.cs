@@ -6,7 +6,7 @@ using System.Collections.Generic;
 public class Person {
 
 	public string surname, name, ID;
-	public int yearsOld, deltaDays;
+	public int yearsOld, deltaDays, diseaseLength;
 	public bool diseased, markedForDeath;
 	public Float3d skinColor;
 	public World world;
@@ -15,9 +15,10 @@ public class Person {
 	public readonly int subInterval = TimeController.DaysInAMonth;
 	public readonly int comingOfAge = 16;
 	public readonly int retirementAge = 65;
+	public readonly int diseaseLengthMax = (int)(6.0 * Difficulty.GetModifier());
 	
 	public virtual int DeathChance { get { return diseased ? DeathChanceFromDisease : 0; } }
-	public virtual int DeathChanceFromDisease { get { return 10; } }
+	public virtual int DeathChanceFromDisease { get { return 5; } }
 
 	public string FullName { get { return name + " " + surname; } }
 
@@ -55,11 +56,18 @@ public class Person {
 
 		//check for chance of death
 		if (DeathChance > 0) {
-
-			int roll = Random.Range(1, 100);
-			Debug.Log("rolled " + roll);
-			if (roll <= DeathChance)
+			
+			if (Random.Range(1, 100) <= DeathChance)
 				MarkForDeath();
+
+		}
+
+		//decrease disease duration
+		if (diseased) {
+
+			diseaseLength--;
+			if (diseaseLength == 0)
+				CureOfDisease();
 
 		}
 
@@ -85,7 +93,8 @@ public class Person {
 
 	public virtual void Kill() {
 
-
+		if (diseased)	//if diseased upon death, remove this person from the number of diseased persons living at the house
+			NotifyHouseOfCure();
 
 	}
 
@@ -95,15 +104,43 @@ public class Person {
 
 	}
 
+	public void TurnDiseased() {
+
+		diseased = true;
+		diseaseLength = diseaseLengthMax;
+		Debug.Log(this + " turned disease");
+		NotifyHouseOfDisease();
+
+	}
+
+	public virtual void NotifyHouseOfDisease() {
+
+		Debug.LogError("Something should be here");
+
+	}
+
+	public void CureOfDisease() {
+
+		diseased = false;
+		Debug.Log(this + " cured of disease");
+
+	}
+
+	public virtual void NotifyHouseOfCure() {
+
+		Debug.LogError("Something should be here");
+
+	}
+
 }
 
 [System.Serializable]
 public class Child : Person {
 
+	public Prole parent;
 	public bool GrownUp { get { return yearsOld >= comingOfAge; } }
-
-	//add 20% death chance if diseased
-	public override int DeathChanceFromDisease { get { return 20; } }
+	
+	public override int DeathChanceFromDisease { get { return 16 - yearsOld + base.DeathChanceFromDisease; } }
 
 	public Child(bool randomAge, Prole parent) : base(randomAge) {
 
@@ -111,6 +148,7 @@ public class Child : Person {
 		surname = parent.surname;
 		skinColor = parent.skinColor;
 		ID = surname + name + Random.Range(0, 100);
+		this.parent = parent;
 
 	}
 
@@ -118,6 +156,20 @@ public class Child : Person {
 
 		if (GrownUp)
 			Debug.Log(this + " should be an adult now");
+
+	}
+
+	public override void NotifyHouseOfDisease() {
+
+		if (parent != null)
+			parent.NotifyHouseOfDisease();
+
+	}
+
+	public override void NotifyHouseOfCure() {
+
+		if (parent != null)
+			parent.NotifyHouseOfCure();
 
 	}
 
@@ -142,13 +194,13 @@ public class Prole : Person {
 	public int workIndex;
 
 	public bool SeekingWork { get { return !Employed && !Retired; } }
-    public bool Employed { get { return !workNode.Equals(unemploymentNode); } }
-	public bool Homeless { get { return homeNode.Equals(unemploymentNode); } }
+    public bool Employed { get { if (workNode == null) return false; return !workNode.Equals(unemploymentNode); } }
+	public bool Homeless { get { if (homeNode == null) return true; return homeNode.Equals(unemploymentNode); } }
 	public bool Retired { get { return yearsOld >= retirementAge; } }
 
 	public int BirthChance { get; set; }
 	readonly int birthChanceMax = 10;
-	readonly int childrenMax = 6;
+	readonly int childrenMax = 4;
 
 	Node unemploymentNode = new Node(-1, -1);
 
@@ -401,7 +453,8 @@ public class Prole : Person {
 	}
 
 	public override void Kill() {
-		
+
+		base.Kill();
 		QuitWork();
 		EvictHouse(true);
 
@@ -524,6 +577,30 @@ public class Prole : Person {
 		float bonus = GetLaborBonus(lt);
 		eff += bonus * .05f;  //each bonus point is equal to +5% productivity
 		return eff;
+
+	}
+
+	public override void NotifyHouseOfDisease() {
+
+		GameObject go = world.GetBuildingAt(homeNode);
+
+		if (go == null)
+			Debug.LogError(surname + " does not have a house at " + homeNode + " anymore");
+
+		House house = go.GetComponent<House>();
+		house.DiseasedResidents++;
+
+	}
+
+	public override void NotifyHouseOfCure() {
+
+		GameObject go = world.GetBuildingAt(homeNode);
+
+		if (go == null)
+			Debug.LogError(surname + " does not have a house at " + homeNode + " anymore");
+
+		House house = go.GetComponent<House>();
+		house.DiseasedResidents--;
 
 	}
 

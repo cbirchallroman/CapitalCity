@@ -147,7 +147,6 @@ public class WorldController : MonoBehaviour {
 
 		//create new tile
 		GameObject tile = SpawnObject("Tiles", (Terrain)Map.terrain[x, y] + "", x, y);
-        float height = tile.transform.localScale.y;
         tile.transform.parent = row.transform;
         tile.name = "Tile_" + x + "_" + y;
 

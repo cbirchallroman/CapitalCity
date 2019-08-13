@@ -16,30 +16,49 @@ public class WellWalker : RandomWalker {
 
         base.VisitBuilding(a, b);
 
-        House h = world.Map.GetBuildingAt(a, b).GetComponent<House>();
-        if (h == null)
+		//check if spot visited
+		string spot = a + "_" + b;
+		if (VisitedSpots.Contains(spot))
+			return;
+		VisitedSpots.Add(spot);		//house has been visited
+
+		House house = world.Map.GetBuildingAt(a, b).GetComponent<House>();
+        if (house == null)
             return;
 
         //give water
-        if (h.WaterQual == waterQuality || h.waterQualWanted <= waterQuality)
-            h.AddWater(h.WaterNeeded(waterQuality), waterQuality);
+        if (house.WaterQual == waterQuality || house.waterQualWanted <= waterQuality)
+            house.AddWater(house.WaterNeeded(waterQuality), waterQuality);
+        UpdateCleanliness();    //yield is the average filthiness of roads that the wellwalker has walked on
 
-        UpdateCleanliness();
+		//give disease
+		if (yield != 0)
+			TryDisease(house);
 
-        //give disease
-        string spot = a + "_" + b;
-        if (VisitedSpots.Contains(spot))
-            return;
-        int roll = Random.Range(1, 100);
-        if (yield == 0)
-            roll = 100;
-        if (roll <= yield)
-            h.StartDisease();
-
-        //house has been visited
-        VisitedSpots.Add(spot);
 
     }
+
+	void TryDisease(House house) {
+		
+		foreach(Prole res in house.Residents) {
+			
+			TryDiseaseAtPerson(res);
+			foreach (Child child in res.children)
+				TryDiseaseAtPerson(child);
+
+		}
+
+	}
+
+	void TryDiseaseAtPerson(Person p) {
+
+		if (p.diseased)
+			return;
+		int roll = Random.Range(1, 100);
+		if (roll <= yield)
+			p.TurnDiseased();
+
+	}
 
     void UpdateCleanliness() {
 
