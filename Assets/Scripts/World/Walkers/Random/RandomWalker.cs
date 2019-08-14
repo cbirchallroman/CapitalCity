@@ -124,7 +124,7 @@ public class RandomWalker : Walker {
 
 				if (p == null)
 					continue;
-				if (p.GetLaborBonus(w.laborType) < 0 && !w.HireNonPreferredProles)	//if this prole's labor type is not preferred and we will not hire proles with unpreferred types, continue
+				if (p.GetLaborScore(w.laborType) < w.minimumAbility)	//if this prole's labor type is not preferred and we will not hire proles with unpreferred types, continue
 					continue;
                 if (p.SeekingWork)
                     w.AddWorker(p);

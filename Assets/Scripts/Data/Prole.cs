@@ -144,7 +144,8 @@ public class Child : Person {
 
 	public Child(bool randomAge, Prole parent) : base(randomAge) {
 
-		yearsOld = randomAge ? Random.Range(0, comingOfAge - 1) : 0;
+		//if parent already has children, we want to be younger than the most recent child; otherwise we can be anywhere from 0 to 15 years old
+		yearsOld = randomAge ? Random.Range(0, (parent.children.Count > 0 ? parent.children[parent.children.Count - 1].yearsOld : comingOfAge)) : 0;
 		surname = parent.surname;
 		skinColor = parent.skinColor;
 		ID = surname + name + Random.Range(0, 100);
@@ -182,8 +183,7 @@ public class Prole : Person {
 	public Node homeNode;
 	public List<Child> children;
 	public float personalSavings;
-	public int physique, intellect, emotion;
-	//public LaborType laborPref;
+	public int physique, intellect, empathy;
 
 	//WAITING FOR ACCEPTANCE STUFF
 	public int waitCountdown;
@@ -262,7 +262,7 @@ public class Prole : Person {
 
 		physique = Random.Range(1, 7) + Random.Range(1, 7) + Random.Range(1, 7);
 		intellect = Random.Range(1, 7) + Random.Range(1, 7) + Random.Range(1, 7);
-		emotion = Random.Range(1, 7) + Random.Range(1, 7) + Random.Range(1, 7);
+		empathy = Random.Range(1, 7) + Random.Range(1, 7) + Random.Range(1, 7);
 
 		//TAKE PREF INTO ACCOUNT SOMEHOW
 
@@ -517,13 +517,13 @@ public class Prole : Person {
 
 	public LaborType HighestValue() {
 
-		if (physique >= intellect && physique >= emotion)
+		if (physique >= intellect && physique >= empathy)
 			return LaborType.Physical;
 
-		else if (intellect >= physique && intellect >= emotion)
+		else if (intellect >= physique && intellect >= empathy)
 			return LaborType.Intellectual;
 
-		else if (emotion >= physique && emotion >= intellect)
+		else if (empathy >= physique && empathy >= intellect)
 			return LaborType.Emotional;
 
 		return LaborType.END;
@@ -537,7 +537,7 @@ public class Prole : Person {
 		else if (lt == LaborType.Intellectual)
 			return intellect;
 		else if (lt == LaborType.Emotional)
-			return emotion;
+			return empathy;
 
 		return -1;
 

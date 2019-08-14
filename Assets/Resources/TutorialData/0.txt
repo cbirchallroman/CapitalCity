@@ -5,5 +5,5 @@ This is a test tutorial. Here's a picture of beef!
 #Getting Started
 First, click the 'Administration' tab and construct a jobcentre. Once you do, you'll notice that immigrants will start coming into the city and arriving at the jobcentre.
 Right click on the jobcentre! You can see which immigrants have arrived. The jobcentre can hold up to four immigrants at a time, and they will only be here for a season.
-Workers have four abilities: physique, intellect, and emotion. These abilities affect how well a worker does their job. At the jobcentre, you can view an immigrant's abilities before accepting them into the city.
+Workers have four abilities: physique, intellect, and empathy. These abilities affect how well a worker does their job. At the jobcentre, you can view an immigrant's abilities before accepting them into the city.
 However, workers need a place to stay! Click on the 'Housing' tab and construct some empty lots for immigrants to move into once you accept them.

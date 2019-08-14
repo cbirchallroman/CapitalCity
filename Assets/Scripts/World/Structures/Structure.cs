@@ -534,8 +534,8 @@ public class Structure : Obj {
 			if (entrancesHere.Count == 0 || entrancesThere.Count == 0)
 				continue;
 
-			//only add to list if it can accept amount
-			if (num > gen.IngredientNeeded(index))
+			//only add to list if it has none of this item
+			if (gen.IngredientNeeded(index) != 0)
 				continue;
 
 			float distance = entrancesHere[0].DistanceTo(entrancesThere[0]);

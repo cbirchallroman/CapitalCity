@@ -37,7 +37,7 @@ public class ProspectInfo : MonoBehaviour {
 		nameLabel.text = prospect.FullName + " (" + prospect.yearsOld + ")";
 		phyLabel.text = prospect.physique + "";
 		intLabel.text = prospect.intellect + "";
-		emoLabel.text = prospect.emotion + "";
+		emoLabel.text = prospect.empathy + "";
 		countdown.fillAmount = prospect.WaitTimePercent();
 
 	}

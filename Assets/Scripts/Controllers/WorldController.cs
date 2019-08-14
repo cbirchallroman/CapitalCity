@@ -197,7 +197,9 @@ public class WorldController : MonoBehaviour {
 		//structures
 		foreach (ObjSave save in w.structures)
             LoadMapObject(save).transform.parent = structures.transform;
-        foreach (ObjSave save in w.workplaces)
+		foreach (ObjSave save in w.jobcentres)
+			LoadMapObject(save).transform.parent = structures.transform;
+		foreach (ObjSave save in w.workplaces)
             LoadMapObject(save).transform.parent = structures.transform;
         foreach (ObjSave save in w.storagebuildings)
             LoadMapObject(save).transform.parent = structures.transform;

@@ -6,7 +6,7 @@ using UsefulThings;
 [System.Serializable]
 public class HouseSave : StructureSave {
     
-    public int Prosperity, Culture, Corpses, DiseasedResidents;
+    public int Hygiene, Culture, Corpses, DiseasedResidents;
     public float Savings;
 
     public List<Prole> Residents;
@@ -22,8 +22,8 @@ public class HouseSave : StructureSave {
 
         House h = go.GetComponent<House>();
         
-        Prosperity = h.prosperityRating;
-        Savings = h.Savings;
+		Hygiene = h.Hygiene;
+		Savings = h.Savings;
 		Corpses = h.Corpses;
 		DiseasedResidents = h.DiseasedResidents;
 
@@ -69,8 +69,8 @@ public class House : Structure {
 
         HouseSave h = (HouseSave)o;
 		
-        prosperityRating = h.Prosperity;
-        Savings = h.Savings;
+		Hygiene = h.Hygiene;
+		Savings = h.Savings;
 		Corpses = h.Corpses;
 		DiseasedResidents = h.DiseasedResidents;
 
@@ -417,8 +417,18 @@ public class House : Structure {
 
 	//disease affects every individual in a household at once
     public GameObject cholera;
+	public int Hygiene { get; set; }
+	public int HygieneToConsume { get { return HouseSize; } }
+	public int HygieneMax { get { return HouseSize * 3; } }
     public int Waste { get { return HouseSize; } }
 	public int DiseasedResidents { get; set; }
+
+	void ConsumeHygiene() {
+
+		if (Hygiene > 0)
+			Hygiene -= HygieneToConsume;
+
+	}
 
     void SpreadDisease() {
 
@@ -426,7 +436,7 @@ public class House : Structure {
 			return;
 
 		int chance = DiseasedResidents * 5;
-		bool success = Random.Range(1, 100) <= chance;
+		bool success = Random.Range(1, 100) + Hygiene <= chance;
 
 		if (!success)
 			return;
@@ -475,6 +485,8 @@ public class House : Structure {
 
             if (world.Map.cleanliness[x, y] > 100)
                 world.Map.cleanliness[x, y] = 100;
+
+			Debug.Log(world.Map.cleanliness[x, y]);
 
         }
 
