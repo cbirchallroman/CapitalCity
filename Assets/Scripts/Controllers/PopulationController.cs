@@ -61,7 +61,7 @@ public class PopulationController : MonoBehaviour {
 
 	public void RemoveProle(Prole p) {
 
-		Proles.Add(p);
+		Proles.Remove(p);
 
 	}
 

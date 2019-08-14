@@ -63,9 +63,10 @@ public class WorldProgressSave : BasicWorldSave {
     public List<WTPSave> wtps = new List<WTPSave>();
     public List<CanalSave> canals = new List<CanalSave>();
     public List<FarmhouseSave> farmhouses = new List<FarmhouseSave>();
+	public List<JobcentreSave> jobcentres = new List<JobcentreSave>();
 
-    //walkers
-    public List<AnimalSave> animals = new List<AnimalSave>();
+	//walkers
+	public List<AnimalSave> animals = new List<AnimalSave>();
     public List<WalkerSave> walkers = new List<WalkerSave>();
 
     public WorldProgressSave(GameObject go) {
@@ -124,7 +125,10 @@ public class WorldProgressSave : BasicWorldSave {
             else if (str.GetComponent<Workplace>() != null)
                 workplaces.Add(new WorkplaceSave(str));
 
-            else if (str.GetComponent<Structure>() != null)
+			else if (str.GetComponent<Jobcentre>() != null)
+				jobcentres.Add(new JobcentreSave(str));
+
+			else if (str.GetComponent<Structure>() != null)
                 structures.Add(new StructureSave(str));
 
             else

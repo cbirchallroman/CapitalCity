@@ -6,8 +6,8 @@ using UsefulThings;
 [System.Serializable]
 public class HouseSave : StructureSave {
     
-    public int Prosperity, Culture, MonthsLeftDiseased, Corpses;
-    public float CasualtyRisk, Savings;
+    public int Hygiene, Culture, Corpses, DiseasedResidents;
+    public float Savings;
 
     public List<Prole> Residents;
 
@@ -22,12 +22,10 @@ public class HouseSave : StructureSave {
 
         House h = go.GetComponent<House>();
         
-        Prosperity = h.prosperityRating;
-        Savings = h.Savings;
-        MonthsLeftDiseased = h.MonthsLeftDiseased;
+		Hygiene = h.Hygiene;
+		Savings = h.Savings;
 		Corpses = h.Corpses;
-
-		CasualtyRisk = h.DiseaseSpreadRisk;
+		DiseasedResidents = h.DiseasedResidents;
 
         Water = h.Water;
         WaterQual = h.WaterQual;
@@ -38,8 +36,6 @@ public class HouseSave : StructureSave {
 
         VenueAccess = new DictContainer<string, int>(h.VenueAccess);
         Culture = h.Culture;
-
-        Diseased = h.Diseased;
 
         Residents = h.Residents;
 
@@ -72,17 +68,14 @@ public class House : Structure {
         base.Load(o);
 
         HouseSave h = (HouseSave)o;
-
-        //Residents = h.Residents;
-        prosperityRating = h.Prosperity;
-        Savings = h.Savings;
-        MonthsLeftDiseased = h.MonthsLeftDiseased;
+		
+		Hygiene = h.Hygiene;
+		Savings = h.Savings;
 		Corpses = h.Corpses;
+		DiseasedResidents = h.DiseasedResidents;
 
 		Water = h.Water;
         WaterQual = h.WaterQual;
-
-        DiseaseSpreadRisk = h.CasualtyRisk;
 
         Food = h.Food;
 
@@ -90,8 +83,6 @@ public class House : Structure {
 
         VenueAccess = h.VenueAccess.GetDictionary();
         Culture = h.Culture;
-
-        Diseased = h.Diseased;
 
         Residents = h.Residents;
 
@@ -113,7 +104,7 @@ public class House : Structure {
 
         base.DoEveryDay();
 
-        if (!ActiveSmartWalker && !immigration.Contains(this) && Residents.Count < residentsMax && !Diseased)
+        if (!ActiveSmartWalker && !immigration.Contains(this) && Residents.Count < residentsMax && DiseasedResidents == 0)
             RequestImmigrant();
 		
 		//proles who move out receive a fraction of the house's total savings to take with them
@@ -134,11 +125,17 @@ public class House : Structure {
 
         CheckBiggerSize();
 		UpdateResidentsAge();
+		cholera.SetActive(DiseasedResidents > 0);
+
+	}
+
+	public override void DoEveryWeek() {
+
 		ThrowWaste();
 
 	}
-	
-    public override void DoEveryMonth() {
+
+	public override void DoEveryMonth() {
 
         base.DoEveryMonth();
 		
@@ -152,7 +149,7 @@ public class House : Structure {
         ConsumeFood();
         ConsumeGoods();
         ConsumeCulture();
-        DiseaseCounter();
+        SpreadDisease();
 
     }
 	
@@ -162,7 +159,7 @@ public class House : Structure {
 
     public bool CanEvolve() {
 
-		if (Diseased)   //we're not going to evolve if the house is diseased
+		if (DiseasedResidents > 0)   //we're not going to evolve if the house is diseased
 			return false;
 
 		//now we check for actual conditions
@@ -296,8 +293,7 @@ public class House : Structure {
         newHouse.Goods = Goods;
         newHouse.Culture = Culture;
         newHouse.VenueAccess = VenueAccess;
-        newHouse.Diseased = Diseased;
-        newHouse.MonthsLeftDiseased = MonthsLeftDiseased;
+        newHouse.DiseasedResidents = DiseasedResidents;
         newHouse.Residents = Residents;
 
 		//USED TO TEST OVERCROWDING
@@ -395,6 +391,7 @@ public class House : Structure {
 			if (p.markedForDeath) {
 				//do if p is about to die
 				p.Kill();
+				population.RemoveProle(p);
 			}
 
 		}
@@ -419,81 +416,59 @@ public class House : Structure {
     *************************************/
 
 	//disease affects every individual in a household at once
-    public float WaterModifier { get { return 1.6f - (float)WaterQual * .4f; } }
     public GameObject cholera;
-    public bool Diseased { get; set; }
+	public int Hygiene { get; set; }
+	public int HygieneToConsume { get { return HouseSize; } }
+	public int HygieneMax { get { return HouseSize * 3; } }
     public int Waste { get { return HouseSize; } }
-    public int diseaseSpreadRiskMax { get { return (int)(20.0 * Difficulty.GetModifier()); } }
-    public float DiseaseSpreadRisk { get; set; }
-    public int DiseaseLength { get { return (int)(6.0 * Difficulty.GetModifier()); } }	//disease lasts for 6 months normally
-    public int MonthsLeftDiseased { get; set; }
+	public int DiseasedResidents { get; set; }
 
-    void DiseaseCounter() {
+	void ConsumeHygiene() {
 
-        if (!Diseased)
-            return;
-
-		//spread disease before anything
-		SpreadDisease();
-
-		MonthsLeftDiseased--;
-		if (MonthsLeftDiseased == 0)
-			Diseased = false;
-        
-    }
-
-    public void StartDisease() {
-
-        Diseased = true;
-        MonthsLeftDiseased = DiseaseLength;
-		cholera.SetActive(true);
-
-		//each individual in the house is diseased
-		foreach(Prole a in Residents) {
-			foreach (Child c in a.children)
-				c.diseased = true;
-			a.diseased = true;
-		}
-
-	}
-
-	public void EndDisease() {
-
-		Diseased = false;
-		MonthsLeftDiseased = 0;
-		cholera.SetActive(false);
-
-		//each individual in the house is cured
-		foreach (Prole a in Residents) {
-			foreach (Child c in a.children)
-				c.diseased = false;
-			a.diseased = false;
-		}
+		if (Hygiene > 0)
+			Hygiene -= HygieneToConsume;
 
 	}
 
     void SpreadDisease() {
 
-		//roll for disease spread
-		if(DiseaseSpreadRisk != 0) {
-			
-			int roll = Random.Range(1, 100);
+		if (DiseasedResidents == 0)
+			return;
 
-			if (roll <= DiseaseSpreadRisk) {
-				Debug.Log("Disease spreads here!");
+		int chance = DiseasedResidents * 5;
+		bool success = Random.Range(1, 100) + Hygiene <= chance;
+
+		if (!success)
+			return;
+
+		//goal is to spread disease to one person
+		foreach (Prole res in Residents) {
+
+			//test children first, youngest to oldest
+			bool diseasedChild = false;     //we can't break the outer loop from the child loop so we need this extra bool
+			for(int i = res.children.Count - 1; i >= 0 && !diseasedChild; i--) {
+
+				Child c = res.children[i];
+				if (!c.diseased) {
+					c.TurnDiseased();
+					diseasedChild = true;
+				}
+
+			}
+
+			if (diseasedChild) break;   //so if child turned diseased, break right here
+
+			//then test adults, which are less suspect to disease
+			if (!res.diseased) {
+
+				res.TurnDiseased();
+				break;
+
 			}
 
 		}
 
-		//increase chance of spreading disease
-		if (DiseaseSpreadRisk < diseaseSpreadRiskMax)
-            DiseaseSpreadRisk += (int)((float)diseaseSpreadRiskMax / DiseaseLength);	//increase such that by the last month, it is at its worst
-
-		//if chance is greater than max, set to max
-        if (DiseaseSpreadRisk > collapseRiskMax)
-            DiseaseSpreadRisk = collapseRiskMax;
-
-    }
+	}
 
     void ThrowWaste() {
 
@@ -503,13 +478,15 @@ public class House : Structure {
 
             int x = n.x;
             int y = n.y;
-            int mult = Diseased ? 2 : 1;
+            int mult = DiseasedResidents + 1;
 
             if(world.Map.cleanliness[x, y] < 100)
                 world.Map.cleanliness[x, y] += Waste * mult;
 
             if (world.Map.cleanliness[x, y] > 100)
                 world.Map.cleanliness[x, y] = 100;
+
+			Debug.Log(world.Map.cleanliness[x, y]);
 
         }
 
@@ -716,7 +693,7 @@ public class House : Structure {
 
     public override string GetDescription() {
 
-        if (Diseased)
+        if (DiseasedResidents > 0)
             return "Infested with cholera";
         if (WantsBetterWater) {
             if (waterQualWanted == Quality.Poor)

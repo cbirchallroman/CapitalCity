@@ -214,7 +214,7 @@ MonoBehaviour:
   RandomWalker: 
   startTimes: 0000000006000000
   plant: {fileID: 1899961731799776}
-  amountToGrowPerFertility: 10
+  amountToGrowPerFertility: 2
   cropType: Grain
   planted: 0
   startHeight: -0.36

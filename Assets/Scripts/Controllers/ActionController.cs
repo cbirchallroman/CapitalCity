@@ -67,8 +67,10 @@ public class ActionController : MonoBehaviour {
 		if (currentAction.Do != "place")
 			return;
 		StructureData data = StructureDatabase.GetData(currentAction.What);
-		//if (data.Sizex == data.Sizey && !data.HasWaterTiles && !data.HasRoadTiles)
-		//	return;
+
+		//if old style-graphics are enabled, and the building is a basic square shape without any quirks, don't let it rotate
+		if (data.sizex == data.sizey && !data.hasWaterTiles && !data.hasRoadTiles && Settings.oldGraphics)
+			return;
 		buildingRotation += deg;
         if (buildingRotation >= 360)
             buildingRotation = 0;

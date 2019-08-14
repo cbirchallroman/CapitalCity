@@ -147,7 +147,6 @@ public class WorldController : MonoBehaviour {
 
 		//create new tile
 		GameObject tile = SpawnObject("Tiles", (Terrain)Map.terrain[x, y] + "", x, y);
-        float height = tile.transform.localScale.y;
         tile.transform.parent = row.transform;
         tile.name = "Tile_" + x + "_" + y;
 
@@ -198,7 +197,9 @@ public class WorldController : MonoBehaviour {
 		//structures
 		foreach (ObjSave save in w.structures)
             LoadMapObject(save).transform.parent = structures.transform;
-        foreach (ObjSave save in w.workplaces)
+		foreach (ObjSave save in w.jobcentres)
+			LoadMapObject(save).transform.parent = structures.transform;
+		foreach (ObjSave save in w.workplaces)
             LoadMapObject(save).transform.parent = structures.transform;
         foreach (ObjSave save in w.storagebuildings)
             LoadMapObject(save).transform.parent = structures.transform;

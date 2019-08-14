@@ -6,7 +6,7 @@ using UnityEngine;
 public class WorkplaceSave : StructureSave {
 
     public int WorkersCount, timeToSpawnWalker, access, workingDay;
-    public bool activeBuilding, closedByPlayer, HireNonPreferredProles;
+    public bool activeBuilding, closedByPlayer;
     public bool[] activeSchedule;
     public Prole[] WorkerList, WorkerSave;
 
@@ -21,7 +21,6 @@ public class WorkplaceSave : StructureSave {
 
         activeBuilding = w.ActiveBuilding;
         closedByPlayer = w.ClosedByPlayer;
-		HireNonPreferredProles = w.HireNonPreferredProles;
 
 		activeSchedule = w.ActiveSchedule;
         WorkerList = w.WorkerList;
@@ -37,6 +36,7 @@ public class Workplace : Structure {
     [Header("Workplace")]
     public int timeToSpawnWalkerMax;
     public int workersMax = 1;
+	public int minimumAbility = 10;
     public float baseWages = .4f;
 	public LaborType laborType = LaborType.Physical;
 	public string deathDesc = "died in a workplace accident.";
@@ -47,19 +47,8 @@ public class Workplace : Structure {
     public Prole[] WorkerSave { get; set; }
     public int WorkersCount { get; set; }
 
-    public int NumWorkers() {
-
-        int sum = 0;
-        for (int i = 0; i < workersMax; i++)
-            if (WorkerList[i] != null)
-                sum++;
-        return sum;
-
-    }
-
     public bool ActiveBuilding { get; set; }
     public bool ClosedByPlayer { get; set; }
-	public bool HireNonPreferredProles { get; set; }
 	public bool HireRetiredProles { get; set; }
 
     public bool[] ActiveSchedule { get; set; }
@@ -74,9 +63,9 @@ public class Workplace : Structure {
     //vars that come from other vars
     public virtual bool Operational { get { return EnoughWorkers && ActiveBuilding; } }
     public bool EnoughWorkers { get { return WorkersCount > 0; } }
-    public float WagesOverall { get { return WagesPerWorker * NumWorkers(); } }
+    public float WagesOverall { get { return WagesPerWorker * WorkersCount; } }
     public float WagesPerWorker { get { return WorkingDay * baseWages; } }
-    public float PercentEmployed { get { return (float)NumWorkers() / workersMax; } }
+    public float PercentEmployed { get { return (float)WorkersCount / workersMax; } }
 	public float WorkerEffectiveness { get; set; }
 
     public override void Load(ObjSave o) {
@@ -92,7 +81,6 @@ public class Workplace : Structure {
         
         ActiveBuilding = w.activeBuilding;
         ClosedByPlayer = w.closedByPlayer;
-		HireNonPreferredProles = w.HireNonPreferredProles;
 
 		ActiveSchedule = w.activeSchedule;
 
@@ -252,6 +240,13 @@ public class Workplace : Structure {
             if (p == null)
                 continue;
 
+			//if prole should be dead, remove from array and continue
+			if (p.markedForDeath) {
+
+				RemoveWorker(p.workIndex);
+
+			}
+
             //if no longer existing, continue
             if (!p.CheckExistence())
                 continue;
@@ -295,21 +290,51 @@ public class Workplace : Structure {
 
         base.DoEveryMonth();
 
-        PayWages();
+        PayWagesAndSpreadDisease();
 
     }
 
-    void PayWages() {
+	//since we're iterating, might as well do both things at once
+    void PayWagesAndSpreadDisease() {
+
+		int numDiseased = 0;
 
         foreach(Prole p in WorkerList) {
 
             if (p == null)
                 continue;
 
-            p.PayWages(WagesPerWorker);
+			if (p.diseased)
+				numDiseased++;	//add to sum of diseased workers
 
-        }
-        money.SpendOnWages(WagesOverall);
+			p.PayWages(WagesPerWorker); //pay wages
+			money.SpendOnWages(WagesOverall);	//record this
+
+		}
+		
+		if (numDiseased == 0 || numDiseased == WorkersCount)		//don't continue if chance is 0% or if all workers here are diseased
+			return;
+
+		int diseaseChance = numDiseased * 5;	//the chance for disease to spread
+
+		//on a successful roll, spread disease to one other person here
+		if (Random.Range(1, 100) <= diseaseChance) {
+
+			foreach (Prole p in WorkerList) {
+
+				if (p == null)
+					continue;
+
+				if (p.diseased)		//don't turn diseased if already diseased
+					continue;
+
+				p.TurnDiseased();
+				break;		//after finding someone to disease, break
+
+
+			}
+
+		}
 
     }
 
