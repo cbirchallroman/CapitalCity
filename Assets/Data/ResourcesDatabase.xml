@@ -106,6 +106,13 @@
     
   </Resource>
 
+	<Resource>
+
+		<Name>WoodenToys</Name>
+		<Ingredient>50 Wood</Ingredient>
+
+	</Resource>
+
   <Resource>
 
     <Name>Bricks</Name>

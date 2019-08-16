@@ -114,6 +114,7 @@
     <Compile Include="Assets\Scripts\UI\ActionButton.cs" />
     <Compile Include="Assets\Scripts\UI\ActionEnabler.cs" />
     <Compile Include="Assets\Scripts\UI\ActionSelecterController.cs" />
+    <Compile Include="Assets\Scripts\UI\BackgroundToggler.cs" />
     <Compile Include="Assets\Scripts\UI\CalendarUI.cs" />
     <Compile Include="Assets\Scripts\UI\CampaignSelectMenu.cs" />
     <Compile Include="Assets\Scripts\UI\CampaignUI.cs" />

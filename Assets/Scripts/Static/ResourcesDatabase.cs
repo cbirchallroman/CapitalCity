@@ -39,6 +39,7 @@ public class ResourcesDatabase : MonoBehaviour {
 		AddToWhitelist("Cigars");
 		AddToWhitelist("Beef");
 		AddToWhitelist("Leather");
+		AddToWhitelist("WoodenToys");
 
 	}
 

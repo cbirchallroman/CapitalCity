@@ -35,7 +35,7 @@ public class StorageItem_adv : MonoBehaviour {
 
 	void UpdateLabel() {
 
-        string s = sb.Inventory[index] + " " + Enums.GetItemName(index, sb.typeStored);
+        string s = sb.Inventory[index] + " " + Enums.GetItemDisplayName(index, sb.typeStored);
 
         itemLabel.text = s;
 

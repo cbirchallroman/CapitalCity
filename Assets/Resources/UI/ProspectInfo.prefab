@@ -22,6 +22,7 @@ GameObject:
   - component: {fileID: 222945242267660136}
   - component: {fileID: 114222360650500284}
   - component: {fileID: 114790659049206860}
+  - component: {fileID: 114887842332080524}
   m_Layer: 5
   m_Name: ProspectInfo
   m_TagString: Untagged
@@ -628,6 +629,17 @@ MonoBehaviour:
   m_FillAmount: 1
   m_FillClockwise: 1
   m_FillOrigin: 0
+--- !u!114 &114887842332080524
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1223801000537660}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 197b3d5dc7a64bb438e68c751fff33c9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &114917605695772054
 MonoBehaviour:
   m_ObjectHideFlags: 1

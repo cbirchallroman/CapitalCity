@@ -40,7 +40,6 @@ public class StorageWindow : WorkplaceWindow {
 		}
 		List<string> sorted = new List<string>(items);
 		sorted.Sort();
-		int even = 0;
 		foreach (string item in sorted) {
 
 			if (!ResourcesDatabase.ItemAllowed(item))
@@ -70,10 +69,6 @@ public class StorageWindow : WorkplaceWindow {
 			StorageItem_adv si = g2.GetComponent<StorageItem_adv>();
 			si.index = index;
 			si.sb = sb;
-
-			g2.GetComponent<Image>().enabled = even == 1;
-
-			even = even == 0 ? 1 : 0;
 
 		}
 

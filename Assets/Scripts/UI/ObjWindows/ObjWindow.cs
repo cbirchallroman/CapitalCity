@@ -16,7 +16,7 @@ public class ObjWindow : MonoBehaviour {
 
     public virtual void Open() {
 
-        title.text = obj.DisplayName.ToUpper();
+        title.text = obj.DisplayName;
         transform.localPosition = new Vector3(0, 0, 0);
 		//TimeController = WorldController.timeController;
 		//TimeController.StopTime();

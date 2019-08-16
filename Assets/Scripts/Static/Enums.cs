@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Text.RegularExpressions;
 using UnityEngine;
 
 public enum Terrain { Water, Lush, Grass, Mud, Sand, END }
@@ -9,7 +10,7 @@ public enum DifficultyLevel { Easiest, Easy, Moderate, Hard, Hardest, END }
 public enum LaborDivision { Materials, Production, Storage, Retail, Healthcare, Entertainment, Management, END }
 public enum Season { Spring, Summer, Autumn, Winter, END}
 public enum FoodType { Grain, Potatoes, Fish, Vegetables, Mutton, Pork, Beef, END }
-public enum GoodType { Shoes, Trowsers, Pottery, Glassware, Carpet, Furniture, Coats, Beer, Cigars, END }
+public enum GoodType { Shoes, Trowsers, Pottery, Glassware, Carpet, Furniture, Coats, Beer, Cigars, WoodenToys, END }
 public enum ResourceType { Bricks, Clay, Coal, Cotton, Denim, Flax, Leather, Linen, Ore, Paper, Sand, Spindles, Steel, Stone, Wood, Tobacco, Wool, Yarn, END }
 public enum ItemType { Food, Good, Resource, END }
 public enum Quality { None, Poor, Average, Great, Luxurious, END }
@@ -56,20 +57,28 @@ public class Enums {
 
     public static string GetItemName(int index, ItemType type) {
 
+		string name = "???";
+
         //if granary, display food label
         if (type == ItemType.Food)
-            return (FoodType)index + "";
+			name = (FoodType)index + "";
 
         //if warehouse, display goods label
         else if (type == ItemType.Good)
-            return (GoodType)index + "";
+			name = (GoodType)index + "";
 
         else if (type == ItemType.Resource)
-            return (ResourceType)index + "";
+			name = (ResourceType)index + "";
         
-        return "???";
+        return name;
 
     }
+
+	public static string GetItemDisplayName(int index, ItemType type) {
+
+		return Regex.Replace(GetItemName(index, type), "([a-z])([A-Z])", "$1 $2");
+
+	}
 
 	public static Node GetItemData(string item) {
 

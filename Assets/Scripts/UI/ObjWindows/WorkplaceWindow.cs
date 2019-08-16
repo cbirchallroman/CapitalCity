@@ -90,8 +90,7 @@ public class WorkplaceWindow : ObjWindow {
 
 		foreach (Transform child in proleGrid)
 			Destroy(child.gameObject);
-
-		int even = 0;
+		
 		//instantiate worker list
 		foreach (Prole p in wp.WorkerList) {
 
@@ -104,10 +103,6 @@ public class WorkplaceWindow : ObjWindow {
 			ProleInfo pi = go.GetComponent<ProleInfo>();
 			pi.Employee = p;
 			pi.WP = wp;
-
-			go.GetComponent<Image>().enabled = even == 1;
-
-			even = even == 0 ? 1 : 0;
 
 		}
 

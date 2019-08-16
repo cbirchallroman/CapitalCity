@@ -91,9 +91,15 @@ public class ItemOrder {
 
         return Enums.GetItemName(item, type);
 
-    }
+	}
 
-    public override int GetHashCode() {
+	public string GetItemDisplayName() {
+
+		return Enums.GetItemDisplayName(item, type);
+
+	}
+
+	public override int GetHashCode() {
         return base.GetHashCode();
     }
 

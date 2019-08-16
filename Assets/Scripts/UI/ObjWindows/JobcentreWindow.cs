@@ -36,8 +36,7 @@ public class JobcentreWindow : ObjWindow {
 
 		foreach (Transform child in prospectGrid)
 			Destroy(child.gameObject);
-
-		int even = 0;
+		
 		//instantiate worker list
 		foreach (Prole p in jc.Prospects) {
 
@@ -50,10 +49,6 @@ public class JobcentreWindow : ObjWindow {
 			ProspectInfo pi = go.GetComponent<ProspectInfo>();
 			pi.prospect = p;
 			pi.jobcentre = jc;
-
-			go.GetComponent<Image>().enabled = even == 1;
-
-			even = even == 0 ? 1 : 0;
 
 		}
 

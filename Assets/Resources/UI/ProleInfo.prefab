@@ -75,6 +75,7 @@ GameObject:
   - component: {fileID: 222583858636204520}
   - component: {fileID: 114291880615077746}
   - component: {fileID: 114059018038954018}
+  - component: {fileID: 114404883894651042}
   m_Layer: 5
   m_Name: ProleInfo
   m_TagString: Untagged
@@ -250,6 +251,17 @@ MonoBehaviour:
   m_FillAmount: 1
   m_FillClockwise: 1
   m_FillOrigin: 0
+--- !u!114 &114404883894651042
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1773861732839606}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 197b3d5dc7a64bb438e68c751fff33c9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &114438530470445824
 MonoBehaviour:
   m_ObjectHideFlags: 1

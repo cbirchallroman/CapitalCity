@@ -36,6 +36,7 @@ public class ImmigrationController : MonoBehaviour {
     public float TimeDelta { get; set; }
 	public int immigrantsThisMonth, immigrantsWaiting = 25, physicalPref = 60, intellectualPref = 20, emotionalPref = 20;
 	public ImmigrantOrigin immigrantOrigin = ImmigrantOrigin.American;
+	public bool oldImmigration = false;
 	public string startingHouse = "House1s";
 
 	public int TotalPref { get { return physicalPref + intellectualPref + emotionalPref; } }
@@ -92,16 +93,16 @@ public class ImmigrationController : MonoBehaviour {
     
     private void Update() {
 
-		//if(immigrantsWaiting != 0)
-		//	TimeDelta += Time.deltaTime;
+		if (immigrantsWaiting != 0 && oldImmigration)
+			TimeDelta += Time.deltaTime;
 
-  //      if (TimeDelta >= ImmigrationRate) {
+		if (TimeDelta >= ImmigrationRate) {
 
-  //          TimeDelta = 0;
-  //          if (Requests.Count > 0)
-  //              NextImmigrant();
+			TimeDelta = 0;
+			if (Requests.Count > 0)
+				NextImmigrant();
 
-		//}
+		}
 
 	}
 
