@@ -217,9 +217,11 @@ public class Generator : Workplace {
         ItemOrder io = new ItemOrder(stockpile, product);
 
 		//try to send carryer to other generator first; then try to storage
-		if(SpawnGiverToGenerator(io) == null || DontSendItemsToGenerators)
+		if(DontSendItemsToGenerators)
 			SpawnGiverToStorage(io);
-
+		else if (SpawnGiverToGenerator(io) == null)
+			SpawnGiverToStorage(io);
+		
 		if (!ActiveSmartWalker)
 			return;
         Producing = false;
@@ -384,7 +386,7 @@ public class Generator : Workplace {
 
 	}
 
-	public int NeedsIngredient(string item) {
+	public int IngredientIndex(string item) {
 
 		for (int index = 0; index < Ingredients.Length; index++)
 			if (Ingredients[index].Equals(item))

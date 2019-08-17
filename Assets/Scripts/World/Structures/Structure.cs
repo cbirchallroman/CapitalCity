@@ -375,7 +375,9 @@ public class Structure : Obj {
 		if (entrances.Count == 0)
 			return;
 
-		GameObject go = world.SpawnObject("Walkers/RandomWalkers", RandomWalker, entrances[0]);
+		Node start = entrances[0];
+
+		GameObject go = world.SpawnObject("Walkers/RandomWalkers", RandomWalker, start);
 		Walker w = go.GetComponent<Walker>();
 		w.world = world;
 		w.Origin = this;
@@ -522,7 +524,7 @@ public class Structure : Obj {
 			if (!gen.Operational)
 				continue;
 
-			int index = gen.NeedsIngredient(item);
+			int index = gen.IngredientIndex(item);
 
 			//only add to list if it needs this ingredient
 			if (index == -1)
@@ -535,7 +537,7 @@ public class Structure : Obj {
 				continue;
 
 			//only add to list if it has none of this item
-			if (gen.IngredientNeeded(index) != 0)
+			if (gen.IngredientNeeded(index) <= 0)
 				continue;
 
 			float distance = entrancesHere[0].DistanceTo(entrancesThere[0]);

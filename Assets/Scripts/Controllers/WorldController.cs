@@ -64,8 +64,8 @@ public class WorldController : MonoBehaviour {
         
         Map = new World(size);
         Map.terrain = mapGenerator.GetRandomTerrain(size);
-		//Map.elevation = mapGenerator.GetRandomElevation(size);
-		Map.elevation = new float[szx, szy];
+		Map.elevation = mapGenerator.GetRandomElevation(size);
+		//Map.elevation = new float[szx, szy];
 
 		//until we've successfully placed the map entrance/exit, keep trying
 		bool success = false;
@@ -79,6 +79,8 @@ public class WorldController : MonoBehaviour {
             notifications.FreshEvents();
         ProductivityController.CreateProductivities();
 		ResourcesDatabase.CreateWhitelist();
+		money.FreshStartingQuarter((int)timeController.CurrentSeason, timeController.CurrentYear);
+		timeController.finances.LoadFinancialReports();
 
 	}
 

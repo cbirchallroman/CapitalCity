@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -50,6 +51,8 @@ public class WorldProgressSave : BasicWorldSave {
 	public DictContainer<string, float> productivities;
 	public DictContainer<string, float> automation;
 
+	public DateTime saveDate;
+
 	//notifications
 	public List<Notification> Events;
 
@@ -77,6 +80,9 @@ public class WorldProgressSave : BasicWorldSave {
 
 		productivities = new DictContainer<string, float>(ProductivityController.productivities);
 		automation = new DictContainer<string, float>(ProductivityController.automationValue);
+
+		saveDate = DateTime.Now;
+		Debug.Log(saveDate.ToString("MM/dd/yyyy"));
 
 		Events = w.notifications.Events;
 

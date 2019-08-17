@@ -214,6 +214,8 @@ public class ImmigrationController : MonoBehaviour {
 		w.Activate();
 
 		immigrant.EvictHouse(false);  //quit current house if they have one, but don't quit work because they're still here
+		if(immigrant.Employed)
+			immigrant.QuitWork();
 
 	}
 

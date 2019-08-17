@@ -51,6 +51,7 @@ public class ScenarioGoals {
 public class ScenarioController : MonoBehaviour {
 
     public Button nextLvlButton;
+	public Text scenarioLabel;
 	
     public WorldController worldController;
 
@@ -62,9 +63,7 @@ public class ScenarioController : MonoBehaviour {
 
 	[Header("Scenario Goals")]
 	public ScenarioGoals goals;
-
-
-
+	
 	public void changeName(string s) { goals.levelName = s; }
 	public void changeDesc(string s) { goals.levelDesc = s; }
 
@@ -164,8 +163,10 @@ public class ScenarioController : MonoBehaviour {
         CheckVictory();
 
         nextLvlButton.interactable = CampaignManager.HasNextLevel();
+		scenarioLabel.text = goals.levelName;
 
-    }
+
+	}
 
     public void CheckVictory() {
 

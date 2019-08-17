@@ -10,7 +10,12 @@ public class QuarterlyReport : MonoBehaviour {
     public Text time;
     public Text balance;
 
-    [Header("Credit")]
+	public Float3d winterColor = new Float3d(83, 202, 233);
+	public Float3d springColor = new Float3d(0, 186, 0);
+	public Float3d summerColor = new Float3d(200, 200, 0);
+	public Float3d autumnColor = new Float3d(255, 165, 54);
+
+	[Header("Credit")]
     public Text construction;
     public Text foodImports;
     public Text goodImports;
@@ -31,22 +36,20 @@ public class QuarterlyReport : MonoBehaviour {
         Q = q;
 
         time.text = Q.ToString();
-        
-        
 
         UpdateReport();
 
         Season season = (Season)q.season;
         if (season == Season.Winter)
-            background.color = new Color(83f / 255f, 202 / 255f, 233 / 255f);
+            background.color = new Color(winterColor.X / 255, winterColor.Y / 255, winterColor.Z / 255);
         else if (season == Season.Spring)
-            background.color = new Color(0, 186 / 255f, 0);
-        else if (season == Season.Summer)
-            background.color = new Color(200 / 255f, 200 / 255f, 0);
-        else if (season == Season.Autumn)
-            background.color = new Color(255 / 255f, 165 / 255f, 54 / 255f);
+            background.color = new Color(springColor.X / 255, springColor.Y / 255, springColor.Z / 255);
+		else if (season == Season.Summer)
+            background.color = new Color(summerColor.X / 255, summerColor.Y / 255, summerColor.Z / 255);
+		else if (season == Season.Autumn)
+            background.color = new Color(autumnColor.X / 255, autumnColor.Y / 255, autumnColor.Z / 255);
 
-    }
+	}
 
     public void UpdateReport() {
 

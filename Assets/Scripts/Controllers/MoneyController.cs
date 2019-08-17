@@ -13,7 +13,7 @@ public class MoneySave {
     public MoneySave(MoneyController mc) {
 
         money = mc.Money;
-        currentQuarter = mc.currentQuarter;
+        currentQuarter = mc.CurrentQuarter;
         pastQuarters = mc.pastQuarters;
 
     }
@@ -23,7 +23,7 @@ public class MoneySave {
 public class MoneyController : MonoBehaviour {
 
     public Text moneyLabel;
-    public Quarter currentQuarter;
+    public Quarter CurrentQuarter { get; set; }
     public QuarterList pastQuarters;
 	public static char symbol = '₡';
 
@@ -32,7 +32,7 @@ public class MoneyController : MonoBehaviour {
     public void Load(MoneySave mc) {
 
         Money = mc.money;
-        currentQuarter = mc.currentQuarter;
+        CurrentQuarter = mc.currentQuarter;
         pastQuarters = mc.pastQuarters;
 
     }
@@ -47,31 +47,37 @@ public class MoneyController : MonoBehaviour {
 
     }
 
+	public void FreshStartingQuarter(int s, int y) {
+
+		CurrentQuarter = new Quarter(s, y);
+
+	}
+
     public void BeginNewQuarter(int s, int y) {
         
-        pastQuarters.PushQuarter(currentQuarter);
-        currentQuarter = new Quarter(s, y);
+        pastQuarters.PushQuarter(CurrentQuarter);
+        CurrentQuarter = new Quarter(s, y);
 
     }
 
     public void SpendOnWages(float m) {
 
         Money -= m;
-        currentQuarter.wages += m;
+        CurrentQuarter.wages += m;
 
     }
 
     public void SpendOnConstruction(float m) {
 
         Money -= m;
-        currentQuarter.construction += m;
+        CurrentQuarter.construction += m;
 
     }
 
     public void SpendOnMaintenance(float m) {
 
         Money -= m;
-        currentQuarter.maintenance += m;
+        CurrentQuarter.maintenance += m;
 
     }
 
@@ -79,11 +85,11 @@ public class MoneyController : MonoBehaviour {
 
         Money -= m;
         if (type == ItemType.Food)
-            currentQuarter.foodImports += m;
+            CurrentQuarter.foodImports += m;
         else if (type == ItemType.Good)
-            currentQuarter.goodImports += m;
+            CurrentQuarter.goodImports += m;
         else if (type == ItemType.Resource)
-            currentQuarter.resourceImports += m;
+            CurrentQuarter.resourceImports += m;
 
     }
 
@@ -91,9 +97,9 @@ public class MoneyController : MonoBehaviour {
 
         Money += m;
         if (type == ItemType.Food)
-            currentQuarter.foodSales += m;
+            CurrentQuarter.foodSales += m;
         else if (type == ItemType.Good)
-            currentQuarter.goodSales += m;
+            CurrentQuarter.goodSales += m;
 
     }
 
@@ -101,11 +107,11 @@ public class MoneyController : MonoBehaviour {
 
         Money += m;
         if (type == ItemType.Food)
-            currentQuarter.foodExports += m;
+            CurrentQuarter.foodExports += m;
         else if (type == ItemType.Good)
-            currentQuarter.goodExports += m;
+            CurrentQuarter.goodExports += m;
         else if (type == ItemType.Resource)
-            currentQuarter.resourceExports += m;
+            CurrentQuarter.resourceExports += m;
 
     }
 

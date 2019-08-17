@@ -108,7 +108,7 @@ public class Person {
 
 		diseased = true;
 		diseaseLength = diseaseLengthMax;
-		Debug.Log(this + " turned disease");
+		//Debug.Log(this + " turned diseased");
 		NotifyHouseOfDisease();
 
 	}
@@ -260,9 +260,12 @@ public class Prole : Person {
 
 	public void RollStats(LaborType pref) {
 
-		physique = Random.Range(1, 7) + Random.Range(1, 7) + Random.Range(1, 7);
-		intellect = Random.Range(1, 7) + Random.Range(1, 7) + Random.Range(1, 7);
-		empathy = Random.Range(1, 7) + Random.Range(1, 7) + Random.Range(1, 7);
+		//physique = Random.Range(1, 7) + Random.Range(1, 7) + Random.Range(1, 7);
+		//intellect = Random.Range(1, 7) + Random.Range(1, 7) + Random.Range(1, 7);
+		//empathy = Random.Range(1, 7) + Random.Range(1, 7) + Random.Range(1, 7);
+		physique = 10;
+		intellect = 10;
+		empathy = 10;
 
 		//TAKE PREF INTO ACCOUNT SOMEHOW
 
@@ -479,7 +482,7 @@ public class Prole : Person {
         GameObject go = world.GetBuildingAt(homeNode);
 
         if (go == null)
-            Debug.LogError(surname + " does not have a house at " + homeNode + " anymore");
+            Debug.LogError(this + " does not have a house at " + homeNode + " anymore");
 
         House house = go.GetComponent<House>();
         house.Savings += wages;
@@ -494,7 +497,7 @@ public class Prole : Person {
 		GameObject go = world.GetBuildingAt(workNode);
 
 		if (go == null)
-			Debug.LogError("Workplace at " + workNode + " for " + this + " does not exist");
+			return 0;
 
 		Workplace wrk = go.GetComponent<Workplace>();
 

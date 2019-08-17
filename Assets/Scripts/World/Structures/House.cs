@@ -486,8 +486,6 @@ public class House : Structure {
             if (world.Map.cleanliness[x, y] > 100)
                 world.Map.cleanliness[x, y] = 100;
 
-			Debug.Log(world.Map.cleanliness[x, y]);
-
         }
 
     }

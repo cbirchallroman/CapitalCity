@@ -115,7 +115,6 @@ public class TimeController : MonoBehaviour {
         //update label
         UpdateTimeLabel();
         UpdateClockColor();
-        finances.LoadFinancialReports();
     }
 
     void Update () {
