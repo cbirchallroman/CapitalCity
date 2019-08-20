@@ -14,7 +14,7 @@ public class Emigrant : Walker {
 
 	public override void DoEveryStep() {
 
-		if (!pathfinder.CanGoTo(X, Y, data))
+		if (!pathfinder.CanGoTo(X, Y, Prevx, Prevy, data))
 			DestroySelf();
 
 		if (Path.Count > 0)

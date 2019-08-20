@@ -248,7 +248,7 @@ public class Walker : Obj {
 		}
 
 		//otherwise go backwards
-		else if (pathfinder.CanGoTo(Prevx, Prevy, data)) {
+		else if (pathfinder.CanGoTo(Prevx, Prevy, X, Y, data)) {
 			next = new Node(Prevx, Prevy);
 		}
 
@@ -276,6 +276,7 @@ public class Walker : Obj {
 	void MoveToTile(Node n) {
 
 		//update position incl. elevation
+		float currentHeight = transform.position.y; //this is the current elevation
 		Vector3 pos = new Vector3(X, world.GetObjectFloat(X, Y), Y);	//maybe set elevation for next tile instead of current
 		transform.position = pos;
 
@@ -283,6 +284,7 @@ public class Walker : Obj {
 		Prevy = Y;
 		X = n.x;
 		Y = n.y;
+		float newHeight = world.GetObjectFloat(n.x, n.y);	//elevation we're climbing up/down to
 
 		world.LeaveSquare(this, Prevx, Prevy);
 		world.EnterSquare(this, X, Y);

@@ -22,7 +22,7 @@ public class Immigrant : Walker {
 
 	public override void DoEveryStep() {
 
-		if (!pathfinder.CanGoTo(X, Y, data))
+		if (!pathfinder.CanGoTo(X, Y, Prevx, Prevy, data))
 			FindPathTo(new Node(Destination));
 
 		//if there's no house to go to, go to map exit

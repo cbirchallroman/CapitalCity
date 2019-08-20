@@ -24,7 +24,7 @@ public class Livestock : Animal {
 
 	public override void DoEveryStep() {
 
-		if (Origin == null || !pathfinder.CanGoTo(X, Y, data))
+		if (Origin == null || !pathfinder.CanGoTo(X, Y, Prevx, Prevy, data))
 			DestroySelf();
 
 		//random movement if walktime > 0

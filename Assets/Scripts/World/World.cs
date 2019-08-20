@@ -67,6 +67,10 @@ public class World {
         if (OutOfBounds(x, y))
             return false;
 
+		if (IsBuildingAt(x, y))
+			if (GetBuildingNameAt(x, y).Contains("Ramp"))
+				return false;
+
         return roads[x, y] == 2;
 
     }

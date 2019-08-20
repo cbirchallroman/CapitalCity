@@ -11,7 +11,7 @@ public class Caravan : Carryer {
 		if (Destination == null && !data.ReturningHome)
 			LeaveMap();
 
-		if (!pathfinder.CanGoTo(X, Y, data))
+		if (!pathfinder.CanGoTo(X, Y, Prevx, Prevy, data))
 			DestroySelf();
 
 		if (Path.Count > 0)

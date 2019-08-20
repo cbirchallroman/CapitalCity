@@ -57,7 +57,7 @@ public class RandomWalker : Walker {
 
 	public override void DoEveryStep() {
 
-		if (Origin == null || !pathfinder.CanGoTo(X, Y, data))
+		if (Origin == null || !pathfinder.CanGoTo(X, Y, Prevx, Prevy, data))
 			DestroySelf();
 
 		VisitBuildings();
