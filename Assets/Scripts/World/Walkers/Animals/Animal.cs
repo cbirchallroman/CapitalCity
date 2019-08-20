@@ -46,7 +46,7 @@ public class Animal : Walker {
 		UpdateRandomMovement();
 
 		//delete animal if on tile it's not supposed to be on
-		if (!pathfinder.CanGoTo(X, Y, data))
+		if (!pathfinder.CanGoTo(X, Y, Prevx, Prevy, data))
 			DestroySelf();
 
 	}

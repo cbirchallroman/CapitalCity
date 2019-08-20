@@ -6,7 +6,7 @@ public class FishingBoat : Livestock {
 	
 	public override void DoEveryStep() {
 
-		if (Origin == null || !pathfinder.CanGoTo(X, Y, data))
+		if (Origin == null || !pathfinder.CanGoTo(X, Y, Prevx, Prevy, data))
 			DestroySelf();
 
 		string spot = X + "_" + Y;

@@ -8,7 +8,7 @@ public class Follower : Walker {
 
 	public override void DoEveryStep() {
 
-		if (Leader == null || !pathfinder.CanGoTo(X, Y, data))
+		if (Leader == null || !pathfinder.CanGoTo(X, Y, Prevx, Prevy, data))
 			DestroySelf();
 
 		UpdateFollowerMovement();

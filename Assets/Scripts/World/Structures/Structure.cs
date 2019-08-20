@@ -220,11 +220,17 @@ public class Structure : Obj {
 
         List<Node> tiles = new List<Node>();
         World map = world.Map;
+		float elev = map.elevation[X, Y];
 
-        //this demon magic works, don't think about it too much but it just checks surrounding tiles for roads
-        for (int a = X; a < X + Sizex; a++) {
+		//if out of bounds or on a different elevation, continue
+		//otherwise add if there's a road tile
+
+		//this demon magic works, don't think about it too much but it just checks surrounding tiles for roads
+		for (int a = X; a < X + Sizex; a++) {
             if (map.OutOfBounds(a, Y - 1))
                 continue;
+			if (elev != map.elevation[a, Y - 1])
+				continue;
             if (map.IsUnblockedRoadAt(a, Y - 1))
                 tiles.Add(new Node(a, Y - 1));
         }
@@ -232,21 +238,27 @@ public class Structure : Obj {
         for (int b = Y; b < Y + Sizey; b++) {
             if (map.OutOfBounds(X + Sizex, b))
                 continue;
-            if (map.IsUnblockedRoadAt(X + Sizex, b))
+			if (elev != map.elevation[X + Sizex, b])
+				continue;
+			if (map.IsUnblockedRoadAt(X + Sizex, b))
                 tiles.Add(new Node(X + Sizex, b));
         }
 
         for (int a = X; a < X + Sizex; a++) {
             if (map.OutOfBounds(a, Y + Sizey))
                 continue;
-            if (map.IsUnblockedRoadAt(a, Y + Sizey))
+			if (elev != map.elevation[a, Y + Sizey])
+				continue;
+			if (map.IsUnblockedRoadAt(a, Y + Sizey))
                 tiles.Add(new Node(a, Y + Sizey));
         }
 
         for (int b = Y; b < Y + Sizey; b++) {
             if (map.OutOfBounds(X - 1, b))
                 continue;
-            if (map.IsUnblockedRoadAt(X - 1, b))
+			if (elev != map.elevation[X - 1, b])
+				continue;
+			if (map.IsUnblockedRoadAt(X - 1, b))
                 tiles.Add(new Node(X - 1, b));
         }
 
@@ -260,32 +272,44 @@ public class Structure : Obj {
 
         List<Node> tiles = new List<Node>();
         World map = world.Map;
+		float elev = map.elevation[X, Y];
 
-        for (int a = X; a < X + Sizex; a++) {
+		//if out of bounds or on a different elevation, continue
+		//otherwise add if there's an empty ground tile
+
+		for (int a = X; a < X + Sizex; a++) {
             if (map.OutOfBounds(a, Y - 1))
                 continue;
-            if (map.terrain[a, Y - 1] != (int)Terrain.Water && string.IsNullOrEmpty(map.structures[a, Y - 1]))
+			if (elev != map.elevation[a, Y - 1])
+				continue;
+			if (map.terrain[a, Y - 1] != (int)Terrain.Water && string.IsNullOrEmpty(map.structures[a, Y - 1]))
                 tiles.Add(new Node(a, Y - 1));
         }
 
         for (int b = Y; b < Y + Sizey; b++) {
             if (map.OutOfBounds(X + Sizex, b))
                 continue;
-            if (map.terrain[X + Sizex, b] != (int)Terrain.Water && string.IsNullOrEmpty(map.structures[X + Sizex, b]))
+			if (elev != map.elevation[X + Sizex, b])
+				continue;
+			if (map.terrain[X + Sizex, b] != (int)Terrain.Water && string.IsNullOrEmpty(map.structures[X + Sizex, b]))
                 tiles.Add(new Node(X + Sizex, b));
         }
 
         for (int a = X; a < X + Sizex; a++) {
             if (map.OutOfBounds(a, Y + Sizey))
                 continue;
-            if (map.terrain[a, Y + Sizey] != (int)Terrain.Water && string.IsNullOrEmpty(map.structures[a, Y + Sizey]))
+			if (elev != map.elevation[a, Y + Sizey])
+				continue;
+			if (map.terrain[a, Y + Sizey] != (int)Terrain.Water && string.IsNullOrEmpty(map.structures[a, Y + Sizey]))
                 tiles.Add(new Node(a, Y + Sizey));
         }
 
         for (int b = Y; b < Y + Sizey; b++) {
             if (map.OutOfBounds(X - 1, b))
                 continue;
-            if (map.terrain[X - 1, b] != (int)Terrain.Water && string.IsNullOrEmpty(map.structures[X - 1, b]))
+			if (elev != map.elevation[X - 1, b])
+				continue;
+			if (map.terrain[X - 1, b] != (int)Terrain.Water && string.IsNullOrEmpty(map.structures[X - 1, b]))
                 tiles.Add(new Node(X - 1, b));
         }
 
@@ -296,32 +320,44 @@ public class Structure : Obj {
 
         List<Node> tiles = new List<Node>();
         World map = world.Map;
+		float elev = map.elevation[X, Y];
 
-        for (int a = X; a < X + Sizex; a++) {
+		//if out of bounds or on a different elevation, continue
+		//otherwise add if there's a ground tile
+
+		for (int a = X; a < X + Sizex; a++) {
             if (map.OutOfBounds(a, Y - 1))
                 continue;
-            if (map.terrain[a, Y - 1] != (int)Terrain.Water)
+			if (elev != map.elevation[a, Y - 1])
+				continue;
+			if (map.terrain[a, Y - 1] != (int)Terrain.Water)
                 tiles.Add(new Node(a, Y - 1));
         }
 
         for (int b = Y; b < Y + Sizey; b++) {
             if (map.OutOfBounds(X + Sizex, b))
                 continue;
-            if (map.terrain[X + Sizex, b] != (int)Terrain.Water)
+			if (elev != map.elevation[X + Sizex, b])
+				continue;
+			if (map.terrain[X + Sizex, b] != (int)Terrain.Water)
                 tiles.Add(new Node(X + Sizex, b));
         }
 
         for (int a = X; a < X + Sizex; a++) {
             if (map.OutOfBounds(a, Y + Sizey))
                 continue;
-            if (map.terrain[a, Y + Sizey] != (int)Terrain.Water)
+			if (elev != map.elevation[a, Y + Sizey])
+				continue;
+			if (map.terrain[a, Y + Sizey] != (int)Terrain.Water)
                 tiles.Add(new Node(a, Y + Sizey));
         }
 
         for (int b = Y; b < Y + Sizey; b++) {
             if (map.OutOfBounds(X - 1, b))
                 continue;
-            if (map.terrain[X - 1, b] != (int)Terrain.Water)
+			if (elev != map.elevation[X - 1, b])
+				continue;
+			if (map.terrain[X - 1, b] != (int)Terrain.Water)
                 tiles.Add(new Node(X - 1, b));
         }
 
@@ -332,32 +368,44 @@ public class Structure : Obj {
 
         List<Node> tiles = new List<Node>();
         World map = world.Map;
+		float elev = map.elevation[X, Y];
 
-        for (int a = X; a < X + Sizex; a++) {
+		//if out of bounds or on a different elevation, continue
+		//otherwise add if there's an empty water tile
+
+		for (int a = X; a < X + Sizex; a++) {
             if (map.OutOfBounds(a, Y - 1))
                 continue;
-            if (map.terrain[a, Y - 1] == (int)Terrain.Water && string.IsNullOrEmpty(map.structures[a, Y - 1]))
+			if (elev != map.elevation[a, Y - 1])
+				continue;
+			if (map.terrain[a, Y - 1] == (int)Terrain.Water && string.IsNullOrEmpty(map.structures[a, Y - 1]))
                 tiles.Add(new Node(a, Y - 1));
         }
 
         for (int b = Y; b < Y + Sizey; b++) {
             if (map.OutOfBounds(X + Sizex, b))
                 continue;
-            if (map.terrain[X + Sizex, b] == (int)Terrain.Water && string.IsNullOrEmpty(map.structures[X + Sizex, b]))
+			if (elev != map.elevation[X + Sizex, b])
+				continue;
+			if (map.terrain[X + Sizex, b] == (int)Terrain.Water && string.IsNullOrEmpty(map.structures[X + Sizex, b]))
                 tiles.Add(new Node(X + Sizex, b));
         }
 
         for (int a = X; a < X + Sizex; a++) {
             if (map.OutOfBounds(a, Y + Sizey))
                 continue;
-            if (map.terrain[a, Y + Sizey] == (int)Terrain.Water && string.IsNullOrEmpty(map.structures[a, Y + Sizey]))
+			if (elev != map.elevation[a, Y + Sizey])
+				continue;
+			if (map.terrain[a, Y + Sizey] == (int)Terrain.Water && string.IsNullOrEmpty(map.structures[a, Y + Sizey]))
                 tiles.Add(new Node(a, Y + Sizey));
         }
 
         for (int b = Y; b < Y + Sizey; b++) {
             if (map.OutOfBounds(X - 1, b))
                 continue;
-            if (map.terrain[X - 1, b] == (int)Terrain.Water && string.IsNullOrEmpty(map.structures[X - 1, b]))
+			if (elev != map.elevation[X - 1, b])
+				continue;
+			if (map.terrain[X - 1, b] == (int)Terrain.Water && string.IsNullOrEmpty(map.structures[X - 1, b]))
                 tiles.Add(new Node(X - 1, b));
         }
 
