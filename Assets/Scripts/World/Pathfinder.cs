@@ -174,7 +174,18 @@ public class Pathfinder {
 
 		//otherwise check if there is a building
 		else if (map.IsBuildingAt(a, b))
-			return CheckBuildingAt(a, b, walker);
+			return CheckBuildingAt(a, b, currx, curry, walker);
+
+		//check if we're on a ramp right now; not mutually exclusive with the above
+		if(map.IsBuildingAt(currx, curry)) {
+
+			if (map.GetBuildingNameAt(currx, curry).Contains("Ramp"))
+				return map.GetBuildingAt(currx, curry).GetComponent<Road>().NeighborCondition(a, b);
+
+		}
+
+		if (map.elevation[a, b] != map.elevation[currx, curry])
+			return false;
 
 		//return false if there's water
 		return map.terrain[a, b] != (int)Terrain.Water;
@@ -231,12 +242,15 @@ public class Pathfinder {
 
 	}
 
-	bool CheckBuildingAt(int a, int b, WalkerData walker) {
+	bool CheckBuildingAt(int a, int b, int currx, int curry, WalkerData walker) {
 
 		string str = map.GetBuildingNameAt(a, b);
 
 		if (str.Contains("MapEntrance"))
 			return true;
+
+		if (str.Contains("Ramp"))
+			return map.GetBuildingAt(a, b).GetComponent<Road>().NeighborCondition(currx, curry);
 
 		if (map.IsRoadAt(a, b))
 			return true;

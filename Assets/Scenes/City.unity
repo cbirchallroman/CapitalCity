@@ -18806,7 +18806,7 @@ MonoBehaviour:
   intellectualPref: 33
   emotionalPref: 33
   immigrantOrigin: 0
-  oldImmigration: 1
+  oldImmigration: 0
   startingHouse: House1s
 --- !u!4 &955919402
 Transform:
