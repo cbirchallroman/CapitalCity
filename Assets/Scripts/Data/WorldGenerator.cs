@@ -49,7 +49,11 @@ public class WorldGenerator {
 
 				float noise = perlin[x, y];
 
-				elevation[x, y] = noise > 50 ? 1 : 0;
+				elevation[x, y] = 0;
+				if (noise > 75)
+					elevation[x, y] = 2;
+				else if (noise > 50)
+					elevation[x, y] = 1;
 
 			}
 

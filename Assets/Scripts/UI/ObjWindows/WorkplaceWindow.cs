@@ -29,7 +29,10 @@ public class WorkplaceWindow : ObjWindow {
 
 		UpdateProductivityPage();
 		UpdateFinancialPage();
-		UpdateLaborPage();
+		CreateLaborPage();
+
+		//set action to here
+		wp.ProleEmploymentAction += CreateWorkerListElement;
 
 	}
 
@@ -38,7 +41,6 @@ public class WorkplaceWindow : ObjWindow {
 		base.DoDuringUpdate();
 		UpdateProductivityPage();
 		UpdateFinancialPage();
-		UpdateLaborPage();
 
     }
 
@@ -80,31 +82,30 @@ public class WorkplaceWindow : ObjWindow {
 
 	}
 
-	public void UpdateLaborPage() {
+	public void CreateLaborPage() {
 
 		Workplace wp = (Workplace)obj;
-
-		//update labor list ONLY if there's different # of workers than before
-		if (proleGrid.childCount == wp.WorkersCount)
-			return;
-
-		foreach (Transform child in proleGrid)
-			Destroy(child.gameObject);
 		
 		//instantiate worker list
 		foreach (Prole p in wp.WorkerList) {
 
-			if (p == null)
-				continue;
-
-			GameObject go = Instantiate(UIObjectDatabase.GetUIElement("ProleInfo"));
-			go.transform.SetParent(proleGrid);
-
-			ProleInfo pi = go.GetComponent<ProleInfo>();
-			pi.Employee = p;
-			pi.WP = wp;
+			CreateWorkerListElement(p, wp);
 
 		}
+
+	}
+
+	public void CreateWorkerListElement(Prole p, Workplace wp) {
+
+		if (p == null)
+			return;
+
+		GameObject go = Instantiate(UIObjectDatabase.GetUIElement("ProleInfo"));
+		go.transform.SetParent(proleGrid);
+
+		ProleInfo pi = go.GetComponent<ProleInfo>();
+		pi.Employee = p;
+		pi.WP = wp;
 
 	}
 

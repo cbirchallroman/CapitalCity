@@ -40,7 +40,7 @@ public class StorageBuilding : Workplace {
 
     public List<StorageBlock> storageBlocks;
 
-    public override void Load(ObjSave o) {
+	public override void Load(ObjSave o) {
         base.Load(o);
 
         StorageBuildingSave s = (StorageBuildingSave)o;

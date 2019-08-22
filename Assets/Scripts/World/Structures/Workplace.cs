@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -67,6 +68,9 @@ public class Workplace : Structure {
     public float WagesPerWorker { get { return WorkingDay * baseWages; } }
     public float PercentEmployed { get { return (float)WorkersCount / workersMax; } }
 	public float WorkerEffectiveness { get; set; }
+
+	//UI thingy
+	public event Action<Prole, Workplace> ProleEmploymentAction;
 
     public override void Load(ObjSave o) {
         base.Load(o);
@@ -281,7 +285,12 @@ public class Workplace : Structure {
         }
 
 		CalculateWorkerEffectiveness();
-		
+
+		//update UI if possible
+		Action<Prole, Workplace> act = ProleEmploymentAction;
+		if(act != null)
+			act.Invoke(p, this);
+
 		return hired;
 
     }
@@ -318,7 +327,7 @@ public class Workplace : Structure {
 		int diseaseChance = numDiseased * 5;	//the chance for disease to spread
 
 		//on a successful roll, spread disease to one other person here
-		if (Random.Range(1, 100) <= diseaseChance) {
+		if (UnityEngine.Random.Range(1, 100) <= diseaseChance) {	//had to specify UnityEngine bc that and System are both here
 
 			foreach (Prole p in WorkerList) {
 

@@ -298,7 +298,7 @@ public class WorldController : MonoBehaviour {
 
 				//else if there's a walker on this tile (make sure that walker grid exists before checking for a list on it)
 				else if (WalkerGrid != null) {
-					if (WalkerGrid[a, b] != null && !type.Contains("House"))
+					if (WalkerGrid[a, b] != null && !type.Contains("House") && !type.Contains("Rubble"))
 						return false;
 				}
 
@@ -512,7 +512,8 @@ public class WorldController : MonoBehaviour {
 		Destroy(x, y);
 		for (int a = x; a < x + sizex; a++)
 			for (int b = y; b < y + sizey; b++) {
-				SpawnStructure("Rubble", a, b, 0);
+				if(SpawnStructure("Rubble", a, b, 0) == null)
+					Debug.LogError("Couldn't create rubble");
 			}
 
 	}

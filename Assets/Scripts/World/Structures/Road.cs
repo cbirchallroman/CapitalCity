@@ -151,8 +151,8 @@ public class Road : TiledStructure {
 			float hereElev = world.Map.elevation[a, b];
 			Structure rmp = null;
 
-			//if the elevation here is higher than at our tile, build a ramp instead
-			if (hereElev > localElev)
+			//if the elevation here is 1 higher than at our tile, build a ramp instead
+			if (hereElev == localElev + 1)
 				rmp = Change(ramp);
 
 			//now turn the ramp if it exists

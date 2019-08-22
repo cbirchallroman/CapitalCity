@@ -202,71 +202,40 @@ public class House : Structure {
 
         //make containers for adjacent houses
         World map = world.Map;
-        House h1 = null;
-        House h2 = null;
-        House h3 = null;
 
-        //check X+1, Y for small house
-        //if there is no house or the house there is too big, don't evolve it
-        if (map.IsBuildingAt(X + 1, Y)) {
+		House[] neighbors = new House[3];
+		Node[] checks = { new Node(X + 1, Y), new Node(X, Y + 1), new Node(X + 1, Y + 1) };
 
-            House h = map.GetBuildingAt(X + 1, Y).GetComponent<House>();
-            if (h == null)
-                return;
-            if (h.HouseSize != 1)
-                return;
-            h1 = h;
+		//iterate through nearby houses
+		//	if at any point conditions are not met for merge, don't continue at all
+		for(int i = 0; i < neighbors.Length; i++) {
 
-        }
+			House h = map.GetBuildingAt(checks[i]).GetComponent<House>();
+			if (h == null)
+				return;
+			if (elevation != h.elevation)
+				return;
+			if (h.HouseSize != 1)
+				return;
+			if (h.level != level)
+				return;
+			neighbors[i] = h;
 
-        //check X, Y+1 for small house
-        if (map.IsBuildingAt(X, Y + 1)) {
-
-            House h = map.GetBuildingAt(X, Y + 1).GetComponent<House>();
-            if (h == null)
-                return;
-            if (h.HouseSize != 1)
-                return;
-            h2 = h;
-
-        }
-
-        //check X+1, Y+1 for small house
-        if (map.IsBuildingAt(X + 1, Y + 1)) {
-
-            House h = map.GetBuildingAt(X + 1, Y + 1).GetComponent<House>();
-            if (h == null)
-                return;
-            if (h.HouseSize != 1)
-                return;
-            h3 = h;
-
-        }
-
-        //only proceed if all houses are same level
-        if (h1 == null || h2 == null || h3 == null)
-            return;
-
-        if (h1.level != level || h2.level != level || h3.level != level)
-            return;
+		}
 
         //combine arrays
-        Water = ArrayFunctions.CombineArrays(Water, h1.Water, h2.Water, h3.Water);
-        Food = ArrayFunctions.CombineArrays(Food, h1.Food, h2.Food, h3.Food);
+        Water = ArrayFunctions.CombineArrays(Water, neighbors[0].Water, neighbors[1].Water, neighbors[2].Water);
+        Food = ArrayFunctions.CombineArrays(Food, neighbors[0].Food, neighbors[1].Food, neighbors[2].Food);
 
-        //combine stats
-        foreach (Prole p in h1.Residents)
-            Residents.Add(p);
-        foreach (Prole p in h2.Residents)
-            Residents.Add(p);
-        foreach (Prole p in h3.Residents)
-            Residents.Add(p);
-        foreach (Prole p in Residents)
-            Debug.Log(p.workNode);
+        //combine stats and destroy houses
+		foreach(House h in neighbors) {
 
-        world.Demolish(h1.X, h1.Y);
-        world.Demolish(h2.X, h2.Y);
-        world.Demolish(h3.X, h3.Y);
+			foreach (Prole p in h.Residents)
+				Residents.Add(p);
+			world.Destroy(h.X, h.Y);
+
+		}
+
         ChangeHouse(biggerHouse);
 
     }
@@ -412,10 +381,9 @@ public class House : Structure {
 	}
 
     /*************************************
-    HEALTH STATS
+    HYGIENE STATS AND DISEASE SPREAD
     *************************************/
-
-	//disease affects every individual in a household at once
+	
     public GameObject cholera;
 	public int Hygiene { get; set; }
 	public int HygieneToConsume { get { return HouseSize; } }
@@ -436,7 +404,7 @@ public class House : Structure {
 			return;
 
 		int chance = DiseasedResidents * 5;
-		bool success = Random.Range(1, 100) + Hygiene <= chance;
+		bool success = Random.Range(1, 100) + Hygiene * Residents.Count <= chance;
 
 		if (!success)
 			return;
@@ -500,7 +468,7 @@ public class House : Structure {
     public Quality waterQualNeeded;
     public Quality waterQualWanted;
 
-    public int WaterMax { get { return HouseSize * 4; } }
+    public int WaterMax { get { return HouseSize * 3; } }
     public int WaterNeeded(int q) { return WaterMax - Water[q]; }
     public int WaterNeeded(Quality q) { return WaterNeeded((int)q); }
     public int WaterToConsume { get { return HouseSize; } }
@@ -592,7 +560,7 @@ public class House : Structure {
 	public GoodType[] goodsNeeded;
 	public GoodType goodWanted = GoodType.END;
 
-	public int GoodsMax { get { return 4 * HouseSize; } }
+	public int GoodsMax { get { return 3 * HouseSize; } }
     public int GoodsNeeded(int item) { return GoodsMax - Goods[item]; }
     public int GoodsToConsume { get { return HouseSize; } }
 	

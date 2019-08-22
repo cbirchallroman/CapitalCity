@@ -217,8 +217,8 @@ public class Prole : Person {
 		workNode = unemploymentNode;
 		homeNode = unemploymentNode;
 
-		//random years old if we need
-		yearsOld = randomAge ? Random.Range(comingOfAge, retirementAge - 1) : comingOfAge;
+		//random years old (14 + 2d6) if we need
+		yearsOld = randomAge ? comingOfAge - 2 + Random.Range(1,7) + Random.Range(1, 7) : comingOfAge;
 		children = new List<Child>();
 
 		//if prole moves into the city with children
