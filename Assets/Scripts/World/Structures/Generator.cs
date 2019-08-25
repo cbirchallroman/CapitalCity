@@ -44,7 +44,7 @@ public class Generator : Workplace {
 	//PRODUCTION
 	//	the number of hours that it take something to be produced assumes an average workday of 8 hr and 4 workers
 	public float ProductPerWorker { get { return (float)stockpile / (BaseProductionCycle * BaseWorkingDay * BaseWorkers); } }   //amount of product produced by a worker each day
-	public float ProductsPerDay { get { return ProductPerWorker * WorkingDay * WorkersCount * MachineryPerformance; } }
+	public float ProductsPerDay { get { return ProductPerWorker * WorkingDay * WorkerList.Count * MachineryPerformance; } }
 
 	//RELATIVE STATS
 	public float RelativeWorkingDay { get { return ((float)WorkingDay) / BaseWorkingDay; } }

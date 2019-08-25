@@ -43,7 +43,7 @@ public class Road : TiledStructure {
 
 		}
 
-		return world.Map.IsRoadAt(a, b);
+		return world.Map.IsRoadAt(a, b) && world.Map.elevation[X, Y] == world.Map.elevation[a, b];
 	}
 
 	public bool RampNeighbor(int roadx, int roady, int rampx, int rampy, float rot) {
@@ -149,15 +149,12 @@ public class Road : TiledStructure {
 			if (world.Map.roads[a, b] == 0) continue;
 
 			float hereElev = world.Map.elevation[a, b];
-			Structure rmp = null;
 
 			//if the elevation here is 1 higher than at our tile, build a ramp instead
-			if (hereElev == localElev + 1)
-				rmp = Change(ramp);
+			if (hereElev != localElev + 1)
+				continue;
 
-			//now turn the ramp if it exists
-			if (rmp == null) continue;
-
+			//now find the ramp's rotation
 			float rot = 0;
 			if (c.x == -1 && c.y == 0)
 				rot = 180;
@@ -168,8 +165,24 @@ public class Road : TiledStructure {
 			else if (c.x == 0 && c.y == -1)
 				rot = 90;
 			
+			bool allow = false;
+			if (Neighbors == 0)
+				allow = true;
+			else if (Neighbors == 1 && rot == 0)
+				allow = true;
+			else if (Neighbors == 2 && rot == 90)
+				allow = true;
+			else if (Neighbors == 4 && rot == 180)
+				allow = true;
+			else if (Neighbors == 8 && rot == 270)
+				allow = true;
+
+			if (!allow)
+				continue;
+
+			Structure rmp = Change(ramp);
 			rmp.transform.rotation = Quaternion.Euler(new Vector3(0, rot, 0));
-			
+
 		}
 
 	}

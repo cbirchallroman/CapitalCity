@@ -191,7 +191,6 @@ public class Prole : Person {
 
 	//WORK STUFF
 	public Node workNode;
-	public int workIndex;
 
 	public bool SeekingWork { get { return !Employed && !Retired; } }
     public bool Employed { get { if (workNode == null) return false; return !workNode.Equals(unemploymentNode); } }
@@ -426,7 +425,7 @@ public class Prole : Person {
             Debug.LogError("Workplace at " + workNode + " for " + this + " does not exist");
 
         Workplace wrk = go.GetComponent<Workplace>();
-        wrk.RemoveWorker(workIndex);
+        wrk.RemoveWorker(this);
 
     }
 
@@ -463,10 +462,9 @@ public class Prole : Person {
 
 	}
 
-    public void JoinWork(Workplace w, int i) {
+    public void JoinWork(Workplace w) {
 
         workNode = new Node(w);
-        workIndex = i;
 
     }
 

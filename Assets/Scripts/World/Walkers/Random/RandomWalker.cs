@@ -16,7 +16,7 @@ public class RandomWalker : Walker {
         if (Origin is Workplace && modifyLifeTime) {
 
             Workplace w = (Workplace)Origin;
-            lifeTime = (int)((float)w.WorkersCount / w.workersMax * w.WorkingDay / 8f * lifeTime);
+            lifeTime = (int)((float)w.WorkerList.Count / w.workersMax * w.WorkingDay / 8f * lifeTime);
 
         }
 
@@ -109,7 +109,7 @@ public class RandomWalker : Walker {
 
         if (laborSeeker && w != null && h != null) {
 
-            if (w.WorkersCount == w.workersMax) {
+            if (w.WorkerList.Count == w.workersMax) {
 
                 //if this is ONLY a laborseeker and it is not returning home yet, make it go home by setting its lifetime to 0
                 if (!data.ReturningHome && name.Contains("LaborSeeker"))

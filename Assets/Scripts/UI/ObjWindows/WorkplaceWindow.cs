@@ -50,7 +50,7 @@ public class WorkplaceWindow : ObjWindow {
 
 		Workplace wp = (Workplace)obj;
 		if (wp.ActiveBuilding) {
-			workers.text = wp.WorkersCount + "/" + wp.workersMax + " proles employed";
+			workers.text = wp.WorkerList.Count + "/" + wp.workersMax + " proles employed";
 			title.color = Color.white;
 		}
 		else {
