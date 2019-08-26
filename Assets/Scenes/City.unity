@@ -929,7 +929,7 @@ GameObject:
   - component: {fileID: 33630817}
   - component: {fileID: 33630819}
   - component: {fileID: 33630818}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Mud
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1832,9 +1832,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 57092212}
-  - component: {fileID: 57092214}
-  - component: {fileID: 57092213}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Combined
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1854,48 +1852,6 @@ Transform:
   m_Father: {fileID: 94698017}
   m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!23 &57092213
-MeshRenderer:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 57092211}
-  m_Enabled: 1
-  m_CastShadows: 1
-  m_ReceiveShadows: 1
-  m_DynamicOccludee: 1
-  m_MotionVectors: 1
-  m_LightProbeUsage: 1
-  m_ReflectionProbeUsage: 1
-  m_RenderingLayerMask: 4294967295
-  m_Materials:
-  - {fileID: 0}
-  m_StaticBatchInfo:
-    firstSubMesh: 0
-    subMeshCount: 0
-  m_StaticBatchRoot: {fileID: 0}
-  m_ProbeAnchor: {fileID: 0}
-  m_LightProbeVolumeOverride: {fileID: 0}
-  m_ScaleInLightmap: 1
-  m_PreserveUVs: 0
-  m_IgnoreNormalsForChartDetection: 0
-  m_ImportantGI: 0
-  m_StitchLightmapSeams: 0
-  m_SelectedEditorRenderState: 3
-  m_MinimumChartSize: 4
-  m_AutoUVMaxDistance: 0.5
-  m_AutoUVMaxAngle: 89
-  m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
-  m_SortingOrder: 0
---- !u!33 &57092214
-MeshFilter:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 57092211}
-  m_Mesh: {fileID: 0}
 --- !u!1 &58099399
 GameObject:
   m_ObjectHideFlags: 0
@@ -18635,7 +18591,7 @@ GameObject:
   - component: {fileID: 941604580}
   - component: {fileID: 941604582}
   - component: {fileID: 941604581}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Grass
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -22096,6 +22052,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 78e220d84ba1ec545bae70c6d95f960e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  vertexLimit: 10000
   meshParent: {fileID: 57092212}
   lushMesh: {fileID: 2092141126}
   grassMesh: {fileID: 941604579}
@@ -30117,7 +30074,7 @@ GameObject:
   - component: {fileID: 1567830910}
   - component: {fileID: 1567830912}
   - component: {fileID: 1567830911}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Water
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -31922,7 +31879,7 @@ GameObject:
   - component: {fileID: 1686812334}
   - component: {fileID: 1686812336}
   - component: {fileID: 1686812335}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Sand
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -39986,7 +39943,7 @@ GameObject:
   - component: {fileID: 2092141127}
   - component: {fileID: 2092141129}
   - component: {fileID: 2092141128}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Lush
   m_TagString: Untagged
   m_Icon: {fileID: 0}

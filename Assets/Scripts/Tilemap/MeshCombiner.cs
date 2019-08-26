@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class MeshCombiner : MonoBehaviour {
 
+	public int vertexLimit = 10000;
+
 	public Transform meshParent;
 
 	public GameObject lushMesh;
@@ -27,14 +29,15 @@ public class MeshCombiner : MonoBehaviour {
 		List<CombineInstance> water = new List<CombineInstance>();
 
 		CombineInstance combine = new CombineInstance();
-		
+
+		int verticesSoFar = 0;
 		int meshListCounter = 0;
 
 		//for each tile, grab their meshfilter and add according to their material type
 		foreach(GameObject go in tiles) {
 
 			go.SetActive(false);
-			//go.GetComponent<Tile>().id = meshListCounter;
+			go.GetComponent<Tile>().id = meshListCounter;
 
 			MeshFilter mf = go.GetComponent<MeshFilter>();
 			string material = mf.GetComponent<MeshRenderer>().material.name.Replace(" (Instance)", "");
@@ -52,6 +55,27 @@ public class MeshCombiner : MonoBehaviour {
 				sand.Add(combine);
 			else if (material == "Water")
 				water.Add(combine);
+
+			verticesSoFar += mf.mesh.vertexCount;
+
+			if(verticesSoFar >= vertexLimit) {
+
+				CombineMesh(lush, lushMesh, lushHolder);
+				CombineMesh(grass, grassMesh, grassHolder);
+				CombineMesh(mud, mudMesh, mudHolder);
+				CombineMesh(sand, sandMesh, sandHolder);
+				CombineMesh(water, waterMesh, waterHolder);
+
+				lush.Clear();
+				grass.Clear();
+				mud.Clear();
+				sand.Clear();
+				water.Clear();
+
+				verticesSoFar = 0;
+				meshListCounter++;
+
+			}
 
 		}
 
@@ -71,6 +95,7 @@ public class MeshCombiner : MonoBehaviour {
 		GameObject meshHolder = Instantiate(holderObj, Vector3.zero, Quaternion.identity);
 		meshHolder.transform.SetParent(meshParent);
 		meshHolder.GetComponent<MeshFilter>().mesh = newMesh;
+		meshHolder.AddComponent<MeshCollider>();
 		holderList.Add(meshHolder);
 
 	}

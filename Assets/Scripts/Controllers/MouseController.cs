@@ -63,7 +63,8 @@ public class MouseController : MonoBehaviour {
 
         if (mouseHittingMap) {
 
-            mouseCoords = new Node(hit.transform.gameObject.transform.position);
+			mouseCoords = new Node(hit.point);
+			Debug.Log(mouseCoords);
             AlignMouse();
 
         }
