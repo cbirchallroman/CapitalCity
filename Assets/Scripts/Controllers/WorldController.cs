@@ -6,6 +6,7 @@ using UsefulThings;
 public class WorldController : MonoBehaviour {
 
     public Camera objViewCamera;
+	public MeshCombiner meshCombiner;
     public WorldGenerator mapGenerator;
     public GameObject objectMenus;
     public GameObject structures;
@@ -111,6 +112,8 @@ public class WorldController : MonoBehaviour {
         GameObject worldObj = new GameObject();
         worldObj.name = "WorldMap";
 
+		List<GameObject> tiles = new List<GameObject>();
+
         for (int a = 0; a < Map.size.x; a++) {
 
             GameObject row = new GameObject();
@@ -119,16 +122,17 @@ public class WorldController : MonoBehaviour {
 
             for (int b = 0; b < Map.size.y; b++) {
 
-                GenerateTile(a, b, row);
+				tiles.Add(GenerateTile(a, b, row));
 
             }
 
         }
 
-        //tilemap.BuildMesh(Map);
+		meshCombiner.CombineMeshes(tiles);
+		//tilemap.BuildMesh(Map);
 
-        //actionSelecter.LoadActionButtons();
-        actionSelecter.LoadActionEnablers();
+		//actionSelecter.LoadActionButtons();
+		actionSelecter.LoadActionEnablers();
 
         ProductivityController.LoadProductivityLists();
         ProductivityController.LoadCompetitors(diplomacy.cities);
@@ -140,7 +144,7 @@ public class WorldController : MonoBehaviour {
 
 	}
 
-    public void GenerateTile(int x, int y, GameObject row) {
+    public GameObject GenerateTile(int x, int y, GameObject row) {
 
         //destroy old tile if it exists
         GameObject old = GameObject.Find("Tile_" + x + "_" + y);
@@ -151,6 +155,8 @@ public class WorldController : MonoBehaviour {
 		GameObject tile = SpawnObject("Tiles", (Terrain)Map.terrain[x, y] + "", x, y);
         tile.transform.parent = row.transform;
         tile.name = "Tile_" + x + "_" + y;
+
+		return tile;
 
     }
 

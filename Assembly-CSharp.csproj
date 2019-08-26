@@ -110,6 +110,7 @@
     <Compile Include="Assets\Scripts\Static\Settings.cs" />
     <Compile Include="Assets\Scripts\Static\StructureDatabase.cs" />
     <Compile Include="Assets\Scripts\Static\WalkerDatabase.cs" />
+    <Compile Include="Assets\Scripts\Tilemap\MeshCombiner.cs" />
     <Compile Include="Assets\Scripts\Tilemap\TileMap.cs" />
     <Compile Include="Assets\Scripts\UI\ActionButton.cs" />
     <Compile Include="Assets\Scripts\UI\ActionEnabler.cs" />
@@ -198,6 +199,7 @@
     <Compile Include="Assets\Scripts\World\Structures\Well.cs" />
     <Compile Include="Assets\Scripts\World\Structures\Workplace.cs" />
     <Compile Include="Assets\Scripts\World\Structures\WTP.cs" />
+    <Compile Include="Assets\Scripts\World\Tile.cs" />
     <Compile Include="Assets\Scripts\World\Walkers\Actors\Actor.cs" />
     <Compile Include="Assets\Scripts\World\Walkers\Actors\Fireman.cs" />
     <Compile Include="Assets\Scripts\World\Walkers\Actors\Lumberjack.cs" />

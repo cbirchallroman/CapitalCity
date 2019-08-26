@@ -14,7 +14,7 @@ public class SaveLoadMap {
     public static GameFile file;
 
     //stuff for creating a new game
-    public static Node newWorldSize = new Node(32, 32);
+    public static Node newWorldSize = new Node(100, 100);
 
     public static void SaveGame(GameObject go, string dir, string filename) {
 
