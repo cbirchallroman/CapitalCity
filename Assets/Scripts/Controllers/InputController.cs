@@ -8,25 +8,25 @@ public static class InputController {
 
 	public static bool GetPositiveInputDown(string name) {
 
-		return CrossPlatformInputManager.GetButtonDown(name) && CrossPlatformInputManager.GetAxis(name) > 0;
+		return CrossPlatformInputManager.GetButtonDown(name) && CrossPlatformInputManager.GetAxisRaw(name) > 0;
 
 	}
 
 	public static bool GetNegativeInputDown(string name) {
 
-		return CrossPlatformInputManager.GetButtonDown(name) && CrossPlatformInputManager.GetAxis(name) < 0;
+		return CrossPlatformInputManager.GetButtonDown(name) && CrossPlatformInputManager.GetAxisRaw(name) < 0;
 
 	}
 
 	public static bool GetPositiveInput(string name) {
 
-		return CrossPlatformInputManager.GetButton(name) && CrossPlatformInputManager.GetAxis(name) > 0;
+		return CrossPlatformInputManager.GetButton(name) && CrossPlatformInputManager.GetAxisRaw(name) > 0;
 
 	}
 
 	public static bool GetNegativeInput(string name) {
 
-		return CrossPlatformInputManager.GetButton(name) && CrossPlatformInputManager.GetAxis(name) < 0;
+		return CrossPlatformInputManager.GetButton(name) && CrossPlatformInputManager.GetAxisRaw(name) < 0;
 
 	}
 
