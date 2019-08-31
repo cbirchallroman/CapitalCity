@@ -22,6 +22,7 @@ GameObject:
   - component: {fileID: 33407533700219452}
   - component: {fileID: 23140182195305628}
   - component: {fileID: 64507438332491662}
+  - component: {fileID: 114878775190071610}
   m_Layer: 8
   m_Name: Water
   m_TagString: Untagged
@@ -57,7 +58,7 @@ MeshRenderer:
   m_ReflectionProbeUsage: 1
   m_RenderingLayerMask: 4294967295
   m_Materials:
-  - {fileID: 2100000, guid: bfbdab285c2f9024d8a19480264b4e96, type: 2}
+  - {fileID: 2100000, guid: 3fc71dadcbfa3e543a64b72f71294251, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -98,3 +99,15 @@ MeshCollider:
   m_CookingOptions: 14
   m_SkinWidth: 0.01
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!114 &114878775190071610
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1593639744745440}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 388617e3521d5964fb74f18c2d86d6e0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  id: -1

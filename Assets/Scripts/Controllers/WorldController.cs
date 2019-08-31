@@ -6,6 +6,7 @@ using UsefulThings;
 public class WorldController : MonoBehaviour {
 
     public Camera objViewCamera;
+	public MeshCombiner meshCombiner;
     public WorldGenerator mapGenerator;
     public GameObject objectMenus;
     public GameObject structures;
@@ -106,10 +107,15 @@ public class WorldController : MonoBehaviour {
 
 	}
 
+	GameObject[,] tiles;
+
     public void GenerateWorld() {
 
         GameObject worldObj = new GameObject();
         worldObj.name = "WorldMap";
+
+		//List<GameObject> tiles = new List<GameObject>();
+		tiles = new GameObject[Map.size.x, Map.size.y];
 
         for (int a = 0; a < Map.size.x; a++) {
 
@@ -119,16 +125,17 @@ public class WorldController : MonoBehaviour {
 
             for (int b = 0; b < Map.size.y; b++) {
 
-                GenerateTile(a, b, row);
+				GameObject tile = GenerateTile(a, b, row);
+				tiles[a, b] = tile;
 
             }
 
         }
 
-        //tilemap.BuildMesh(Map);
+		meshCombiner.CreateTilemapMesh(tiles);
 
-        //actionSelecter.LoadActionButtons();
-        actionSelecter.LoadActionEnablers();
+		//actionSelecter.LoadActionButtons();
+		actionSelecter.LoadActionEnablers();
 
         ProductivityController.LoadProductivityLists();
         ProductivityController.LoadCompetitors(diplomacy.cities);
@@ -140,17 +147,14 @@ public class WorldController : MonoBehaviour {
 
 	}
 
-    public void GenerateTile(int x, int y, GameObject row) {
-
-        //destroy old tile if it exists
-        GameObject old = GameObject.Find("Tile_" + x + "_" + y);
-        if (old != null)
-            Destroy(old);
+    public GameObject GenerateTile(int x, int y, GameObject row) {
 
 		//create new tile
-		GameObject tile = SpawnObject("Tiles", (Terrain)Map.terrain[x, y] + "", x, y);
-        tile.transform.parent = row.transform;
-        tile.name = "Tile_" + x + "_" + y;
+		GameObject newTile = SpawnObject("Tiles", (Terrain)Map.terrain[x, y] + "", x, y);
+        newTile.transform.parent = row.transform;
+        newTile.name = "Tile_" + x + "_" + y;
+
+		return newTile;
 
     }
 
@@ -477,9 +481,19 @@ public class WorldController : MonoBehaviour {
         if (!CanPaintTerrain(type, x, y))
             return;
 
-        Map.terrain[x, y] = (int)Enums.terrainDict[type];
-        //tilemap.PaintTile(x, y);
-        GenerateTile(x, y, GameObject.Find("Row_" + x));
+		//get old tile if it exists
+		GameObject oldTile = tiles[x, y];
+
+		//set new terrain
+		Map.terrain[x, y] = (int)Enums.terrainDict[type];
+
+		//make new tile
+		GameObject newTile = GenerateTile(x, y, GameObject.Find("Row_" + x));
+		tiles[x, y] = newTile;  //put tile into tile grid
+		Debug.Log(newTile);
+
+		//replace tile in mesh
+		meshCombiner.ReplaceTile(oldTile, newTile);
 
     }
 	

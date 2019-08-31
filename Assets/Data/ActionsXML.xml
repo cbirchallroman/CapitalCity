@@ -4,7 +4,7 @@
 
     <Act>place ArchitectsPost</Act>
     <Act>place InspectorsTower</Act>
-	<Act>place JobHouse</Act>
+	  <Act>place JobHouse</Act>
     <Act>place MechanicShop</Act>
 
   </Category>
@@ -55,7 +55,7 @@
 
   <Category>
 
-	<Act>open Crops</Act>
+	  <Act>open Crops</Act>
     <Act>place CattleRanch</Act>
     <Act>place Dock</Act>
     <Act>place Farmhouse</Act>

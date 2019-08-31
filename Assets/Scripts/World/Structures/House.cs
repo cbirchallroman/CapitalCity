@@ -51,7 +51,6 @@ public class House : Structure {
 	public string evolvesTo;
 	public string devolvesTo;
 	public string biggerHouse;
-	//public int Residents { get; set; }
 	public int residentsMax = 1;
     public int prosperityRating;
     public int desirabilityNeeded;
@@ -204,7 +203,9 @@ public class House : Structure {
         World map = world.Map;
 
 		House[] neighbors = new House[3];
-		Node[] checks = { new Node(X + 1, Y), new Node(X, Y + 1), new Node(X + 1, Y + 1) };
+		Node[] checks = { new Node(X + HouseSize + 1, Y),
+			new Node(X, Y + HouseSize + 1),
+			new Node(X + HouseSize + 1, Y + HouseSize + 1) };
 
 		//iterate through nearby houses
 		//	if at any point conditions are not met for merge, don't continue at all
@@ -215,7 +216,7 @@ public class House : Structure {
 				return;
 			if (elevation != h.elevation)
 				return;
-			if (h.HouseSize != 1)
+			if (h.HouseSize != HouseSize)
 				return;
 			if (h.level != level)
 				return;
@@ -339,46 +340,56 @@ public class House : Structure {
 			Prole p = Residents[i];
 			p.UpdateAge();
 
+			//the reason we age children here and not in Prole.UpdateAge() is so we can detect death and coming of age
 			for (int j = p.children.Count - 1; j >= 0; j--) {
 
 				Child c = p.children[j];
 				c.UpdateAge();
+
+				//do if c is dead
 				if (c.markedForDeath) {
-					//do if c is dead
+
 					p.children.Remove(c);
 					c.Kill();
+					Corpses++;
+
 				}
+
+				//do if c is grown up
 				else if (c.GrownUp) {
 
-					ReceiveImmigrant(p.GrowUpChild(c));	//change to account for random labor pref based on social conditioning
+					ReceiveImmigrant(p.GrowUpChild(c));
 					p.children.Remove(c);
 
 				}
 
 			}
 
+			//do if p is about to die
 			if (p.markedForDeath) {
-				//do if p is about to die
 				p.Kill();
 				population.RemoveProle(p);
+				Corpses++;
 			}
 
 		}
 		
 	}
 
-	public void CheckProleSpawn() {
+	////GROUNDWORK FOR REVERSING LABOR WALKER SYSTEM
+	////	INSTEAD OF WORKPLACES, HOUSES NOW SPAWN UNEMPLOYED PROLES SEEKING WORK
+	//public void CheckProleSpawn() {
 		
-		//spawn walker or laborseeker process
-		for(int i = 0; i < Residents.Count && !ActiveRandomWalker; i++) {
+	//	//spawn walker or laborseeker process
+	//	for(int i = 0; i < Residents.Count && !ActiveRandomWalker; i++) {
 
-			Prole res = Residents[i];
-			if (res.workNode != null)
-				continue;
+	//		Prole res = Residents[i];
+	//		if (res.workNode != null)
+	//			continue;
 			
-		}
+	//	}
 
-	}
+	//}
 
     /*************************************
     HYGIENE STATS AND DISEASE SPREAD

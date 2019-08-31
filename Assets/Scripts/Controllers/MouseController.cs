@@ -59,11 +59,12 @@ public class MouseController : MonoBehaviour {
         Ray ray = Camera.main.ScreenPointToRay(pos);
         RaycastHit hit;
 		
+		//only return true if the mouse hits the map layer
         bool mouseHittingMap = Physics.Raycast(ray, out hit, Mathf.Infinity, mapLayer);
 
         if (mouseHittingMap) {
 
-            mouseCoords = new Node(hit.transform.gameObject.transform.position);
+			mouseCoords = new Node(hit.point);	//we want the exact point where the mouse hits
             AlignMouse();
 
         }
