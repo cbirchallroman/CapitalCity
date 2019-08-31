@@ -24,7 +24,7 @@ public class MeshCombiner : MonoBehaviour {
 	List<GameObject> waitingToAdd = new List<GameObject>();
 	List<GameObject> waitingToRemove = new List<GameObject>();
 
-	public void CreateTilemapMesh(List<GameObject> tiles) {
+	public void CreateTilemapMesh(GameObject[,] tiles) {
 
 		CombineInstance combine = new CombineInstance();
 
@@ -110,12 +110,12 @@ public class MeshCombiner : MonoBehaviour {
 
 	}
 
-	void CombineMesh(List<CombineInstance> dataList, GameObject holderObj, List<GameObject> holderList) {
+	void CombineMesh(List<CombineInstance> dataList, GameObject holderPrefab, List<GameObject> holderList) {
 
 		Mesh newMesh = new Mesh();
 		newMesh.CombineMeshes(dataList.ToArray());
 
-		GameObject meshHolder = Instantiate(holderObj, Vector3.zero, Quaternion.identity);
+		GameObject meshHolder = Instantiate(holderPrefab, Vector3.zero, Quaternion.identity);
 		meshHolder.transform.SetParent(meshParent);
 		meshHolder.GetComponent<MeshFilter>().mesh = newMesh;
 		meshHolder.AddComponent<MeshCollider>();
@@ -125,9 +125,8 @@ public class MeshCombiner : MonoBehaviour {
 
 	const float tolerance = 0.0001f;
 
-	void RemoveMeshFromCombinedMesh(Transform combinedMesh, Transform objToRemove, Vector3 moveVec = default(Vector3)) {
-
-
+	void RemoveMeshFromCombinedMesh(Transform combinedMesh, Transform objToRemove) {
+		
 		//get data from combined mesh
 		MeshFilter combinedMF = combinedMesh.GetComponent<MeshFilter>();
 		List<Vector3> currentVertices = combinedMF.mesh.vertices.ToList();
@@ -139,19 +138,22 @@ public class MeshCombiner : MonoBehaviour {
 		int numOfVerticesToRemove = verticesToRemove.Length;
 
 		//position to begin from
-		int minVerticePos = 0;
+		int minVerticePos = -1;
 
 		Vector3 firstVertPosToRemove = objToRemove.transform.TransformPoint(verticesToRemove[0]);
-		firstVertPosToRemove = combinedMesh.InverseTransformPoint(firstVertPosToRemove) + moveVec;
+		firstVertPosToRemove = combinedMesh.InverseTransformPoint(firstVertPosToRemove);
 
-		for (int i = 0; i < currentVertices.Count; i++) {
+		for (int i = 0; i < currentVertices.Count && minVerticePos == -1; i++) {
 
 			if ((currentVertices[i] - firstVertPosToRemove).sqrMagnitude < tolerance) {
 				minVerticePos = i;
-				break;
 			}
 
 		}
+
+		//if didn't find vertex, return
+		if (minVerticePos == -1)
+			return;
 
 		currentVertices.RemoveRange(minVerticePos, numOfVerticesToRemove);
 
@@ -186,58 +188,85 @@ public class MeshCombiner : MonoBehaviour {
 
 	}
 
-
-	//public void RemoveTile(GameObject go) {
-
-	//	//remove from add list if it's there
-	//	waitingToAdd.Remove(go);
-
-	//	//add to remove list
-	//	waitingToRemove.Add(go);
-
-	//	//hide tile
-	//	HideTile(go);
-
-	//}
-
-	//void HideTile(GameObject go) {
-
-	//	Tile tile = go.GetComponent<Tile>();
-	//	int meshIndex = tile.id;
-	//	if (meshIndex == -1) {
-	//		go.SetActive(false);
-	//		return;
-	//	}
-	//	Transform combinedMesh = GetMeshHolderOfType(tile.terrainType)[meshIndex].transform;
-	//	MoveVerticesOutOfTheWay(combinedMesh, go.transform, new Vector3(0, 0, 0));
-
-	//}
-
 	public void ReplaceTile(GameObject oldTileObj, GameObject newTileObj) {
 
 		Tile oldTile = oldTileObj.GetComponent<Tile>();
-		int meshIndex = oldTile.id;
+		int oldIndex = oldTile.id;
 
-		if (meshIndex != -1) {
+		if (oldIndex != -1) {
 
 			//we just need to get the transform of the larger mesh that the tile is part of
 			//	and remove this object's mesh from the larger mesh
-			MeshFilter combinedMesh = GetMeshHolderOfType(oldTile.terrainType)[meshIndex].GetComponent<MeshFilter>();
-			RemoveMeshFromCombinedMesh(combinedMesh.transform, oldTileObj.transform, new Vector3(0, 0, 0));
+			MeshFilter combinedMesh = GetMeshHolderOfType(oldTile.terrainType)[oldIndex].GetComponent<MeshFilter>();
+			RemoveMeshFromCombinedMesh(combinedMesh.transform, oldTileObj.transform);
 
 			//destroy old tile gameobject
 			Destroy(oldTileObj);
 
-			//now add new tile to where the old one previously was
-			MeshFilter newTileMF = newTileObj.GetComponent<MeshFilter>();
-			Tile newTile = newTileObj.GetComponent<Tile>();
-			AddMeshToCombinedMesh(newTileMF, combinedMesh);
-
-			//hide original new tile and set its ID
-			newTileObj.SetActive(false);
-			newTile.id = meshIndex;
 
 		}
+
+
+		//now add new tile to where the old one previously was
+		MeshFilter newTileMF = newTileObj.GetComponent<MeshFilter>();
+		Tile newTile = newTileObj.GetComponent<Tile>();
+		int numVertices = newTileMF.mesh.vertexCount;
+
+		//we need to find a good list for the new tile because it is NOT the same type as the old list
+		List<GameObject> meshList = GetMeshHolderOfType(newTile.terrainType);
+
+		//continue until we have found a mesh
+		for (int newIndex = 0; newIndex < meshList.Count; newIndex++) {
+
+			MeshFilter combinedMF = meshList[newIndex].GetComponent<MeshFilter>();
+			int totalVertices = combinedMF.mesh.vertexCount;
+
+			//if this combined mesh has room for one more, add tile to it
+			if (numVertices + totalVertices < vertexLimit) {
+
+				//add to this mesh that we've found
+				AddMeshToCombinedMesh(newTileMF, combinedMF);
+
+				//set ID to this mesh and hide tile object
+				newTile.id = newIndex;
+				newTileObj.SetActive(false);
+
+				//we can stop the function here
+				return;
+
+			}
+
+		}
+
+		//IF WE DIDN'T FIND A MESH, MAKE A NEW ONE
+
+		//create combine instance for new tile, add to list of combine instances
+		//	this is just so we don't have to do smth different from before for adding a new tile
+		CombineInstance combine = new CombineInstance();
+		combine.mesh = newTileMF.mesh;
+		combine.transform = newTileMF.transform.localToWorldMatrix;
+
+		List<CombineInstance> tileList = new List<CombineInstance>();
+		tileList.Add(combine);
+
+		//figure out which prefab and holding object we're using for the new combined mesh
+		GameObject prefab = null;
+		if (newTile.terrainType == Terrain.Grass)
+			prefab = Instantiate(grassMeshPrefab);
+		else if (newTile.terrainType == Terrain.Lush)
+			prefab = Instantiate(lushMeshPrefab);
+		else if (newTile.terrainType == Terrain.Mud)
+			prefab = Instantiate(mudMeshPrefab);
+		else if (newTile.terrainType == Terrain.Sand)
+			prefab = Instantiate(sandMeshPrefab);
+		else if (newTile.terrainType == Terrain.Water)
+			prefab = Instantiate(waterMeshPrefab);
+
+		CombineMesh(tileList, prefab, meshList);
+
+		//set new tile ID to new list and hide the object itself
+		newTile.id = meshList.Count - 1;
+		newTileObj.SetActive(false);
 
 	}
 

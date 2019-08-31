@@ -107,12 +107,15 @@ public class WorldController : MonoBehaviour {
 
 	}
 
+	GameObject[,] tiles;
+
     public void GenerateWorld() {
 
         GameObject worldObj = new GameObject();
         worldObj.name = "WorldMap";
 
-		List<GameObject> tiles = new List<GameObject>();
+		//List<GameObject> tiles = new List<GameObject>();
+		tiles = new GameObject[Map.size.x, Map.size.y];
 
         for (int a = 0; a < Map.size.x; a++) {
 
@@ -123,7 +126,7 @@ public class WorldController : MonoBehaviour {
             for (int b = 0; b < Map.size.y; b++) {
 
 				GameObject tile = GenerateTile(a, b, row);
-				tiles.Add(tile);
+				tiles[a, b] = tile;
 
             }
 
@@ -479,11 +482,15 @@ public class WorldController : MonoBehaviour {
             return;
 
 		//get old tile if it exists
-		GameObject oldTile = GameObject.Find("Tile_" + x + "_" + y);
+		GameObject oldTile = tiles[x, y];
+
+		//set new terrain
+		Map.terrain[x, y] = (int)Enums.terrainDict[type];
 
 		//make new tile
-		Map.terrain[x, y] = (int)Enums.terrainDict[type];
-        GameObject newTile = GenerateTile(x, y, GameObject.Find("Row_" + x));
+		GameObject newTile = GenerateTile(x, y, GameObject.Find("Row_" + x));
+		tiles[x, y] = newTile;  //put tile into tile grid
+		Debug.Log(newTile);
 
 		//replace tile in mesh
 		meshCombiner.ReplaceTile(oldTile, newTile);

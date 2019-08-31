@@ -16,7 +16,12 @@ public class ActionEnabler : MonoBehaviour {
 
     private void Start() {
 
-        label.text = StructureDatabase.GetData(Action.What).displayName;
+		if (Action.Do.Contains("place"))
+			label.text = StructureDatabase.GetData(Action.What).displayName;
+		else if (Action.Do.Contains("open"))
+			label.text = Action.What + " Category";
+		else
+			label.text = Action.What;
         categoryLabel.text = (BuildingType)Category + "";
         toggle.isOn = ActionSelecter.actionList[ListIndex][Action];
 
