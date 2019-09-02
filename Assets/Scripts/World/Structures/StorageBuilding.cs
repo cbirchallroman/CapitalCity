@@ -138,13 +138,16 @@ public class StorageBuilding : Workplace {
     //empty space for a particular type, both currently and futurely stored
     public int EmptySpaceFor(int a) {
 
-        //actual space left, which is the max it will accept times the total potential space minus the amount stored
-        int space = (int)(WillAccept[a] * stockpile) - Inventory[a] - Queue[a];
+		//weight of item
+		int weight = ResourcesDatabase.GetWeight(Enums.GetItemName(a, typeStored));
 
-        //if cannot accept type at all, return 0
-        if (WillAccept[a] == 0)
-            return 0;
+		//if cannot accept type at all, return 0
+		if (WillAccept[a] == 0)
+			return 0;
 
+		//actual space left, which is the max it will accept times the total potential space minus the amount stored
+		int space = (int)(WillAccept[a] * stockpile / weight) - Inventory[a] - Queue[a];
+		
         //if the total potential space is less than what could be stored individually, return the total potential space
         if (EmptySpace < space)
             return EmptySpace;
@@ -157,34 +160,40 @@ public class StorageBuilding : Workplace {
     //sums up total inventory
     public int TotalAmountStored() {
         int sum = 0;
-        foreach (int i in Inventory)
-            sum += i;
-        return sum;
+		for (int item = 0; item < Inventory.Length; item++) {
+
+			sum += Inventory[item] * ResourcesDatabase.GetWeight(Enums.GetItemName(item, typeStored));
+
+		}
+		return sum;
     }
 
     //sums up total queue
     public int AmountQueued() {
         int sum = 0;
-        foreach (int i in Queue)
-            sum += i;
+		for(int item = 0; item < Queue.Length; item++) {
+
+			sum += Queue[item] * ResourcesDatabase.GetWeight(Enums.GetItemName(item, typeStored));
+
+		}
         return sum;
     }
 
     //how much of a type will this building accept
-    public bool CanAcceptAmount(int num, int ft) {
+    public bool CanAcceptAmount(int amount, int item) {
 
-        //if it can't accept it at all, return false
-        if (WillAccept[ft] == 0)
+		if (!Operational)
+			return false;
+
+		//if it can't accept it at all, return false
+		if (WillAccept[item] == 0)
             return false;
 
-        if (NumOfStoredTypes() == maxTypes && Inventory[ft] == 0)
-            return false;
-
-        if (!Operational)
+        if (NumOfStoredTypes() == maxTypes && Inventory[item] == 0)
             return false;
 
         //else return if currently stored, futurely stored, and the num to be added is less than the storagespace types what it will accept
-        return Inventory[ft] + Queue[ft] + num <= stockpile * WillAccept[ft] && num <= EmptySpace;
+        return EmptySpaceFor(item) >= amount;
 
     }
 

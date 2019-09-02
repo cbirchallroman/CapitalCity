@@ -16,7 +16,7 @@ public class Node {
         y = b;
     }
     public Node(Vector2 v) : this((int)v.x, (int)v.y) { }
-    public Node(Vector3 v) : this((int)v.x, (int)v.z) { }
+    public Node(Vector3 v) : this((int)(v.x + .5f), (int)(v.z + .5f)) { }
     public Node(Obj o) : this(o.X, o.Y) { }
 
     public T[,] CreateArrayOfSize<T>(){

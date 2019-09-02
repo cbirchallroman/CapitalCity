@@ -32,7 +32,7 @@ public class StructureDatabase : MonoBehaviour {
 			foreach (XmlNode thing in children) {
 				if (thing.Name == "Name")
 					name = thing.InnerText;
-				contents.Add(thing.Name, thing.InnerText);
+				contents[thing.Name] = thing.InnerText;
 			}
 
 			if (name != null)

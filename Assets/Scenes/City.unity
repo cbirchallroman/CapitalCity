@@ -18540,7 +18540,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8e0bb52b5ca782f48a59486b63c57a83, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  currentMode: 1
+  currentMode: 0
   timeController: {fileID: 1359781505}
   constructionModeUI:
   - {fileID: 650985263}
@@ -38337,6 +38337,7 @@ MonoBehaviour:
   editController: {fileID: 2093605671}
   selecterController: {fileID: 1196750155}
   timeToUndoMax: 5
+  demolishCost: 2
   undo: {fileID: 0}
 --- !u!4 &2026831575
 Transform:

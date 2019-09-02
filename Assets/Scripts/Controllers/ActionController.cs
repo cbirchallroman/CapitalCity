@@ -14,6 +14,7 @@ public class ActionController : MonoBehaviour {
 
     public Action currentAction { get; set; }
     public int timeToUndoMax;
+	public int demolishCost = 2;
     public int TimeToUndo { get; set; }
 
     public Dictionary<Node, Action> actionLocations = new Dictionary<Node, Action>();
@@ -159,15 +160,24 @@ public class ActionController : MonoBehaviour {
             int x = n.x;
             int y = n.y;
 
+			//the reason why we use a dictionary instead of referring to currentAction is because this can be called
+			//	for undo actions too, which doesn't refer to currentAction
             Action act = acts[n];
 
             if (CanDo(act, x, y)) {
 
-                if (modeController.currentMode == Mode.Construct && act.Do == "place")
-                    moneyController.SpendOnConstruction(StructureDatabase.GetModifiedCost(act.What));
+				//spend money here and not by calling Get___Cost outside of the loop
+				//	otherwise we're iterating through the list of nodes twice
+				if (modeController.currentMode == Mode.Construct && act.Do == "place")
+					moneyController.SpendOnConstruction(StructureDatabase.GetModifiedCost(act.What));
 
-				else if(act.Do == "unplace")
-                    moneyController.Money += StructureDatabase.GetModifiedCost(act.What);
+				else if (modeController.currentMode == Mode.Construct && currentAction.Do == "demolish") {
+					Structure s = world.Map.GetBuildingAt(n).GetComponent<Structure>();
+					moneyController.SpendOnConstruction(s.Sizex * s.Sizey * demolishCost);
+				}
+
+				else if (act.Do == "unplace")
+					moneyController.SpendOnConstruction(StructureDatabase.GetModifiedCost(act.What) * -1);
 
 				undoActions.Add(n, ReverseAction(act, n));
 				Do(act, x, y);
@@ -176,7 +186,7 @@ public class ActionController : MonoBehaviour {
 
         }
 
-    }
+	}
 
     public void PerformActions() {
 
@@ -207,7 +217,7 @@ public class ActionController : MonoBehaviour {
 
     }
 
-	public int GetConstructCost(Dictionary<Node, Action> acts, Action a) {
+	public float GetConstructCost(Dictionary<Node, Action> acts, Action a) {
 
 		int count = acts.Count;
 
@@ -223,9 +233,35 @@ public class ActionController : MonoBehaviour {
 
     }
 
+	public float GetDemolishCost(Dictionary<Node, Action> acts, Action a) {
+
+		if (acts.Count == 0)
+			return demolishCost;
+
+		float cost = 0;
+
+		List<Structure> structures = new List<Structure>();
+
+		foreach(Node n in acts.Keys) {
+
+			GameObject go = world.Map.GetBuildingAt(n);
+			if (go == null)
+				continue;
+			Structure s = go.GetComponent<Structure>();
+			if (structures.Contains(s))
+				continue;
+			cost += s.Sizex * s.Sizey * demolishCost;
+			structures.Add(s);	//keep track of structures to demolish to not count cost more than once
+
+		}
+
+		return cost;
+
+	}
+
     void UpdateTooltip() {
 
-		int cost = 0;
+		float cost = 0;
 
         if (currentAction.Do == "paint") {
 			TooltipController.SetText(currentAction.What);
@@ -234,6 +270,9 @@ public class ActionController : MonoBehaviour {
 
         else if (modeController.currentMode == Mode.Construct && currentAction.Do == "place")
             cost = GetConstructCost(actionLocations, currentAction);
+
+		else if (modeController.currentMode == Mode.Construct && currentAction.Do == "demolish")
+			cost = GetDemolishCost(actionLocations, currentAction);
 
 		TooltipController.SetText(MoneyController.symbol + "" + cost);
 

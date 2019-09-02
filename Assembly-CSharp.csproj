@@ -95,6 +95,7 @@
     <Compile Include="Assets\Scripts\Data\Node.cs" />
     <Compile Include="Assets\Scripts\Data\Prole.cs" />
     <Compile Include="Assets\Scripts\Data\Quarter.cs" />
+    <Compile Include="Assets\Scripts\Data\ResourceData.cs" />
     <Compile Include="Assets\Scripts\Data\StructureData.cs" />
     <Compile Include="Assets\Scripts\Data\Technology.cs" />
     <Compile Include="Assets\Scripts\Data\WalkerData.cs" />
