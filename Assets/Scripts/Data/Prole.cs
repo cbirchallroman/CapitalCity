@@ -92,9 +92,8 @@ public class Person {
 	}
 
 	public virtual void Kill() {
+		
 
-		if (diseased)	//if diseased upon death, remove this person from the number of diseased persons living at the house
-			NotifyHouseOfCure();
 
 	}
 
@@ -109,13 +108,6 @@ public class Person {
 		diseased = true;
 		diseaseLength = diseaseLengthMax;
 		//Debug.Log(this + " turned diseased");
-		NotifyHouseOfDisease();
-
-	}
-
-	public virtual void NotifyHouseOfDisease() {
-
-		Debug.LogError("Something should be here");
 
 	}
 
@@ -126,18 +118,11 @@ public class Person {
 
 	}
 
-	public virtual void NotifyHouseOfCure() {
-
-		Debug.LogError("Something should be here");
-
-	}
-
 }
 
 [System.Serializable]
 public class Child : Person {
-
-	public Prole parent;
+	
 	public bool GrownUp { get { return yearsOld >= comingOfAge; } }
 	
 	public override int DeathChanceFromDisease { get { return 16 - yearsOld + base.DeathChanceFromDisease; } }
@@ -149,7 +134,6 @@ public class Child : Person {
 		surname = parent.surname;
 		skinColor = parent.skinColor;
 		ID = surname + name + Random.Range(0, 100);
-		this.parent = parent;
 
 	}
 
@@ -157,20 +141,6 @@ public class Child : Person {
 
 		if (GrownUp)
 			Debug.Log(this + " should be an adult now");
-
-	}
-
-	public override void NotifyHouseOfDisease() {
-
-		if (parent != null)
-			parent.NotifyHouseOfDisease();
-
-	}
-
-	public override void NotifyHouseOfCure() {
-
-		if (parent != null)
-			parent.NotifyHouseOfCure();
 
 	}
 
@@ -440,11 +410,18 @@ public class Prole : Person {
 		if (go == null)
 			return;
 
-		//cycle through house's residents and delete this one
+		//go through house's residents and delete this one
 		House h = go.GetComponent<House>();
-		for (int i = 0; i < h.Residents.Count; i++)
-			if (h.Residents[i] == this)
-				h.Residents.RemoveAt(i);
+		h.Residents.Remove(this);
+
+		//if was diseased upon eviction, remove disease from count
+		if(diseased)
+			h.RemoveDiseasedResident();
+
+		//cycle through children; if any are diseased, remove from diseased count
+		foreach (Child c in children)
+			if (c.diseased)
+				h.RemoveDiseasedResident();
 
 		if (separateChildren) {
 
@@ -578,30 +555,6 @@ public class Prole : Person {
 		float bonus = GetLaborBonus(lt);
 		eff += bonus * .05f;  //each bonus point is equal to +5% productivity
 		return eff;
-
-	}
-
-	public override void NotifyHouseOfDisease() {
-
-		GameObject go = world.GetBuildingAt(homeNode);
-
-		if (go == null)
-			Debug.LogError(surname + " does not have a house at " + homeNode + " anymore");
-
-		House house = go.GetComponent<House>();
-		house.DiseasedResidents++;
-
-	}
-
-	public override void NotifyHouseOfCure() {
-
-		GameObject go = world.GetBuildingAt(homeNode);
-
-		if (go == null)
-			Debug.LogError(surname + " does not have a house at " + homeNode + " anymore");
-
-		House house = go.GetComponent<House>();
-		house.DiseasedResidents--;
 
 	}
 

@@ -338,17 +338,25 @@ public class House : Structure {
 		for(int i = Residents.Count - 1; i >= 0; i--) {
 
 			Prole p = Residents[i];
+			bool diseased = p.diseased;
 			p.UpdateAge();
+			if (!p.diseased && diseased)
+				RemoveDiseasedResident();	//if resident was diseased and is no longer bc time ran out, remove one from the diseased count
 
 			//the reason we age children here and not in Prole.UpdateAge() is so we can detect death and coming of age
 			for (int j = p.children.Count - 1; j >= 0; j--) {
 
 				Child c = p.children[j];
+				bool diseasedC = c.diseased;
 				c.UpdateAge();
+				if (!c.diseased && diseasedC)
+					RemoveDiseasedResident();	//if the child was diseased and is no longer bc time ran out, remove one from the diseased count
 
 				//do if c is dead
 				if (c.markedForDeath) {
 
+					//if c was diseased upon death, remove one from diseased count
+					if (c.diseased) RemoveDiseasedResident();
 					p.children.Remove(c);
 					c.Kill();
 					Corpses++;
@@ -367,9 +375,14 @@ public class House : Structure {
 
 			//do if p is about to die
 			if (p.markedForDeath) {
+
+				//if c was diseased upon death, remove one from diseased count
+				if (p.diseased) RemoveDiseasedResident();
+
 				p.Kill();
 				population.RemoveProle(p);
 				Corpses++;
+
 			}
 
 		}
@@ -420,6 +433,8 @@ public class House : Structure {
 		if (!success)
 			return;
 
+		bool spreadDisease = false;
+
 		//goal is to spread disease to one person
 		foreach (Prole res in Residents) {
 
@@ -430,6 +445,7 @@ public class House : Structure {
 				Child c = res.children[i];
 				if (!c.diseased) {
 					c.TurnDiseased();
+					spreadDisease = true;
 					diseasedChild = true;
 				}
 
@@ -441,11 +457,28 @@ public class House : Structure {
 			if (!res.diseased) {
 
 				res.TurnDiseased();
+				spreadDisease = true;
 				break;
 
 			}
 
 		}
+
+		//if we successfully spread disease, up count of diseased residents by 1
+		if(spreadDisease)
+			AddDiseasedResident();
+
+	}
+
+	public void AddDiseasedResident() {
+
+		DiseasedResidents++;
+
+	}
+
+	public void RemoveDiseasedResident() {
+
+		DiseasedResidents--;
 
 	}
 

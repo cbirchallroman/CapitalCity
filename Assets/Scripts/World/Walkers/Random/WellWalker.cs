@@ -42,21 +42,25 @@ public class WellWalker : RandomWalker {
 		
 		foreach(Prole res in house.Residents) {
 			
-			TryDiseaseAtPerson(res, house.Hygiene);
+			TryDiseaseAtPerson(res, house);
 			foreach (Child child in res.children)
-				TryDiseaseAtPerson(child, house.Hygiene);
+				TryDiseaseAtPerson(child, house);
 
 		}
 
 	}
 
-	void TryDiseaseAtPerson(Person p, int hygiene) {
+	void TryDiseaseAtPerson(Person p, House house) {
 
 		if (p.diseased)
 			return;
 
-		if (Random.Range(1, 100) + hygiene <= yield)	//want to roll low to cause disease
+		if (Random.Range(1, 100) + house.Hygiene <= yield) {
+
 			p.TurnDiseased();
+			house.AddDiseasedResident();
+
+		}	//want to roll low to cause disease
 
 	}
 
