@@ -158,6 +158,12 @@ public class WorldController : MonoBehaviour {
 
     }
 
+	public GameObject GetTileAt(int x, int y) {
+
+		return tiles[x, y];
+
+	}
+
     public void LoadScenario(BasicWorldSave w) {
 
         Map = w.world;

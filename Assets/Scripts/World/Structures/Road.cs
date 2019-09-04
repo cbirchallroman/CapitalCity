@@ -101,7 +101,7 @@ public class Road : TiledStructure {
 
     public new void Update() {
 
-        UpdateTiling();
+		base.Update();
 
         if (world.Map.roads[X, Y] != 2)
             world.Map.roads[X, Y] = 2;

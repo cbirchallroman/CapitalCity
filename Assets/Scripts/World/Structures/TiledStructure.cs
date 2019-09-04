@@ -16,7 +16,9 @@ public class TiledStructure : Structure {
 
     public void Update() {
         UpdateTiling();
-    }
+		if (!groundColorSet)
+			SetGroundColor();
+	}
 
     public void UpdateTiling() {
         int newNeighbors = FindNeighbors();

@@ -12,6 +12,13 @@
     <Name>Potatoes</Name>
 
   </Resource>
+  
+  <Resource>
+
+    <Name>Bread</Name>
+    <Ingredient>100 Flour</Ingredient>
+
+  </Resource>
 
   <Resource>
 
@@ -141,6 +148,13 @@
   <Resource>
 
     <Name>Flax</Name>
+
+  </Resource>
+
+  <Resource>
+
+    <Name>Flour</Name>
+    <Ingredient>75 Grain</Ingredient>
 
   </Resource>
 

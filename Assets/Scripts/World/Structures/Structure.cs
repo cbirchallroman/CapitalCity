@@ -43,6 +43,7 @@ public class Structure : Obj {
 
 
 	public int stockpile = 100;
+	public MeshRenderer groundMR;
 	public float AmountStored { get; set; }
 
 	public int Sizex { get; set; }
@@ -61,6 +62,8 @@ public class Structure : Obj {
     public bool ActiveSmartWalker { get; set; }
     public string RandomWalker;
 
+	public bool groundColorSet = false;	//should NOT be serialized because this has to do with the visuals of the object
+
 	public override void Activate() {
 
         base.Activate();
@@ -71,9 +74,6 @@ public class Structure : Obj {
         collapseRiskMax = (int)(collapseRiskMax * Difficulty.GetModifier());
         fireRiskMax = (int)(fireRiskMax * Difficulty.GetModifier());
         DoDesirability();
-
-		//if (GetComponent<BoxCollider>() == null)
-		//	AddBoxCollider();
 
 	}
 
@@ -99,16 +99,15 @@ public class Structure : Obj {
         collapseRiskMax = (int)(collapseRiskMax * Difficulty.GetModifier());
         fireRiskMax = (int)(fireRiskMax * Difficulty.GetModifier());
 
-		//if (GetComponent<BoxCollider>() == null)
-		//	AddBoxCollider();
-
 	}
 
-	void AddBoxCollider() {
+	public void SetGroundColor() {
 		
-		BoxCollider bc = gameObject.AddComponent<BoxCollider>();
-		bc.size = new Vector3(Sizex, .5f, Sizey);
-		bc.center = new Vector3(0, .25f, 0);
+		Material m = world.GetTileAt(X, Y).GetComponent<MeshRenderer>().material;
+		Debug.Log(m.name);
+		if (groundMR != null)
+			groundMR.material = m;
+		groundColorSet = true;
 
 	}
 
@@ -116,6 +115,9 @@ public class Structure : Obj {
 
 		if(Settings.oldGraphics)
 			UpdateRotation();
+
+		if (!groundColorSet)
+			SetGroundColor();
 
         TimeDelta += Time.deltaTime;
         if (time == null)

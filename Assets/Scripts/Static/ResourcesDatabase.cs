@@ -27,7 +27,7 @@ public class ResourcesDatabase : MonoBehaviour {
 		Whitelist = new List<string>();
 
 		//this is just a test whitelist but also useful to see what we have
-		AddToWhitelist("Grain");
+		AddToWhitelist("Bread");
 		AddToWhitelist("Pork");
 		AddToWhitelist("Sand");
 		AddToWhitelist("Wood");
@@ -103,9 +103,6 @@ public class ResourcesDatabase : MonoBehaviour {
 
 			if (string.IsNullOrEmpty(item2))
 				Debug.LogError(item + " has a null ingredient");
-
-			//if (item2.Equals(item))
-			//	amount -= amount2;
 
 			days += (float)GetAccumulativeDays(item2) * amount2 / 100f;
 

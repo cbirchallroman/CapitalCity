@@ -9,10 +9,9 @@ public class Machine {
 	public MachineType type;
 	public ResourceType material;
 	public ResourceType fuel;
-	public float improvement;
-	public float efficiency = 2;
 	public int fuelPer100;
 	public int socialDays;
+	public int deadLabor;
 
 	public Machine(Dictionary<string, string> contents) {
 
@@ -21,10 +20,9 @@ public class Machine {
 		type = Enums.GetMachineType(contents["Type"]);
 
 		material = (ResourceType)Enums.GetItemData(contents["Material"]).x;
-
-		improvement = float.Parse(contents["Improvement"]);
-		efficiency = float.Parse(contents["Efficiency"]);
+		
 		socialDays = int.Parse(contents["Days"]);
+		deadLabor = int.Parse(contents["DeadLabor"]);
 
 		if (contents.ContainsKey("Fuel")) {
 
@@ -43,9 +41,18 @@ public class Machine {
 	}
 
 	public int GetDeteriorationPerCycle(int stockpile) {
+		
+		//let's say we're contributing 6 out of 16 hours to producing 100 shoes (where 100 is generally how much of something we're making)
+		//	and this machine has 180 hours of dead labor, from 100 bricks and 80 working hours
+		//	each production cycle reduces the machine's value by 6 hours because that is consumed in production
 
-		float materialDays = ResourcesDatabase.GetAccumulativeDays(material.ToString());
-		return (int)((float)stockpile * socialDays / materialDays);	//somehow derive this from hours embedded in the machine material
+		return (int)((float)stockpile * socialDays / 100);
+
+	}
+
+	public int GetTotalDeadLabor() {
+
+		return ResourcesDatabase.GetAccumulativeDays(material.ToString()) + deadLabor;
 
 	}
 

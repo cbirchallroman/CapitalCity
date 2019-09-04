@@ -36,7 +36,7 @@ public class Generator : Workplace {
 
 	//PRODUCTIVITY
 	public float BaseProductivity { get; set; }     //determined by machinery or lack thereof
-	public float ActualProductivity { get { return BaseProductivity * WorkerEffectiveness * RelativeWorkingDay * MachineryPerformance; } }
+	public float ActualProductivity { get { return BaseProductivity * WorkerEffectiveness * RelativeWorkingDay; } }
 	public int BaseProductionCycle { get { return Mathf.RoundToInt(ResourcesDatabase.GetBaseDays(product) / BaseProductivity * RelativeStockpile * RelativeWorkerStrength); } }    //time to produce product without taking variables into account
 	public int ActualProductionCycle { get { return Mathf.RoundToInt(ResourcesDatabase.GetBaseDays(product) / ActualProductivity * RelativeStockpile * RelativeWorkerStrength); } }    //actual time to produce product
 	public float SocialProductivity { get { return ProductivityController.GetAverageProductivityEverywhere(product); } }    //social average time to produce
@@ -44,7 +44,7 @@ public class Generator : Workplace {
 	//PRODUCTION
 	//	the number of hours that it take something to be produced assumes an average workday of 8 hr and 4 workers
 	public float ProductPerWorker { get { return (float)stockpile / (BaseProductionCycle * BaseWorkingDay * BaseWorkers); } }   //amount of product produced by a worker each day
-	public float ProductsPerDay { get { return ProductPerWorker * WorkingDay * WorkerList.Count * MachineryPerformance; } }
+	public float ProductsPerDay { get { return ProductPerWorker * WorkingDay * WorkerList.Count; } }
 
 	//RELATIVE STATS
 	public float RelativeWorkingDay { get { return ((float)WorkingDay) / BaseWorkingDay; } }
@@ -72,13 +72,12 @@ public class Generator : Workplace {
 	//DETERIORATION
 	public Machine MachineData { get; set; }
 	public MachineType machineryType = MachineType.END;
-    public int MachineryValue { get { return DeteriorationPerCycle * 10; } }	//total amount of machinery in the generator; can last for 10 cycles before needing to be replaced
+    public int MachineryValue { get { return MachineData.GetTotalDeadLabor(); } }	//total amount of machinery in the generator
     public ResourceType MachineryResource { get; set; }		//determined by machinery
 	public ResourceType Fuel { get; set; }		//determined by machinery
 	public int Deterioration { get; set; }
     public int DeteriorationPerCycle { get { return MachineData.GetDeteriorationPerCycle(stockpile); } }		//amount of constant capital consumed each cycle
-	public float MachineryPerformance { get { if (MachineData == null) return 1f; return 1f - (float)Deterioration / MachineryValue; } }	//what % of the machinery needs to be replaced
-	public bool BrokenDown { get { return MachineryPerformance == 0; } }
+	public bool BrokenDown { get { return Deterioration >= MachineryValue && machineryType != MachineType.END; } }
 	public int RepairsNeeded { get { return MachineryValue - Deterioration; } }
 
     public override void Load(ObjSave o) {
