@@ -496,7 +496,9 @@ public class House : Structure {
 	public int Thirst { get; set; }
 	public int ThirstPerWeek { get { return 1; } }
 	public int MaxThirst { get { return ThirstPerWeek * TimeController.MonthTime * 12; } }
-	public int DesperateThirst { get { return ThirstPerWeek * 3 * TimeController.MonthTime; } } //if it's been 3 months
+	public int DesperateThirst { get { return ThirstPerWeek * TimeController.MonthTime * 3; } } //if it's been 3 months
+
+	public bool DesperatelyThirsty { get { return Thirst >= DesperateThirst; } }
 
 	public Quality waterQualNeeded;
 	public Quality waterQualWanted;
@@ -505,7 +507,7 @@ public class House : Structure {
 	public bool WillAcceptWaterVisit(Quality visitingQual) {
 
 		//if thirsty enough, we'll accept any amount of water
-		if (Thirst >= DesperateThirst)
+		if (DesperatelyThirsty)
 			return true;
 
 		return visitingQual >= WaterQualCurrent;
@@ -513,8 +515,7 @@ public class House : Structure {
 	}
 
 	public void ReceiveWater(Quality qual, int water) {
-
-		Debug.Log(Thirst);
+		
 		WaterQualCurrent = qual;
 		Thirst -= water;
 		if (Thirst < 0)
@@ -522,11 +523,44 @@ public class House : Structure {
 
 	}
 
-    /*************************************
+	/*************************************
+    HUNGER STATS
+    *************************************/
+
+	public int Hunger;
+	public int HungerPerWeek { get { return Residents.Count; } }
+	public int MaxHunger { get { return HungerPerWeek * TimeController.MonthTime * 12; } }
+	public int DesperateHunger { get { return HungerPerWeek * TimeController.MonthTime * 3; } }
+
+	public bool DesperatelyHungry { get { return Hunger >= DesperateHunger; } }
+
+	public int foodTypesNeeded;
+	public int foodTypesWant;
+	public int foodTypesCurrent;
+
+	public bool WillAcceptFoodTypes(int visitingTypes) {
+
+		if (DesperatelyHungry)
+			return true;
+
+		return visitingTypes >= foodTypesCurrent;
+
+	}
+
+	public void ReceiveFood(int types, int food) {
+
+		foodTypesCurrent = types;
+		Hunger -= food;
+		if (Hunger < 0)
+			Hunger = 0;
+
+	}
+
+	/*************************************
     FOOD STATS
     *************************************/
 
-    public int[] Food { get; set; }
+	public int[] Food { get; set; }
     public int foodTypesNeeded;
     public int foodTypesWant;
 	public bool WantsMoreFood { get { return NumOfFoods() < foodTypesWant; } }
