@@ -4,17 +4,20 @@ using UnityEngine;
 
 public class Well : Structure {
 
+	public Quality waterQuality = Quality.Poor;
+	public int waterQuantity = 1;
+
     public override void VisitBuilding(int a, int b) {
 
         base.VisitBuilding(a, b);
 
-        House h = world.Map.GetBuildingAt(a, b).GetComponent<House>();
-        if (h == null)
+        House house = world.Map.GetBuildingAt(a, b).GetComponent<House>();
+        if (house == null)
             return;
 
-        if (h.WaterQual == Quality.Poor || h.waterQualWanted == Quality.Poor)
-            h.AddWater(h.WaterNeeded(Quality.Poor), Quality.Poor);
+		if (house.WillAcceptWaterVisit(waterQuality))
+			house.ReceiveWater(waterQuality, waterQuantity);
 
-    }
+	}
 
 }
