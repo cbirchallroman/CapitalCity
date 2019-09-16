@@ -174,15 +174,23 @@ MonoBehaviour:
   defaultDesc: This is an object.
   resourcePath: Walkers/RandomWalkers/WellWalker
   radiusOfInfluence: 2
-  rightclick: 1
+  openWindow: 1
+  randomModel: {fileID: 0}
   lifeTime: 26
   movementSpeed: 1
   yield: 0
+  followerName: 
   laborSeeker: 1
-  roadWalker: 1
-  canGoDiagonal: 0
-  canGoThroughHouses: 0
-  canGoThroughCrops: 0
   meshRenderer: {fileID: 23836328251038320}
+  data:
+    name: 
+    RoadWalker: 0
+    WaterWalker: 0
+    CanGoDiagonal: 0
+    RandomWalker: 0
+    ReturningHome: 0
+    CanPassThrough: 
+  preferredRandomNavigation: 0
   modifyLifeTime: 1
   waterQuality: 1
+  waterQuantity: 1

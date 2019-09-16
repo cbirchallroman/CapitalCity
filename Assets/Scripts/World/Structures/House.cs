@@ -135,7 +135,9 @@ public class House : Structure {
 
 		ThrowWaste();
 
-		Thirst += ThirstPerWeek;
+		IncreaseThirst();
+		IncreaseHunger();
+		Debug.Log(Thirst);
 
 	}
 
@@ -149,7 +151,6 @@ public class House : Structure {
 			ChangeHouse(devolvesTo);
 
 		//consume things
-        ConsumeFood();
         ConsumeGoods();
         ConsumeCulture();
         SpreadDisease();
@@ -157,7 +158,8 @@ public class House : Structure {
     }
 	
     public bool WantsBetterWater { get { return WaterQualCurrent < waterQualWanted; } }
-    public bool WantsBetterCulture { get { return Culture < cultureWant; } }
+	public bool WantsMoreFood { get { return foodTypesCurrent < foodTypesWant; } }
+	public bool WantsBetterCulture { get { return Culture < cultureWant; } }
     public bool WantsBetterDesirability { get { return LocalDesirability < desirabilityWanted; } }
 
     public bool CanEvolve() {
@@ -184,7 +186,7 @@ public class House : Structure {
 
         if (WaterQualCurrent < waterQualNeeded)
             return true;
-        if (NumOfFoods() < foodTypesNeeded)
+        if (foodTypesCurrent < foodTypesNeeded)
             return true;
         if (MissingGoods)
             return true;
@@ -494,15 +496,23 @@ public class House : Structure {
     *************************************/
 
 	public int Thirst { get; set; }
-	public int ThirstPerWeek { get { return 1; } }
-	public int MaxThirst { get { return ThirstPerWeek * TimeController.MonthTime * 12; } }
-	public int DesperateThirst { get { return ThirstPerWeek * TimeController.MonthTime * 3; } } //if it's been 3 months
+	public int ThirstRate { get { return 1; } }
+	public int MaxThirst { get { return ThirstRate * TimeController.MonthTime * 12; } }
+	public int DesperateThirst { get { return ThirstRate * TimeController.MonthTime * 3; } } //if it's been 3 months
 
 	public bool DesperatelyThirsty { get { return Thirst >= DesperateThirst; } }
 
 	public Quality waterQualNeeded;
 	public Quality waterQualWanted;
 	public Quality WaterQualCurrent { get; set; }
+
+	void IncreaseThirst() {
+
+		Thirst += ThirstRate;
+		if (Thirst > MaxThirst)
+			Thirst = MaxThirst;
+
+	}
 
 	public bool WillAcceptWaterVisit(Quality visitingQual) {
 
@@ -515,7 +525,9 @@ public class House : Structure {
 	}
 
 	public void ReceiveWater(Quality qual, int water) {
-		
+
+		if (qual < WaterQualCurrent)
+			Debug.Log(this + " getting lower quality water than before...");
 		WaterQualCurrent = qual;
 		Thirst -= water;
 		if (Thirst < 0)
@@ -528,15 +540,23 @@ public class House : Structure {
     *************************************/
 
 	public int Hunger;
-	public int HungerPerWeek { get { return Residents.Count; } }
-	public int MaxHunger { get { return HungerPerWeek * TimeController.MonthTime * 12; } }
-	public int DesperateHunger { get { return HungerPerWeek * TimeController.MonthTime * 3; } }
+	public int HungerRate { get { return Residents.Count; } }
+	public int MaxHunger { get { return HungerRate * TimeController.MonthTime * 12; } }
+	public int DesperateHunger { get { return HungerRate * TimeController.MonthTime * 3; } }
 
 	public bool DesperatelyHungry { get { return Hunger >= DesperateHunger; } }
 
 	public int foodTypesNeeded;
 	public int foodTypesWant;
 	public int foodTypesCurrent;
+
+	void IncreaseHunger() {
+
+		Hunger += HungerRate;
+		if (Hunger > MaxHunger)
+			Hunger = MaxHunger;
+
+	}
 
 	public bool WillAcceptFoodTypes(int visitingTypes) {
 
@@ -549,6 +569,8 @@ public class House : Structure {
 
 	public void ReceiveFood(int types, int food) {
 
+		if (types < foodTypesCurrent)
+			Debug.Log(this + " buying lower quality food than before...");
 		foodTypesCurrent = types;
 		Hunger -= food;
 		if (Hunger < 0)
@@ -561,9 +583,6 @@ public class House : Structure {
     *************************************/
 
 	public int[] Food { get; set; }
-    public int foodTypesNeeded;
-    public int foodTypesWant;
-	public bool WantsMoreFood { get { return NumOfFoods() < foodTypesWant; } }
 
 	public int FoodMax { get { return 24 * FoodToConsume / foodTypesWant; } }	//amount of each type to store (for 2 years/24 months)
 	public int FoodNeeded(int item) { return FoodMax - Food[item]; }			//amount needed per type
@@ -579,31 +598,6 @@ public class House : Structure {
 
         return s;
 
-    }
-
-    void ConsumeFood() {
-
-        for(int a = 0, b = 0; a < foodTypesNeeded && b < Food.Length; a++) {
-
-			//amount of this type of food to consume
-            int consume = FoodToConsume;
-
-            for (; b < Food.Length && consume > 0; b++) {
-                
-
-                if (Food[b] >= consume) {
-                    Food[b] -= consume;
-                    consume = 0;
-                }
-                else {
-                    consume -= Food[b];
-                    Food[b] = 0;
-                }
-
-            }
-
-        }
-            
     }
 
     /*************************************
@@ -760,18 +754,17 @@ public class House : Structure {
 	public ItemOrder WillBuyFood(int item, int amountStored) {
 
 		//if you don't want anything, stop
-		if (foodTypesWant == 0)
-			return null;
+		//if (foodTypesWant == 0)
+		//	return null;
 		int amountMin = FoodMax / 6;
-		int typesHave = NumOfFoods();
 		//if you don't have this item and have the types you want, you don't want any
-		if (Food[item] == 0 && typesHave == foodTypesWant)
-			return null;
+		//if (Food[item] == 0 && foodTypesCurrent == foodTypesWant)
+		//	return null;
 		//if you have more types than you need and you have this, don't buy any more types
-		if (Food[item] > 0 && typesHave > foodTypesWant)
-			return null;
+		//if (Food[item] > 0 && foodTypesCurrent > foodTypesWant)
+		//	return null;
 		//if you have enough of this type, you don't want any more of this type
-		if (Food[item] > amountMin && typesHave <= foodTypesWant)
+		if (Food[item] > amountMin && foodTypesCurrent <= foodTypesWant)
 			return null;
 
 		int divisor = 1;
