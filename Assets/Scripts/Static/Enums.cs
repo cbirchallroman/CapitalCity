@@ -11,7 +11,7 @@ public enum LaborDivision { Materials, Production, Storage, Retail, Healthcare, 
 public enum Season { Spring, Summer, Autumn, Winter, END }
 public enum FoodType { Potatoes, Fish, Bread, Vegetables, Mutton, Pork, Beef, END }
 public enum GoodType { Shoes, Trowsers, Pottery, Glassware, Carpet, Furniture, Coats, Beer, Cigars, WoodenToys, END }
-public enum ResourceType { Bricks, Clay, Coal, Cotton, Denim, Flax, Flour, Grain, Leather, Linen, Ore, Paper, Sand, Spindles, Steel, Stone, Wood, Tobacco, Wool, Yarn, END }
+public enum ResourceType { Bricks, Clay, Coal, Cotton, Denim, Flax, Grain, Leather, Linen, Ore, Paper, Sand, Spindles, Steel, Stone, Wood, Tobacco, Wool, Yarn, END }
 public enum ItemType { Food, Good, Resource, END }
 public enum Quality { None, Poor, Average, Great, Luxurious, END }
 public enum NotificationType { Event, Issue, GoodNews, Invasion, END }
