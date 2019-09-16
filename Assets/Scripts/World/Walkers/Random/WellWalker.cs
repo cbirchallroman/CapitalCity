@@ -4,9 +4,10 @@ using UnityEngine;
 
 public class WellWalker : RandomWalker {
 
-    public Quality waterQuality;
+	public Quality waterQuality;
+	public int waterQuantity = 10;
 
-    public float Multiplier { get { return 2 - (float)waterQuality * 0.5f * Difficulty.GetModifier(); } }
+	public float Multiplier { get { return 2 - (float)waterQuality * 0.5f * Difficulty.GetModifier(); } }
 
     public override void Activate() {
         base.Activate();
@@ -16,20 +17,23 @@ public class WellWalker : RandomWalker {
 
         base.VisitBuilding(a, b);
 
+		House house = world.Map.GetBuildingAt(a, b).GetComponent<House>();
+		if (house == null)
+			return;
+
+		//give water regardless of how many times visited
+		if (house.WillAcceptWaterVisit(waterQuality))
+			house.ReceiveWater(waterQuality, waterQuantity);
+
 		//check if spot visited
 		string spot = a + "_" + b;
 		if (VisitedSpots.Contains(spot))
 			return;
 		VisitedSpots.Add(spot);		//house has been visited
 
-		House house = world.Map.GetBuildingAt(a, b).GetComponent<House>();
-        if (house == null)
-            return;
 
-        //give water
-        if (house.WaterQual == waterQuality || house.waterQualWanted <= waterQuality)
-            house.AddWater(house.WaterNeeded(waterQuality), waterQuality);
-        UpdateCleanliness();    //yield is the average filthiness of roads that the wellwalker has walked on
+		//give water
+		UpdateCleanliness();    //yield is the average filthiness of roads that the wellwalker has walked on
 
 		//give disease
 		if (yield != 0)

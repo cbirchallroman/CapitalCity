@@ -8,6 +8,7 @@ public class ResourceData {
 	public int days = 16;
 	public int weight = 1;
 	public string[] ingredients;
+	public Quality quality= Quality.Average;
 
 	public ResourceData(Dictionary<string, string> contents, string[] ing) {
 

@@ -203,7 +203,9 @@ MonoBehaviour:
   autoRotate: 1
   desirability: 00000000
   stockpile: 100
+  groundMR: {fileID: 0}
   RandomWalker: 
+  groundColorSet: 0
   level: 3
   evolvesTo: House4s
   devolvesTo: House2s
@@ -215,8 +217,8 @@ MonoBehaviour:
   cholera: {fileID: 1145452177565432}
   waterQualNeeded: 1
   waterQualWanted: 1
-  foodTypesNeeded: 1
-  foodTypesWant: 1
+  foodQualNeeded: 1
+  foodQualWant: 1
   goodsNeeded: 
   goodWanted: 0
   cultureNeeded: 0

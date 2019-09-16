@@ -3,12 +3,6 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class ShopVender : RandomWalker {
-	
-    public override void Activate() {
-
-        base.Activate();
-
-    }
 
     public override void VisitBuilding(int a, int b) {
 

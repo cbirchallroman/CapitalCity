@@ -9,9 +9,9 @@ public enum Mode { Construct, Edit, Combat, END }
 public enum DifficultyLevel { Easiest, Easy, Moderate, Hard, Hardest, END }
 public enum LaborDivision { Materials, Production, Storage, Retail, Healthcare, Entertainment, Management, END }
 public enum Season { Spring, Summer, Autumn, Winter, END }
-public enum FoodType { Potatoes, Fish, Bread, Vegetables, Mutton, Pork, Beef, END }
+public enum FoodType { Potatoes, Fish, Grain, Vegetables, Mutton, Pork, Beef, END }
 public enum GoodType { Shoes, Trowsers, Pottery, Glassware, Carpet, Furniture, Coats, Beer, Cigars, WoodenToys, END }
-public enum ResourceType { Bricks, Clay, Coal, Cotton, Denim, Flax, Grain, Leather, Linen, Ore, Paper, Sand, Spindles, Steel, Stone, Wood, Tobacco, Wool, Yarn, END }
+public enum ResourceType { Bricks, Clay, Coal, Cotton, Denim, Flax, Leather, Linen, Ore, Paper, Sand, Spindles, Steel, Stone, Wood, Tobacco, Wool, Yarn, END }
 public enum ItemType { Food, Good, Resource, END }
 public enum Quality { None, Poor, Average, Great, Luxurious, END }
 public enum NotificationType { Event, Issue, GoodNews, Invasion, END }

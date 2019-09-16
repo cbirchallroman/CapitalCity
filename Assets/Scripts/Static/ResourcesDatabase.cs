@@ -89,6 +89,12 @@ public class ResourcesDatabase : MonoBehaviour {
 
 	}
 
+	public static Quality GetQuality(string item) {
+
+		return resourceData[item].quality;
+
+	}
+
 	public static int GetAccumulativeDays(string item) {
 
 		float days = GetBaseDays(item);

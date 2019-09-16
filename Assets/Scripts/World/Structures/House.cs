@@ -5,107 +5,114 @@ using UsefulThings;
 
 [System.Serializable]
 public class HouseSave : StructureSave {
-    
-    public int Hygiene, Culture, Corpses, DiseasedResidents;
-    public float Savings;
 
-    public List<Prole> Residents;
+	public int Hygiene, Culture, Corpses, DiseasedResidents;
+	public int Thirst, Hunger;
+	public float Savings;
 
-    public int[] Water, Food, Goods;
-    public Quality WaterQual { get; set; }
+	public List<Prole> Residents;
 
-    public DictContainer<string, int> VenueAccess { get; set; }
+	public int[] Goods;
+	public Quality WaterQualCurrent, FoodQualCurrent;
 
-    public bool Diseased;
+	public DictContainer<string, int> VenueAccess { get; set; }
 
-    public HouseSave(GameObject go) : base(go) {
+	public bool Diseased;
 
-        House h = go.GetComponent<House>();
-        
+	public HouseSave(GameObject go) : base(go) {
+
+		House h = go.GetComponent<House>();
+
 		Hygiene = h.Hygiene;
 		Savings = h.Savings;
 		Corpses = h.Corpses;
 		DiseasedResidents = h.DiseasedResidents;
 
-        Water = h.Water;
-        WaterQual = h.WaterQual;
+		//thirst
+		Thirst = h.Thirst;
+		WaterQualCurrent = h.WaterQualCurrent;
 
-        Food = h.Food;
+		//hunger
+		Hunger = h.Hunger;
+		FoodQualCurrent = h.FoodQualCurrent;
 
-        Goods = h.Goods;
+		Goods = h.Goods;
 
-        VenueAccess = new DictContainer<string, int>(h.VenueAccess);
-        Culture = h.Culture;
+		VenueAccess = new DictContainer<string, int>(h.VenueAccess);
+		Culture = h.Culture;
 
-        Residents = h.Residents;
+		Residents = h.Residents;
 
-    }
+	}
 
 }
 
 public class House : Structure {
 
-    [Header("House")]
-    public int level;
+	[Header("House")]
+	public int level;
 
 	public string evolvesTo;
 	public string devolvesTo;
 	public string biggerHouse;
 	public int residentsMax = 1;
-    public int prosperityRating;
-    public int desirabilityNeeded;
-    public int desirabilityWanted;
+	public int prosperityRating;
+	public int desirabilityNeeded;
+	public int desirabilityWanted;
 	public int HouseSize { get { return Sizex; } }
 	public float Savings { get; set; }
-    public List<Prole> Residents { get; set; }
+	public List<Prole> Residents { get; set; }
 	public int Corpses { get; set; }
-    
-    //public int ExcessResidents { get { return Residents - residentsMax; } }
 
-    public override void Load(ObjSave o) {
+	//public int ExcessResidents { get { return Residents - residentsMax; } }
 
-        base.Load(o);
+	public override void Load(ObjSave o) {
 
-        HouseSave h = (HouseSave)o;
-		
+		base.Load(o);
+
+		HouseSave h = (HouseSave)o;
+
 		Hygiene = h.Hygiene;
 		Savings = h.Savings;
 		Corpses = h.Corpses;
 		DiseasedResidents = h.DiseasedResidents;
 
-		Water = h.Water;
-        WaterQual = h.WaterQual;
+		//thirst
+		Thirst = h.Thirst;
+		WaterQualCurrent = h.WaterQualCurrent;
 
-        Food = h.Food;
+		//hunger
+		Hunger = h.Hunger;
+		FoodQualCurrent = h.FoodQualCurrent;
 
-        Goods = h.Goods;
+		Goods = h.Goods;
 
-        VenueAccess = h.VenueAccess.GetDictionary();
-        Culture = h.Culture;
+		VenueAccess = h.VenueAccess.GetDictionary();
+		Culture = h.Culture;
 
-        Residents = h.Residents;
+		Residents = h.Residents;
 
-    }
+	}
 
-    public override void Activate() {
+	public override void Activate() {
 
-        base.Activate();
+		base.Activate();
 
-        float rotation = Random.Range(0, 4) * 90;
-        transform.eulerAngles = new Vector3(0, rotation, 0);
+		float rotation = Random.Range(0, 4) * 90;
+		transform.eulerAngles = new Vector3(0, rotation, 0);
 
-        //add population to world
-        scenario.AddHouseLevel(level - 1);
+		//add population to world
+		scenario.AddHouseLevel(level - 1);
 
-    }
+	}
 
-    public override void DoEveryDay() {
+	public override void DoEveryDay() {
 
-        base.DoEveryDay();
+		base.DoEveryDay();
 
-        if (!ActiveSmartWalker && !immigration.Contains(this) && Residents.Count < residentsMax && DiseasedResidents == 0)
-            RequestImmigrant();
-		
+		if (!ActiveSmartWalker && !immigration.Contains(this) && Residents.Count < residentsMax && DiseasedResidents == 0)
+			RequestImmigrant();
+
 		//proles who move out receive a fraction of the house's total savings to take with them
 		if (Residents.Count > residentsMax) {
 
@@ -120,9 +127,9 @@ public class House : Structure {
 		}
 
 		if (CanEvolve())
-            ChangeHouse(evolvesTo);
+			ChangeHouse(evolvesTo);
 
-        CheckBiggerSize();
+		CheckBiggerSize();
 		UpdateResidentsAge();
 		cholera.SetActive(DiseasedResidents > 0);
 
@@ -132,75 +139,78 @@ public class House : Structure {
 
 		ThrowWaste();
 
+		IncreaseThirst();
+		IncreaseHunger();
+		Debug.Log(Thirst);
+
 	}
 
 	public override void DoEveryMonth() {
 
-        base.DoEveryMonth();
-		
+		base.DoEveryMonth();
+
 		//WE'RE CHECKING FOR DEVOLUTION HERE
 		//	that way a house doesn't devolve immediately before consumption, whether checking every day or checking after consuming for the month
 		if (CanDevolve())
 			ChangeHouse(devolvesTo);
 
 		//consume things
-		ConsumeWater();
-        ConsumeFood();
-        ConsumeGoods();
-        ConsumeCulture();
-        SpreadDisease();
+		ConsumeGoods();
+		ConsumeCulture();
+		SpreadDisease();
 
-    }
-	
-    public bool WantsBetterWater { get { return WaterQual < waterQualWanted; } }
-    public bool WantsBetterCulture { get { return Culture < cultureWant; } }
-    public bool WantsBetterDesirability { get { return LocalDesirability < desirabilityWanted; } }
+	}
 
-    public bool CanEvolve() {
+	public bool WantsBetterWater { get { return WaterQualCurrent < waterQualWanted; } }
+	public bool WantsMoreFood { get { return FoodQualCurrent < foodQualWant; } }
+	public bool WantsBetterCulture { get { return Culture < cultureWant; } }
+	public bool WantsBetterDesirability { get { return LocalDesirability < desirabilityWanted; } }
+
+	public bool CanEvolve() {
 
 		if (DiseasedResidents > 0)   //we're not going to evolve if the house is diseased
 			return false;
 
 		//now we check for actual conditions
 		if (WantsBetterWater)
-            return false;
-        if (WantsMoreFood)
-            return false;
-        if (WantsMoreGoods)
-            return false;
-        if (WantsBetterCulture)
-            return false;
-        if (WantsBetterDesirability)
-            return false;
-        return true;
+			return false;
+		if (WantsMoreFood)
+			return false;
+		if (WantsMoreGoods)
+			return false;
+		if (WantsBetterCulture)
+			return false;
+		if (WantsBetterDesirability)
+			return false;
+		return true;
 
-    }
+	}
 
-    public bool CanDevolve() {
+	public bool CanDevolve() {
 
-        if (WaterQual < waterQualNeeded)
-            return true;
-        if (NumOfFoods() < foodTypesNeeded)
-            return true;
-        if (MissingGoods)
-            return true;
-        if (Culture < cultureNeeded)
-            return true;
-        if (LocalDesirability < desirabilityNeeded)
-            return true;
-        return false;
+		if (WaterQualCurrent < waterQualNeeded)
+			return true;
+		if (FoodQualCurrent < foodQualNeeded)
+			return true;
+		if (MissingGoods)
+			return true;
+		if (Culture < cultureNeeded)
+			return true;
+		if (LocalDesirability < desirabilityNeeded)
+			return true;
+		return false;
 
-    }
+	}
 
-    //ADD CONDITIONS TO MAKE BIGGER
-    public void CheckBiggerSize() {
+	//ADD CONDITIONS TO MAKE BIGGER
+	public void CheckBiggerSize() {
 
-        //if no bigger house to evolve to, don't continue
-        if (string.IsNullOrEmpty(biggerHouse))
-            return;
+		//if no bigger house to evolve to, don't continue
+		if (string.IsNullOrEmpty(biggerHouse))
+			return;
 
-        //make containers for adjacent houses
-        World map = world.Map;
+		//make containers for adjacent houses
+		World map = world.Map;
 
 		House[] neighbors = new House[3];
 		Node[] checks = { new Node(X + HouseSize + 1, Y),
@@ -209,7 +219,7 @@ public class House : Structure {
 
 		//iterate through nearby houses
 		//	if at any point conditions are not met for merge, don't continue at all
-		for(int i = 0; i < neighbors.Length; i++) {
+		for (int i = 0; i < neighbors.Length; i++) {
 
 			House h = map.GetBuildingAt(checks[i]).GetComponent<House>();
 			if (h == null)
@@ -224,12 +234,12 @@ public class House : Structure {
 
 		}
 
-        //combine arrays
-        Water = ArrayFunctions.CombineArrays(Water, neighbors[0].Water, neighbors[1].Water, neighbors[2].Water);
-        Food = ArrayFunctions.CombineArrays(Food, neighbors[0].Food, neighbors[1].Food, neighbors[2].Food);
+		//combine arrays
+		Thirst = Thirst + neighbors[0].Thirst + neighbors[1].Thirst + neighbors[2].Thirst;
+		Hunger = Hunger + neighbors[0].Hunger + neighbors[1].Hunger + neighbors[2].Hunger;
 
-        //combine stats and destroy houses
-		foreach(House h in neighbors) {
+		//combine stats and destroy houses
+		foreach (House h in neighbors) {
 
 			foreach (Prole p in h.Residents)
 				Residents.Add(p);
@@ -237,59 +247,60 @@ public class House : Structure {
 
 		}
 
-        ChangeHouse(biggerHouse);
+		ChangeHouse(biggerHouse);
 
-    }
+	}
 
 	bool changingHouse;
-    public void ChangeHouse(string s) {
+	public void ChangeHouse(string s) {
 
-        //if s is null, don't make the new house
-        if (string.IsNullOrEmpty(s))
-            return;
-		
+		//if s is null, don't make the new house
+		if (string.IsNullOrEmpty(s))
+			return;
+
 		//demolish this and build new house
 		changingHouse = true;
 		world.Demolish(X, Y);
-        world.SpawnStructure(s, X, Y, transform.position.y);
+		world.SpawnStructure(s, X, Y, transform.position.y);
 
-        //set vars of new house to the ones from this one
-        House newHouse = world.Map.GetBuildingAt(X, Y).GetComponent<House>();
-        //newHouse.Residents = Residents;
-        newHouse.Water = Water;
-        newHouse.Savings = Savings;
-        newHouse.WaterQual = WaterQual;
-        newHouse.Food = Food;
-        newHouse.Goods = Goods;
-        newHouse.Culture = Culture;
-        newHouse.VenueAccess = VenueAccess;
-        newHouse.DiseasedResidents = DiseasedResidents;
-        newHouse.Residents = Residents;
+		//set vars of new house to the ones from this one
+		House newHouse = world.Map.GetBuildingAt(X, Y).GetComponent<House>();
+		//newHouse.Residents = Residents;
+		newHouse.Thirst = Thirst;
+		newHouse.Hunger = Thirst;
+		newHouse.Savings = Savings;
+		newHouse.WaterQualCurrent = WaterQualCurrent;
+		newHouse.FoodQualCurrent = FoodQualCurrent;
+		newHouse.Goods = Goods;
+		newHouse.Culture = Culture;
+		newHouse.VenueAccess = VenueAccess;
+		newHouse.DiseasedResidents = DiseasedResidents;
+		newHouse.Residents = Residents;
 
 		//USED TO TEST OVERCROWDING
 		//if (newHouse.level > level)
 		//	newHouse.ReceiveImmigrant(new Prole());
 
-    }
+	}
 
-    public void FreshHouse(Prole firstResident) {
+	public void FreshHouse(Prole firstResident) {
 
-        //Residents = res;
-        Water = new int[(int)Quality.END];
-        WaterQual = Quality.None;
-        Food = new int[(int)FoodType.END];
-        Goods = new int[(int)GoodType.END];
-        VenueAccess = new Dictionary<string, int>();
-        Residents = new List<Prole>();
+		Thirst = 0;
+		Hunger = 0;
+		WaterQualCurrent = Quality.None;
+		FoodQualCurrent = Quality.None;
+		Goods = new int[(int)GoodType.END];
+		VenueAccess = new Dictionary<string, int>();
+		Residents = new List<Prole>();
 
 		//CREATE NEW RESIDENT HAPPENS RIGHT HERE
-        ReceiveImmigrant(firstResident);
+		ReceiveImmigrant(firstResident);
 
-    }
+	}
 
-    public override void UponDestruction() {
+	public override void UponDestruction() {
 
-        base.UponDestruction();
+		base.UponDestruction();
 		scenario.RemoveHouseLevel(level - 1);
 
 		if (changingHouse)
@@ -306,18 +317,21 @@ public class House : Structure {
 		}
 
 
-    }
+	}
 
-    public override void ReceiveItem(ItemOrder io) {
+	public override void ReceiveItem(ItemOrder io) {
 
-        if(io.type == ItemType.Food)
-            Food[io.item] += io.amount;
+		if (io.type == ItemType.Food) {
 
-        else if (io.type == ItemType.Good)
-            Goods[io.item] += io.amount;
+			Hunger -= io.amount;
+			FoodQualCurrent = ResourcesDatabase.GetQuality(io.GetItemName());
 
+		}
 
-    }
+		else if (io.type == ItemType.Good)
+			Goods[io.item] += io.amount;
+
+	}
 
 	public override void ReceiveImmigrant(Prole p) {
 
@@ -328,20 +342,20 @@ public class House : Structure {
 			Debug.Log("Not enough room in " + name + " for " + p);
 		Savings += p.personalSavings;
 		p.personalSavings = 0;
-		population.AddProle(p);		//add to prole list of town
+		population.AddProle(p);     //add to prole list of town
 
 	}
 
 	void UpdateResidentsAge() {
 
 		//iterate backwards to not have any problems with removing residents or children
-		for(int i = Residents.Count - 1; i >= 0; i--) {
+		for (int i = Residents.Count - 1; i >= 0; i--) {
 
 			Prole p = Residents[i];
 			bool diseased = p.diseased;
 			p.UpdateAge();
 			if (!p.diseased && diseased)
-				RemoveDiseasedResident();	//if resident was diseased and is no longer bc time ran out, remove one from the diseased count
+				RemoveDiseasedResident();   //if resident was diseased and is no longer bc time ran out, remove one from the diseased count
 
 			//the reason we age children here and not in Prole.UpdateAge() is so we can detect death and coming of age
 			for (int j = p.children.Count - 1; j >= 0; j--) {
@@ -350,7 +364,7 @@ public class House : Structure {
 				bool diseasedC = c.diseased;
 				c.UpdateAge();
 				if (!c.diseased && diseasedC)
-					RemoveDiseasedResident();	//if the child was diseased and is no longer bc time ran out, remove one from the diseased count
+					RemoveDiseasedResident();   //if the child was diseased and is no longer bc time ran out, remove one from the diseased count
 
 				//do if c is dead
 				if (c.markedForDeath) {
@@ -386,33 +400,18 @@ public class House : Structure {
 			}
 
 		}
-		
+
 	}
 
-	////GROUNDWORK FOR REVERSING LABOR WALKER SYSTEM
-	////	INSTEAD OF WORKPLACES, HOUSES NOW SPAWN UNEMPLOYED PROLES SEEKING WORK
-	//public void CheckProleSpawn() {
-		
-	//	//spawn walker or laborseeker process
-	//	for(int i = 0; i < Residents.Count && !ActiveRandomWalker; i++) {
-
-	//		Prole res = Residents[i];
-	//		if (res.workNode != null)
-	//			continue;
-			
-	//	}
-
-	//}
-
-    /*************************************
+	/*************************************
     HYGIENE STATS AND DISEASE SPREAD
     *************************************/
-	
-    public GameObject cholera;
+
+	public GameObject cholera;
 	public int Hygiene { get; set; }
 	public int HygieneToConsume { get { return HouseSize; } }
 	public int HygieneMax { get { return HouseSize * 3; } }
-    public int Waste { get { return HouseSize; } }
+	public int Waste { get { return HouseSize; } }
 	public int DiseasedResidents { get; set; }
 
 	void ConsumeHygiene() {
@@ -422,7 +421,7 @@ public class House : Structure {
 
 	}
 
-    void SpreadDisease() {
+	void SpreadDisease() {
 
 		if (DiseasedResidents == 0)
 			return;
@@ -440,7 +439,7 @@ public class House : Structure {
 
 			//test children first, youngest to oldest
 			bool diseasedChild = false;     //we can't break the outer loop from the child loop so we need this extra bool
-			for(int i = res.children.Count - 1; i >= 0 && !diseasedChild; i--) {
+			for (int i = res.children.Count - 1; i >= 0 && !diseasedChild; i--) {
 
 				Child c = res.children[i];
 				if (!c.diseased) {
@@ -465,7 +464,7 @@ public class House : Structure {
 		}
 
 		//if we successfully spread disease, up count of diseased residents by 1
-		if(spreadDisease)
+		if (spreadDisease)
 			AddDiseasedResident();
 
 	}
@@ -482,132 +481,125 @@ public class House : Structure {
 
 	}
 
-    void ThrowWaste() {
+	void ThrowWaste() {
 
-        List<Node> roads = GetAdjRoadTiles();
+		List<Node> roads = GetAdjRoadTiles();
 
-        foreach(Node n in roads) {
+		foreach (Node n in roads) {
 
-            int x = n.x;
-            int y = n.y;
-            int mult = DiseasedResidents + 1;
+			int x = n.x;
+			int y = n.y;
+			int mult = DiseasedResidents + 1;
 
-            if(world.Map.cleanliness[x, y] < 100)
-                world.Map.cleanliness[x, y] += Waste * mult;
+			if (world.Map.cleanliness[x, y] < 100)
+				world.Map.cleanliness[x, y] += Waste * mult;
 
-            if (world.Map.cleanliness[x, y] > 100)
-                world.Map.cleanliness[x, y] = 100;
+			if (world.Map.cleanliness[x, y] > 100)
+				world.Map.cleanliness[x, y] = 100;
 
-        }
+		}
 
-    }
+	}
 
-
-    /*************************************
-    WATER STATS
+	/*************************************
+    THIRST STATS
     *************************************/
 
-    public int[] Water { get; set; }
-    public Quality WaterQual { get; set; }
-    public Quality waterQualNeeded;
-    public Quality waterQualWanted;
+	public int Thirst { get; set; }
+	public int ThirstRate { get { return 1; } }
+	public int MaxThirst { get { return ThirstRate * TimeController.MonthTime * 12; } }
+	public int DesperateThirst { get { return ThirstRate * TimeController.MonthTime * 3; } } //if it's been 3 months
 
-    public int WaterMax { get { return HouseSize * 3; } }
-    public int WaterNeeded(int q) { return WaterMax - Water[q]; }
-    public int WaterNeeded(Quality q) { return WaterNeeded((int)q); }
-    public int WaterToConsume { get { return HouseSize; } }
+	public bool DesperatelyThirsty { get { return Thirst >= DesperateThirst; } }
 
-    public void AddWater(int num, Quality qual) {
-        Water[(int)qual] += num;
-        WaterQual = qual;
-    }
+	public Quality waterQualNeeded;
+	public Quality waterQualWanted;
+	public Quality WaterQualCurrent { get; set; }
 
-    void ConsumeWater() {
+	void IncreaseThirst() {
 
-        int consume = WaterToConsume;
-        while (consume > 0 && WaterQual != 0) {
+		Thirst += ThirstRate;
+		if (Thirst > MaxThirst)
+			Thirst = MaxThirst;
 
-            //consume water from current quality level
-            if (consume < Water[(int)WaterQual]) {
-                Water[(int)WaterQual] -= consume;
-                consume = 0;
-            }
-            else if (consume >= Water[(int)WaterQual]) {
-                consume -= Water[(int)WaterQual];
-                Water[(int)WaterQual] = 0;
-            }
+	}
 
-            //if quality level has 0 water or less, move quality level down
-            if (Water[(int)WaterQual] <= 0) {
-                Water[(int)WaterQual] = 0;
-                WaterQual--;
-            }
-        }
+	public bool WillAcceptWaterVisit(Quality visitingQual) {
 
-    }
+		//if thirsty enough, we'll accept any amount of water
+		if (DesperatelyThirsty)
+			return true;
 
-    /*************************************
-    FOOD STATS
+		return visitingQual >= WaterQualCurrent;
+
+	}
+
+	public void ReceiveWater(Quality qual, int water) {
+
+		if (qual < WaterQualCurrent)
+			Debug.Log(this + " getting lower quality water than before...");
+		WaterQualCurrent = qual;
+		Thirst -= water;
+		if (Thirst < 0)
+			Thirst = 0;
+
+	}
+
+	/*************************************
+    HUNGER STATS
     *************************************/
 
-    public int[] Food { get; set; }
-    public int foodTypesNeeded;
-    public int foodTypesWant;
-	public bool WantsMoreFood { get { return NumOfFoods() < foodTypesWant; } }
+	public int Hunger { get; set; }
+	public int HungerRate { get { return Residents.Count; } }
+	public int MaxHunger { get { return HungerRate * TimeController.MonthTime * 12; } }
+	public int DesperateHunger { get { return HungerRate * TimeController.MonthTime * 3; } }
 
-	public int FoodMax { get { return 24 * FoodToConsume / foodTypesWant; } }	//amount of each type to store (for 2 years/24 months)
-	public int FoodNeeded(int item) { return FoodMax - Food[item]; }			//amount needed per type
-	public int FoodToConsume { get { return Residents.Count; } }	//amount of each type to consume
+	public bool DesperatelyHungry { get { return Hunger >= DesperateHunger; } }
 
-	public int NumOfFoods() {
+	public Quality foodQualNeeded;
+	public Quality foodQualWant;
+	public Quality FoodQualCurrent { get; set; }
 
-        int s = 0;
+	void IncreaseHunger() {
 
-        for (int b = 0; b < Food.Length; b++)
-            if (Food[b] > 0)
-                s++;
+		Hunger += HungerRate;
+		if (Hunger > MaxHunger)
+			Hunger = MaxHunger;
 
-        return s;
+	}
 
-    }
+	public bool WillAcceptFoodTypes(Quality qual) {
 
-    void ConsumeFood() {
+		if (DesperatelyHungry)
+			return true;
 
-        for(int a = 0, b = 0; a < foodTypesNeeded && b < Food.Length; a++) {
+		return qual >= FoodQualCurrent;
 
-			//amount of this type of food to consume
-            int consume = FoodToConsume;
+	}
 
-            for (; b < Food.Length && consume > 0; b++) {
-                
+	public void ReceiveFood(Quality qual, int food) {
 
-                if (Food[b] >= consume) {
-                    Food[b] -= consume;
-                    consume = 0;
-                }
-                else {
-                    consume -= Food[b];
-                    Food[b] = 0;
-                }
+		if (qual < FoodQualCurrent)
+			Debug.Log(this + " buying lower quality food than before...");
+		FoodQualCurrent = qual;
+		Hunger -= food;
+		if (Hunger < 0)
+			Hunger = 0;
 
-            }
+	}
 
-        }
-            
-    }
-
-    /*************************************
+	/*************************************
     GOODS STATS
     *************************************/
 
-    public int[] Goods { get; set; }
+	public int[] Goods { get; set; }
 	public GoodType[] goodsNeeded;
 	public GoodType goodWanted = GoodType.END;
 
 	public int GoodsMax { get { return 3 * HouseSize; } }
-    public int GoodsNeeded(int item) { return GoodsMax - Goods[item]; }
-    public int GoodsToConsume { get { return HouseSize; } }
-	
+	public int GoodsNeeded(int item) { return GoodsMax - Goods[item]; }
+	public int GoodsToConsume { get { return HouseSize; } }
+
 	void ConsumeGoods() {
 
 		for (int b = 0; b < Goods.Length; b++) {
@@ -622,113 +614,114 @@ public class House : Structure {
 
 	}
 
-	public bool WantsMoreGoods { get {
+	public bool WantsMoreGoods {
+		get {
 
 			if (goodWanted == GoodType.END)
 				return false;
 			return Goods[(int)goodWanted] == 0;
 
-		} }
-	public bool MissingGoods { get {
+		}
+	}
+	public bool MissingGoods {
+		get {
 			foreach (GoodType good in goodsNeeded) {
-				
+
 				if (Goods[(int)good] == 0)
 					return true;
 
 			}
 			return false;
-		} }
+		}
+	}
 
-    /*************************************
+	/*************************************
     CULTURE STATS
     *************************************/
 
-    public Dictionary<string, int> VenueAccess { get; set; }
-    public int Culture { get; set; }
-    public int cultureNeeded;
-    public int cultureWant;
+	public Dictionary<string, int> VenueAccess { get; set; }
+	public int Culture { get; set; }
+	public int cultureNeeded;
+	public int cultureWant;
 
-    public void SetCulture(string venue, int amount) {
+	public void SetCulture(string venue, int amount) {
 
-        VenueAccess[venue] = amount;
+		VenueAccess[venue] = amount;
 
-    }
+	}
 
-    public void AddCulture(string venue, int amount) {
+	public void AddCulture(string venue, int amount) {
 
-        if (!VenueAccess.ContainsKey(venue))
-            SetCulture(venue, amount);
-        else
-            VenueAccess[venue] += amount;
+		if (!VenueAccess.ContainsKey(venue))
+			SetCulture(venue, amount);
+		else
+			VenueAccess[venue] += amount;
 
-    }
+	}
 
-    void ConsumeCulture() {
+	void ConsumeCulture() {
 
-        Culture = 0;
+		Culture = 0;
 
-        if (VenueAccess == null)
-            VenueAccess = new Dictionary<string, int>();
+		if (VenueAccess == null)
+			VenueAccess = new Dictionary<string, int>();
 
-        if (VenueAccess.Count == 0)
-            return;
+		if (VenueAccess.Count == 0)
+			return;
 
-        foreach (string venue in VenueAccess.Keys) {
+		foreach (string venue in VenueAccess.Keys) {
 
-            GameObject go = GameObject.Find(venue);
-            if (go == null) {
+			GameObject go = GameObject.Find(venue);
+			if (go == null) {
 
-                VenueAccess.Remove(venue);
-                continue;
+				VenueAccess.Remove(venue);
+				continue;
 
-            }
+			}
 
-            CulturalVenue c = go.GetComponent<CulturalVenue>();
+			CulturalVenue c = go.GetComponent<CulturalVenue>();
 
-            VenueAccess[venue]--;
-            Culture += c.culturePoints;
+			VenueAccess[venue]--;
+			Culture += c.culturePoints;
 
-            if (VenueAccess[venue] <= 0)
-                VenueAccess.Remove(venue);
+			if (VenueAccess[venue] <= 0)
+				VenueAccess.Remove(venue);
 
-        }
+		}
 
-    }
+	}
 
-    public override void OpenWindow() {
+	public override void OpenWindow() {
 
 		OpenWindow(UIObjectDatabase.GetUIElement("HouseWindow"));
 
 	}
 
-    public override string GetDescription() {
+	public override string GetDescription() {
 
-        if (DiseasedResidents > 0)
-            return "Infested with cholera";
-        if (WantsBetterWater) {
-            if (waterQualWanted == Quality.Poor)
-                return "Needs water to evolve";
-            else
-                return "Needs filtered water to evolve";
-        }
-        if (WantsMoreFood) {
-            if (foodTypesWant == 1)
-                return "Needs 1 type of food to evolve";
-            else
-                return "Needs " + foodTypesWant + " types of food to evolve";
-        }
-        if (WantsMoreGoods) {
+		if (DiseasedResidents > 0)
+			return "Infested with cholera";
+		if (WantsBetterWater) {
+			if (waterQualWanted == Quality.Poor)
+				return "Needs water to evolve";
+			else
+				return "Needs filtered water to evolve";
+		}
+		if (WantsMoreFood) {
+			return "Needs " + foodQualWant + " type of food to evolve";
+		}
+		if (WantsMoreGoods) {
 
 			return "Needs " + goodWanted + " to evolve";
 
-        }
-        if (WantsBetterCulture)
-            return "Ahhh";
-        if (WantsBetterDesirability)
-            return "Needs better surroundings to evolve";
-        return "Why haven't I evolved yet?";
+		}
+		if (WantsBetterCulture)
+			return "Ahhh";
+		if (WantsBetterDesirability)
+			return "Needs better surroundings to evolve";
+		return "Why haven't I evolved yet?";
 
-    }
+	}
 
 	public ItemOrder WillBuy(int item, ItemType type, int amountStored) {
 
@@ -750,32 +743,14 @@ public class House : Structure {
 	public ItemOrder WillBuyFood(int item, int amountStored) {
 
 		//if you don't want anything, stop
-		if (foodTypesWant == 0)
-			return null;
-		int amountMin = FoodMax / 6;
-		int typesHave = NumOfFoods();
-		//if you don't have this item and have the types you want, you don't want any
-		if (Food[item] == 0 && typesHave == foodTypesWant)
-			return null;
-		//if you have more types than you need and you have this, don't buy any more types
-		if (Food[item] > 0 && typesHave > foodTypesWant)
-			return null;
-		//if you have enough of this type, you don't want any more of this type
-		if (Food[item] > amountMin && typesHave <= foodTypesWant)
+		if (foodQualWant == Quality.None)
 			return null;
 
-		int divisor = 1;
-		//FIGURE OUT TO DECIDE HOW MUCH FOOD OF A TYPE THIS HOUSE WANTS
-		//if want == need, divide by either
-		if (foodTypesWant == foodTypesNeeded)
-			divisor = foodTypesWant;
-		else {
-			//if we don't have any of this food, get as much that would take to evolve
-			//	otherwise we want to fill it up to sustain the current house
-			divisor = Food[item] == 0 ? foodTypesWant : foodTypesNeeded;
-		}
+		//if this food is not high enough quality and we're not desperate enough, don't buy
+		if (WillAcceptFoodTypes(ResourcesDatabase.GetQuality(Enums.GetItemName(item, ItemType.Food))))
+			return null;
 
-		int delta = FoodMax / divisor - Food[item];
+		int delta = Hunger;
 
 		//if we don't have that much food, sell as much as we can
 		if (amountStored < delta)
@@ -800,14 +775,14 @@ public class House : Structure {
 	}
 
 	public ItemOrder WillBuyGood(int item, int amountStored) {
-		
+
 		bool wantsToBuy = false;
 
 		//check the wanted good first if there is one
 		if (goodWanted != GoodType.END) {
 
 			//only proceed if the good considered is the good that this house wants
-			if((int)goodWanted == item)
+			if ((int)goodWanted == item)
 				wantsToBuy = true;
 
 		}
@@ -816,7 +791,7 @@ public class House : Structure {
 		//	if we don't need this good, don't proceed
 		if (!wantsToBuy) {
 			foreach (GoodType good in goodsNeeded) {
-				
+
 				if ((int)good == item)
 					wantsToBuy = true;
 

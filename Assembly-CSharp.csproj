@@ -209,6 +209,7 @@
      <Compile Include="Assets\Scripts\World\Walkers\Follower.cs" />
      <Compile Include="Assets\Scripts\World\Walkers\Immigrant.cs" />
      <Compile Include="Assets\Scripts\World\Walkers\Random\Architect.cs" />
+     <Compile Include="Assets\Scripts\World\Walkers\Random\CottageVender.cs" />
      <Compile Include="Assets\Scripts\World\Walkers\Random\Healer.cs" />
      <Compile Include="Assets\Scripts\World\Walkers\Random\Inspector.cs" />
      <Compile Include="Assets\Scripts\World\Walkers\Random\Mechanic.cs" />
