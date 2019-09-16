@@ -7,15 +7,14 @@ using UsefulThings;
 public class HouseSave : StructureSave {
     
     public int Hygiene, Culture, Corpses, DiseasedResidents;
-	public int Thirst;
     public float Savings;
 
     public List<Prole> Residents;
 
-    public int[] Food, Goods;
-	public Quality LastVisitWaterQuality;
-	
-	public DictContainer<string, int> VenueAccess { get; set; }
+    public int[] Water, Food, Goods;
+    public Quality WaterQual { get; set; }
+
+    public DictContainer<string, int> VenueAccess { get; set; }
 
     public bool Diseased;
 
@@ -28,9 +27,8 @@ public class HouseSave : StructureSave {
 		Corpses = h.Corpses;
 		DiseasedResidents = h.DiseasedResidents;
 
-		//thirst
-		Thirst = h.Thirst;
-		LastVisitWaterQuality = h.WaterQualCurrent;
+        Water = h.Water;
+        WaterQual = h.WaterQual;
 
         Food = h.Food;
 
@@ -75,11 +73,10 @@ public class House : Structure {
 		Corpses = h.Corpses;
 		DiseasedResidents = h.DiseasedResidents;
 
-		//thirst
-		Thirst = h.Thirst;
-		WaterQualCurrent = h.LastVisitWaterQuality;
+		Water = h.Water;
+        WaterQual = h.WaterQual;
 
-		Food = h.Food;
+        Food = h.Food;
 
         Goods = h.Goods;
 
@@ -135,8 +132,6 @@ public class House : Structure {
 
 		ThrowWaste();
 
-		Thirst += ThirstPerWeek;
-
 	}
 
 	public override void DoEveryMonth() {
@@ -149,6 +144,7 @@ public class House : Structure {
 			ChangeHouse(devolvesTo);
 
 		//consume things
+		ConsumeWater();
         ConsumeFood();
         ConsumeGoods();
         ConsumeCulture();
@@ -156,7 +152,7 @@ public class House : Structure {
 
     }
 	
-    public bool WantsBetterWater { get { return WaterQualCurrent < waterQualWanted; } }
+    public bool WantsBetterWater { get { return WaterQual < waterQualWanted; } }
     public bool WantsBetterCulture { get { return Culture < cultureWant; } }
     public bool WantsBetterDesirability { get { return LocalDesirability < desirabilityWanted; } }
 
@@ -182,7 +178,7 @@ public class House : Structure {
 
     public bool CanDevolve() {
 
-        if (WaterQualCurrent < waterQualNeeded)
+        if (WaterQual < waterQualNeeded)
             return true;
         if (NumOfFoods() < foodTypesNeeded)
             return true;
@@ -228,9 +224,9 @@ public class House : Structure {
 
 		}
 
-		//combine arrays
-		Thirst = Thirst + neighbors[0].Thirst + neighbors[1].Thirst + neighbors[2].Thirst;
-		Food = ArrayFunctions.CombineArrays(Food, neighbors[0].Food, neighbors[1].Food, neighbors[2].Food);
+        //combine arrays
+        Water = ArrayFunctions.CombineArrays(Water, neighbors[0].Water, neighbors[1].Water, neighbors[2].Water);
+        Food = ArrayFunctions.CombineArrays(Food, neighbors[0].Food, neighbors[1].Food, neighbors[2].Food);
 
         //combine stats and destroy houses
 		foreach(House h in neighbors) {
@@ -260,9 +256,9 @@ public class House : Structure {
         //set vars of new house to the ones from this one
         House newHouse = world.Map.GetBuildingAt(X, Y).GetComponent<House>();
         //newHouse.Residents = Residents;
-        newHouse.Thirst = Thirst;
+        newHouse.Water = Water;
         newHouse.Savings = Savings;
-        newHouse.WaterQualCurrent = WaterQualCurrent;
+        newHouse.WaterQual = WaterQual;
         newHouse.Food = Food;
         newHouse.Goods = Goods;
         newHouse.Culture = Culture;
@@ -277,10 +273,11 @@ public class House : Structure {
     }
 
     public void FreshHouse(Prole firstResident) {
-		
-		Thirst = 0;
-		WaterQualCurrent = Quality.None;
-		Food = new int[(int)FoodType.END];
+
+        //Residents = res;
+        Water = new int[(int)Quality.END];
+        WaterQual = Quality.None;
+        Food = new int[(int)FoodType.END];
         Goods = new int[(int)GoodType.END];
         VenueAccess = new Dictionary<string, int>();
         Residents = new List<Prole>();
@@ -318,7 +315,8 @@ public class House : Structure {
 
         else if (io.type == ItemType.Good)
             Goods[io.item] += io.amount;
-		
+
+
     }
 
 	public override void ReceiveImmigrant(Prole p) {
@@ -390,6 +388,21 @@ public class House : Structure {
 		}
 		
 	}
+
+	////GROUNDWORK FOR REVERSING LABOR WALKER SYSTEM
+	////	INSTEAD OF WORKPLACES, HOUSES NOW SPAWN UNEMPLOYED PROLES SEEKING WORK
+	//public void CheckProleSpawn() {
+		
+	//	//spawn walker or laborseeker process
+	//	for(int i = 0; i < Residents.Count && !ActiveRandomWalker; i++) {
+
+	//		Prole res = Residents[i];
+	//		if (res.workNode != null)
+	//			continue;
+			
+	//	}
+
+	//}
 
     /*************************************
     HYGIENE STATS AND DISEASE SPREAD
@@ -489,38 +502,49 @@ public class House : Structure {
 
     }
 
-	/*************************************
-    THIRST STATS
+
+    /*************************************
+    WATER STATS
     *************************************/
 
-	public int Thirst { get; set; }
-	public int ThirstPerWeek { get { return 1; } }
-	public int MaxThirst { get { return ThirstPerWeek * TimeController.MonthTime * 12; } }
-	public int DesperateThirst { get { return ThirstPerWeek * 3 * TimeController.MonthTime; } } //if it's been 3 months
+    public int[] Water { get; set; }
+    public Quality WaterQual { get; set; }
+    public Quality waterQualNeeded;
+    public Quality waterQualWanted;
 
-	public Quality waterQualNeeded;
-	public Quality waterQualWanted;
-	public Quality WaterQualCurrent { get; set; }
+    public int WaterMax { get { return HouseSize * 3; } }
+    public int WaterNeeded(int q) { return WaterMax - Water[q]; }
+    public int WaterNeeded(Quality q) { return WaterNeeded((int)q); }
+    public int WaterToConsume { get { return HouseSize; } }
 
-	public bool WillAcceptWaterVisit(Quality visitingQual) {
+    public void AddWater(int num, Quality qual) {
+        Water[(int)qual] += num;
+        WaterQual = qual;
+    }
 
-		//if thirsty enough, we'll accept any amount of water
-		if (Thirst >= DesperateThirst)
-			return true;
+    void ConsumeWater() {
 
-		return visitingQual >= WaterQualCurrent;
+        int consume = WaterToConsume;
+        while (consume > 0 && WaterQual != 0) {
 
-	}
+            //consume water from current quality level
+            if (consume < Water[(int)WaterQual]) {
+                Water[(int)WaterQual] -= consume;
+                consume = 0;
+            }
+            else if (consume >= Water[(int)WaterQual]) {
+                consume -= Water[(int)WaterQual];
+                Water[(int)WaterQual] = 0;
+            }
 
-	public void ReceiveWater(Quality qual, int water) {
+            //if quality level has 0 water or less, move quality level down
+            if (Water[(int)WaterQual] <= 0) {
+                Water[(int)WaterQual] = 0;
+                WaterQual--;
+            }
+        }
 
-		Debug.Log(Thirst);
-		WaterQualCurrent = qual;
-		Thirst -= water;
-		if (Thirst < 0)
-			Thirst = 0;
-
-	}
+    }
 
     /*************************************
     FOOD STATS

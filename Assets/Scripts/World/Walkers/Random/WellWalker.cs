@@ -5,7 +5,6 @@ using UnityEngine;
 public class WellWalker : RandomWalker {
 
     public Quality waterQuality;
-	public int waterQuantity = 10;
 
     public float Multiplier { get { return 2 - (float)waterQuality * 0.5f * Difficulty.GetModifier(); } }
 
@@ -28,8 +27,8 @@ public class WellWalker : RandomWalker {
             return;
 
         //give water
-        if (house.WillAcceptWaterVisit(waterQuality))
-            house.ReceiveWater(waterQuality, waterQuantity);
+        if (house.WaterQual == waterQuality || house.waterQualWanted <= waterQuality)
+            house.AddWater(house.WaterNeeded(waterQuality), waterQuality);
         UpdateCleanliness();    //yield is the average filthiness of roads that the wellwalker has walked on
 
 		//give disease
