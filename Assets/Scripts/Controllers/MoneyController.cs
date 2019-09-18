@@ -96,7 +96,7 @@ public class MoneyController : MonoBehaviour {
     public void GainFromLocalSales(float m, ItemType type) {
 
         Money += m;
-        if (type == ItemType.Food)
+        if (type == ItemType.Meal)
             CurrentQuarter.foodSales += m;
         else if (type == ItemType.Good)
             CurrentQuarter.goodSales += m;

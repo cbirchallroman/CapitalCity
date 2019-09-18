@@ -656,6 +656,17 @@
 
   <Structure>
 
+    <Name>Bakery</Name>
+    <DisplayName>Bakery</DisplayName>
+
+    <Sizex>1</Sizex>
+    <Sizey>1</Sizey>
+    <BaseCost>5</BaseCost>
+
+  </Structure>
+
+  <Structure>
+
     <Name>Ramp</Name>
     <DisplayName>Ramp</DisplayName>
 

@@ -72,7 +72,7 @@ public class Generator : Workplace {
 	//DETERIORATION
 	public Machine MachineData { get; set; }
 	public MachineType machineryType = MachineType.END;
-    public int MachineryValue { get { return MachineData.GetTotalDeadLabor(); } }	//total amount of machinery in the generator
+    public int MachineryValue { get { return MachineData != null ? MachineData.GetTotalDeadLabor() : 0; } }	//total amount of machinery in the generator
     public ResourceType MachineryResource { get; set; }		//determined by machinery
 	public ResourceType Fuel { get; set; }		//determined by machinery
 	public int Deterioration { get; set; }
@@ -155,7 +155,7 @@ public class Generator : Workplace {
             return;
 
         //restart production if building is inactive or not sending out cart
-        if (Operational && !ActiveSmartWalker) {
+        if (Operational && !ActiveSmartWalker && !ActiveRandomWalker) {
 
             if (Producing)
                 ProductionTimer();
@@ -168,7 +168,6 @@ public class Generator : Workplace {
         if (!Producing && !StartConditions && Operational && !ActiveSmartWalker && !ActiveRandomWalker)
             GetIngredients();
 
-		//Debug.Log(RelativeEmployment + " " + BaseProductionCycle + " " + ActualProductionCycle);
 
     }
 
@@ -196,7 +195,7 @@ public class Generator : Workplace {
 
     public virtual void ProductionTimer() {
 
-        if (ProductionComplete && !ActiveSmartWalker)
+        if (ProductionComplete && !ActiveSmartWalker && !ActiveRandomWalker)
             ExportProduct();
 
         //byproduct

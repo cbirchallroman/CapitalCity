@@ -28,7 +28,6 @@ public class ResourcesDatabase : MonoBehaviour {
 
 		//this is just a test whitelist but also useful to see what we have
 		AddToWhitelist("Bread");
-		AddToWhitelist("Pork");
 		AddToWhitelist("Sand");
 		AddToWhitelist("Wood");
 		AddToWhitelist("Bricks");
@@ -37,7 +36,7 @@ public class ResourcesDatabase : MonoBehaviour {
 		AddToWhitelist("Cigars");
 		AddToWhitelist("Beef");
 		AddToWhitelist("Leather");
-		AddToWhitelist("WoodenToys");
+		AddToWhitelist("FishAndChips");
 
 	}
 

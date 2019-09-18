@@ -4,18 +4,9 @@ using UnityEngine;
 
 public class Cottage : Generator {
 
-    public override void DoEveryDay() {
-
-        base.DoEveryDay();
-
-        if (ProductionComplete && !ActiveRandomWalker)
-            ExportProduct();
-
-    }
-
     public override void ExportProduct() {
 
-        SpawnRandomWalker();
+		SpawnRandomWalker();
         Producing = false;
 
     }

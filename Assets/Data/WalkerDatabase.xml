@@ -60,6 +60,12 @@
   </Walker>
   <Walker>
 
+    <Name>Baker</Name>
+    <RandomWalker>true</RandomWalker>
+
+  </Walker>
+  <Walker>
+
     <Name>WellWalker</Name>
     <RandomWalker>true</RandomWalker>
 

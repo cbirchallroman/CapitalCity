@@ -9,10 +9,11 @@ public enum Mode { Construct, Edit, Combat, END }
 public enum DifficultyLevel { Easiest, Easy, Moderate, Hard, Hardest, END }
 public enum LaborDivision { Materials, Production, Storage, Retail, Healthcare, Entertainment, Management, END }
 public enum Season { Spring, Summer, Autumn, Winter, END }
+public enum MealType { Bread, FishAndChips, FilletOfFish, END }
 public enum FoodType { Potatoes, Fish, Grain, Vegetables, Mutton, Pork, Beef, END }
 public enum GoodType { Shoes, Trowsers, Pottery, Glassware, Carpet, Furniture, Coats, Beer, Cigars, WoodenToys, END }
 public enum ResourceType { Bricks, Clay, Coal, Cotton, Denim, Flax, Leather, Linen, Ore, Paper, Sand, Spindles, Steel, Stone, Wood, Tobacco, Wool, Yarn, END }
-public enum ItemType { Food, Good, Resource, END }
+public enum ItemType { Food, Good, Resource, Meal, END }
 public enum Quality { None, Poor, Average, Great, Luxurious, END }
 public enum NotificationType { Event, Issue, GoodNews, Invasion, END }
 public enum TradeDirection { Export, Import, END }
@@ -28,7 +29,8 @@ public class Enums {
     public static Dictionary<string, Node> foodDict = new Dictionary<string, Node>();
     public static Dictionary<string, Node> resourceDict = new Dictionary<string, Node>();
     public static Dictionary<string, Node> goodDict = new Dictionary<string, Node>();
-    public static Dictionary<string, Node> peopleDict = new Dictionary<string, Node>();
+	public static Dictionary<string, Node> mealDict = new Dictionary<string, Node>();
+	public static Dictionary<string, Node> peopleDict = new Dictionary<string, Node>();
 	public static Dictionary<string, BuildingType> categoryDict = new Dictionary<string, BuildingType>();
 	public static Dictionary<string, MachineType> machineTypeDict = new Dictionary<string, MachineType>();
 
@@ -44,7 +46,10 @@ public class Enums {
         for (int x = 0; x < (int)GoodType.END; x++)
             goodDict[(GoodType)x + ""] = new Node(x, (int)ItemType.Good);
 
-        for (int x = 0; x < (int)ResourceType.END; x++)
+		for (int x = 0; x < (int)MealType.END; x++)
+			mealDict[(MealType)x + ""] = new Node(x, (int)ItemType.Meal);
+
+		for (int x = 0; x < (int)ResourceType.END; x++)
             resourceDict[(ResourceType)x + ""] = new Node(x, (int)ItemType.Resource);
 
 		for (int x = 0; x < (int)BuildingType.END; x++)
@@ -69,8 +74,11 @@ public class Enums {
 
         else if (type == ItemType.Resource)
 			name = (ResourceType)index + "";
-        
-        return name;
+
+		else if (type == ItemType.Meal)
+			name = (MealType)index + "";
+
+		return name;
 
     }
 
@@ -93,6 +101,9 @@ public class Enums {
 		else if (goodDict.ContainsKey(item))
 			n = goodDict[item];
 
+		else if (mealDict.ContainsKey(item))
+			n = mealDict[item];
+
 		else if (Enums.peopleDict.ContainsKey(item))
 			n = peopleDict[item];
 
@@ -111,10 +122,11 @@ public class Enums {
 
 	public static List<string> GetAllItems() {
 
-		string[] allItems = new string[foodDict.Count + goodDict.Count + resourceDict.Count];
+		string[] allItems = new string[foodDict.Count + goodDict.Count + resourceDict.Count + mealDict.Count];
 		foodDict.Keys.CopyTo(allItems, 0);
 		goodDict.Keys.CopyTo(allItems, foodDict.Count);
 		resourceDict.Keys.CopyTo(allItems, foodDict.Count + goodDict.Count);
+		mealDict.Keys.CopyTo(allItems, foodDict.Count + goodDict.Count + resourceDict.Count);
 		List<string> sortedItems = new List<string>(allItems);
 		sortedItems.Sort();
 		return sortedItems;

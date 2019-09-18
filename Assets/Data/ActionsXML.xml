@@ -11,8 +11,8 @@
 
   <Category>
 
+    <Act>place Bakery</Act>
     <Act>place CigarShop</Act>
-    <Act>place Grocer</Act>
     <Act>place LiquorStore</Act>
     <Act>place Market</Act>
 

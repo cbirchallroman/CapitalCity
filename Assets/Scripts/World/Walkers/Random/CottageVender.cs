@@ -12,13 +12,13 @@ public class CottageVender : RandomWalker {
 		if (Origin.AmountStored == 0)
 			return;
 
-		House h = world.Map.GetBuildingAt(a, b).GetComponent<House>();
-		if (h == null)
+		House house = world.Map.GetBuildingAt(a, b).GetComponent<House>();
+		if (house == null)
 			return;
 
 		Cottage cottage = (Cottage)Origin;
 		Node itemData = Enums.GetItemData(cottage.product);
-		SellItem(h, itemData.x, (ItemType)itemData.y, (int)cottage.AmountStored);
+		SellItem(house, itemData.x, (ItemType)itemData.y, (int)cottage.AmountStored);
 
 	}
 

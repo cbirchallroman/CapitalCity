@@ -391,8 +391,7 @@ public class MouseController : MonoBehaviour {
 
         //KEEP BUILDING PREVIEW WITHIN WORLD LIMITS
         World world = worldController.Map;
-        if (world.OutOfBounds(x, y, sizex, sizey))
-        {
+        if (world.OutOfBounds(x, y, sizex, sizey)) {
             if (x + sizex > world.size.x || x < 0)
                 x = prevCoords.x;
             if (y + sizey > world.size.y || y < 0)

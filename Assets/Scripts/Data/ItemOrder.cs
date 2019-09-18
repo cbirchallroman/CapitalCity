@@ -40,7 +40,10 @@ public class ItemOrder {
         else if (Enums.peopleDict.ContainsKey(i))
             n = Enums.peopleDict[i];
 
-        else
+		else if (Enums.mealDict.ContainsKey(i))
+			n = Enums.mealDict[i];
+
+		else
             Debug.LogError(i + " does not exist as an item.");
 
         name = i;

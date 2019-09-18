@@ -141,7 +141,6 @@ public class House : Structure {
 
 		IncreaseThirst();
 		IncreaseHunger();
-		Debug.Log(Thirst);
 
 	}
 
@@ -321,7 +320,7 @@ public class House : Structure {
 
 	public override void ReceiveItem(ItemOrder io) {
 
-		if (io.type == ItemType.Food) {
+		if (io.type == ItemType.Meal) {
 
 			Hunger -= io.amount;
 			FoodQualCurrent = ResourcesDatabase.GetQuality(io.GetItemName());
@@ -730,8 +729,8 @@ public class House : Structure {
 
 		//use the relevant variables for food or goods
 		switch (type) {
-			case ItemType.Food:
-				return WillBuyFood(item, amountStored);
+			case ItemType.Meal:
+				return WillBuyMeal(item, amountStored);
 			case ItemType.Good:
 				return WillBuyGood(item, amountStored);
 		}
@@ -740,14 +739,15 @@ public class House : Structure {
 
 	}
 
-	public ItemOrder WillBuyFood(int item, int amountStored) {
+	public ItemOrder WillBuyMeal(int item, int amountStored) {
 
 		//if you don't want anything, stop
 		if (foodQualWant == Quality.None)
 			return null;
 
 		//if this food is not high enough quality and we're not desperate enough, don't buy
-		if (WillAcceptFoodTypes(ResourcesDatabase.GetQuality(Enums.GetItemName(item, ItemType.Food))))
+
+		if (!WillAcceptFoodTypes(ResourcesDatabase.GetQuality(Enums.GetItemName(item, ItemType.Meal))))
 			return null;
 
 		int delta = Hunger;
@@ -756,11 +756,11 @@ public class House : Structure {
 		if (amountStored < delta)
 			delta = amountStored;
 
-		ItemOrder io = new ItemOrder(delta, item, ItemType.Food);
+		ItemOrder io = new ItemOrder(delta, item, ItemType.Meal);
 
 		//if house cannot afford, find the largest amount it can buy for the smallest price
 		if (io.ExchangeValue() > Savings) {
-			float priceOfOne = ResourcesDatabase.GetBasePrice(new ItemOrder(1, item, ItemType.Food));
+			float priceOfOne = ResourcesDatabase.GetBasePrice(new ItemOrder(1, item, ItemType.Meal));
 			int smallestAmount = (int)(Savings / priceOfOne);
 			int smallestAmountWantToBuy = (int)(0.25f * delta);
 

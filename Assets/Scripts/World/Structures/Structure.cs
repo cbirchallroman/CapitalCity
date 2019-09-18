@@ -104,7 +104,7 @@ public class Structure : Obj {
 	public void SetGroundColor() {
 		
 		Material m = world.GetTileAt(X, Y).GetComponent<MeshRenderer>().material;
-		Debug.Log(m.name);
+		//Debug.Log(m.name);
 		if (groundMR != null)
 			groundMR.material = m;
 		groundColorSet = true;
