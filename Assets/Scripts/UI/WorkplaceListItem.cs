@@ -21,6 +21,7 @@ public class WorkplaceListItem : MonoBehaviour {
 
 		if (Building == null)
 			Destroy(this);
+		UpdateLabels();
 
 	}
 
@@ -28,7 +29,7 @@ public class WorkplaceListItem : MonoBehaviour {
 
 		buildingName.text = Building.DisplayName;
 		wagesPerHour.text = MoneyController.symbol + Building.baseWages.ToString("n2") + "/hr";
-		workers.text = Building.WorkersCount + "/" + Building.workersMax + " Proles";
+		workers.text = Building.WorkerList.Count + "/" + Building.workersMax + " Proles";
 		wagesPerMonth.text = MoneyController.symbol + Building.WagesOverall.ToString("n2") + "/mo";
 
 	}
@@ -36,7 +37,6 @@ public class WorkplaceListItem : MonoBehaviour {
 	public void IncreaseWages() {
 		
 		Building.baseWages += 0.05f;
-		UpdateLabels();
 
 	}
 
@@ -44,7 +44,6 @@ public class WorkplaceListItem : MonoBehaviour {
 
 		if(Building.baseWages > 0)
 			Building.baseWages -= 0.05f;
-		UpdateLabels();
 
 	}
 

@@ -22,6 +22,7 @@ GameObject:
   - component: {fileID: 33380310628870612}
   - component: {fileID: 23378696550160362}
   - component: {fileID: 64233923896691244}
+  - component: {fileID: 114564638473647492}
   m_Layer: 8
   m_Name: Mud
   m_TagString: Untagged
@@ -57,7 +58,7 @@ MeshRenderer:
   m_ReflectionProbeUsage: 1
   m_RenderingLayerMask: 4294967295
   m_Materials:
-  - {fileID: 2100000, guid: acab8e0214d777b41bf8770931b6574a, type: 2}
+  - {fileID: 2100000, guid: c58c07a992f63d44db0f3db63da139e5, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -98,3 +99,16 @@ MeshCollider:
   m_CookingOptions: 14
   m_SkinWidth: 0.01
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!114 &114564638473647492
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1867789730417912}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 388617e3521d5964fb74f18c2d86d6e0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  id: -1
+  terrainType: 3

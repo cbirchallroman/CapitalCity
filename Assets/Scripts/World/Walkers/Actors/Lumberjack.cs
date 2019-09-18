@@ -8,7 +8,7 @@ public class Lumberjack : Actor {
 
         world.Destroy(Destination.X, Destination.Y);
         Workplace w = Origin.GetComponent<Workplace>();
-        yield += 5 * w.WorkersCount;
+        yield += 5 * w.WorkerList.Count;
         if (yield >= 100)
             ReturnHome();
 

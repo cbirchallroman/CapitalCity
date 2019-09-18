@@ -162,9 +162,10 @@ MonoBehaviour:
   RandomWalker: 
   timeToSpawnWalkerMax: 0
   workersMax: 4
+  minimumAbility: 10
   baseWages: 0.4
-  laborDivision: 1
   laborType: 0
+  deathDesc: died in a workplace accident.
   product: Bricks
   byproduct: 
-  machineryType: 0
+  machineryType: 3

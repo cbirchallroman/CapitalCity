@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Text.RegularExpressions;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -17,7 +18,7 @@ public class ItemValueUI : MonoBehaviour {
 
 	private void Start() {
 
-		itemLabel.text = ItemName;
+		itemLabel.text = Regex.Replace(ItemName, "([a-z])([A-Z])", "$1 $2");
 
 		Sprite spr = ResourcesDatabase.GetSprite(ItemName);
 		if (spr != null)

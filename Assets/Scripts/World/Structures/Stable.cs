@@ -43,6 +43,7 @@ public class Stable : Generator {
 
         if (Operational && !ActiveSmartWalker) {
 
+			Debug.Log(ProductionComplete);
             if (ProductionComplete)
                 ExportProduct();
 

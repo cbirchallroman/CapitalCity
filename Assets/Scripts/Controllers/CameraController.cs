@@ -19,8 +19,8 @@ public class CameraSave {
 
 public class CameraController : MonoBehaviour {
 
-    public float lowerClamp = 5;
-    public float upperClamp = 25;
+    public float lowerClamp = 4;
+    public float upperClamp = 24;
     public float startDist = 10;
     public float cameraSpeedBase = .5f;
     public float CameraSpeed { get { return mapCamera.orthographicSize / startDist * cameraSpeedBase; } }

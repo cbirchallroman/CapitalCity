@@ -61,6 +61,9 @@ public class Obj : MonoBehaviour {
 	public Pathfinder pathfinder { get; set; }
 	public ResearchController research { get; set; }
 
+	//local elevation of object
+	public float elevation { get { return world.Map.elevation[X, Y]; } }
+
 	bool WindowOpen;
 
     public virtual void VisitBuilding(int a, int b) {

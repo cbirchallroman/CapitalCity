@@ -175,10 +175,10 @@ MonoBehaviour:
   timeToSpawnWalkerMax: 0
   workersMax: 1
   baseWages: 0.4
-  laborDivision: 0
   laborType: 0
-  product: Leather
-  byproduct: Beef
+  deathDesc: died in a workplace accident.
+  product: Beef
+  byproduct: Leather
   machineryType: 3
   spawnOnWater: 0
-  spawnMax: 5
+  spawnMax: 4

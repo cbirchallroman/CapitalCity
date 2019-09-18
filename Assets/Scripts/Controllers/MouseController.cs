@@ -59,11 +59,12 @@ public class MouseController : MonoBehaviour {
         Ray ray = Camera.main.ScreenPointToRay(pos);
         RaycastHit hit;
 		
+		//only return true if the mouse hits the map layer
         bool mouseHittingMap = Physics.Raycast(ray, out hit, Mathf.Infinity, mapLayer);
 
         if (mouseHittingMap) {
 
-            mouseCoords = new Node(hit.transform.gameObject.transform.position);
+			mouseCoords = new Node(hit.point);	//we want the exact point where the mouse hits
             AlignMouse();
 
         }
@@ -122,8 +123,7 @@ public class MouseController : MonoBehaviour {
 	}
 
     void UpdateDragging(bool line) {
-
-        
+		
         Action act = actionController.currentAction;
         StructureData str = StructureDatabase.GetData(act.What);
         int sizex = str != null ? str.sizex : 1;
@@ -186,7 +186,7 @@ public class MouseController : MonoBehaviour {
 		// Clean up old drag previews
 		ClearDragPreviews();
 
-		//new previews
+		//New previews
         DragPreview();
 
         // End Drag
@@ -229,11 +229,15 @@ public class MouseController : MonoBehaviour {
         //if the object is grabbed, move it to the mouse coords
         if (preview != null) {
 
-			prevTrans.position = mouseCoords.GetVector3();
+			//set position including elevation
+			Vector3 pos = mouseCoords.GetVector3();
+			pos.y = worldController.GetObjectFloat((int)pos.x, (int)pos.z);
+			prevTrans.position = pos;
 
             //if action is a strucutre, align it
             Action act = actionController.currentAction;
             if (act.Do == "place") {
+
                 StructureData data = StructureDatabase.GetData(act.What);
 
                 int sizex = data.sizex;
@@ -267,6 +271,7 @@ public class MouseController : MonoBehaviour {
 					prevTrans.eulerAngles = new Vector3(0, actionController.buildingRotation, 0);
 
 				prevTrans.position += new Vector3(alignx, 0, aligny);
+
             }
 
 			Material mat = new Material(canDo);
@@ -303,7 +308,7 @@ public class MouseController : MonoBehaviour {
 
 			//display preview of action at tile
 			GameObject go = actionController.GetPreview(act);
-			go.transform.position = new Vector3(x, 0, y);
+			go.transform.position = new Vector3(x, worldController.GetObjectFloat(x, y), y);	//don't for
 			dragPreviewGameObjects.Add(go);
 
 			//align preview
@@ -386,8 +391,7 @@ public class MouseController : MonoBehaviour {
 
         //KEEP BUILDING PREVIEW WITHIN WORLD LIMITS
         World world = worldController.Map;
-        if (world.OutOfBounds(x, y, sizex, sizey))
-        {
+        if (world.OutOfBounds(x, y, sizex, sizey)) {
             if (x + sizex > world.size.x || x < 0)
                 x = prevCoords.x;
             if (y + sizey > world.size.y || y < 0)

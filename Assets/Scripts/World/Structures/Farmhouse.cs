@@ -21,7 +21,7 @@ public class FarmhouseSave : WorkplaceSave {
 
 public class Farmhouse : Workplace {
     
-    public int TilesThatCanBeVisited { get { return tilesPerWorker * WorkersCount; } }
+    public int TilesThatCanBeVisited { get { return tilesPerWorker * WorkerList.Count; } }
     public int tilesPerWorker = 5;
     public string CurrentlyStoring { get; set; }
     public int Yield { get; set; }

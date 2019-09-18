@@ -21,7 +21,7 @@ public class Pathfinder {
 	}
 
 	public Queue<Node> FindPath(Node start, List<Node> ends, string name) {
-
+		
 		WalkerData walker = WalkerDatabase.GetData(name);
 		return FindPath(start, ends, walker);
 
@@ -37,9 +37,11 @@ public class Pathfinder {
 	}
 
 	public Queue<Node> FindPath(Node start, List<Node> ends, WalkerData walker) {
-		
+
+		Queue<Node> path = new Queue<Node>();
+
 		if (ends.Count == 0)
-			Debug.LogError("No exits to choose from");
+			return path;
 
 		Dictionary<Node, float> G_scores = new Dictionary<Node, float>();
 		Dictionary<Node, Node> nexts = new Dictionary<Node, Node>();
@@ -57,7 +59,6 @@ public class Pathfinder {
 		}
 
 		//create path of nodes and array of visited nodes
-		Queue<Node> path = new Queue<Node>();
 		bool[,] visited = map.size.CreateArrayOfSize<bool>();
 
 		//while there are unvisited nodes in the queue
@@ -145,11 +146,11 @@ public class Pathfinder {
 				int b = curry + dy;
 
 				//don't do diagonal if can't pass through one of the tiles adjacent
-				if (diagonal && (!CanGoTo(a, curry, walker) || !CanGoTo(currx, b, walker)))
+				if (diagonal && (!CanGoTo(a, curry, currx, curry, walker) || !CanGoTo(currx, b, currx, curry, walker)))
 					continue;
 
 
-				if (CanGoTo(a, b, walker))
+				if (CanGoTo(a, b, currx, curry, walker))
 					neighbors.Add(new Node(a, b));
 			}
 		}
@@ -157,7 +158,7 @@ public class Pathfinder {
         return neighbors;
     }
 
-    public bool CanGoTo(int a, int b, WalkerData walker) {
+    public bool CanGoTo(int a, int b, int currx, int curry, WalkerData walker) {
 
 		//if out of bounds, can't go
 		if (map.OutOfBounds(a, b))
@@ -165,7 +166,7 @@ public class Pathfinder {
 		
 		//if road-only walker, check for roadblocks
 		if (walker.RoadWalker)
-			return RoadWalkerCanGoThrough(a, b, walker);
+			return RoadWalkerCanGoThrough(a, b, currx, curry, walker);
 		
 		//if water-only walker, check if on water
 		else if (walker.WaterWalker)
@@ -173,14 +174,25 @@ public class Pathfinder {
 
 		//otherwise check if there is a building
 		else if (map.IsBuildingAt(a, b))
-			CheckBuildingAt(a, b, walker);
+			return CheckBuildingAt(a, b, currx, curry, walker);
+
+		//check if we're on a ramp right now; not mutually exclusive with the above
+		if(map.IsBuildingAt(currx, curry)) {
+
+			if (map.GetBuildingNameAt(currx, curry).Contains("Ramp"))
+				return map.GetBuildingAt(currx, curry).GetComponent<Road>().NeighborCondition(a, b);
+
+		}
+
+		if (map.elevation[a, b] != map.elevation[currx, curry])
+			return false;
 
 		//return false if there's water
 		return map.terrain[a, b] != (int)Terrain.Water;
 
 	}
 
-	bool RoadWalkerCanGoThrough(int a, int b, WalkerData walker) {
+	bool RoadWalkerCanGoThrough(int a, int b, int currx, int curry, WalkerData walker) {
 
 		if (map.IsRoadblockAt(a, b)) {
 
@@ -194,10 +206,25 @@ public class Pathfinder {
 		}
 
 		//do not go through if there is a map entrance; we won't count these for roadwalker roads
-		string str = map.GetBuildingNameAt(a, b);
-		if(!string.IsNullOrEmpty(str))
-			if (str.Contains("MapEntrance") || str.Contains("MapExit"))
+		string target = map.GetBuildingNameAt(a, b);
+		string current = map.GetBuildingNameAt(currx, curry);
+		if (!string.IsNullOrEmpty(target)) {
+
+			if (target.Contains("MapEntrance"))
 				return false;
+
+			//check whether we're about to go onto a ramp
+			else if(target.Contains("Ramp"))
+				return map.GetBuildingAt(a, b).GetComponent<Road>().NeighborCondition(currx, curry);
+
+		}
+		if (!string.IsNullOrEmpty(current)) {	//not "else if" because this isn't mutually exclusive
+
+			//check whether we're on a ramp right now
+			if(current.Contains("Ramp"))
+				return map.GetBuildingAt(currx, curry).GetComponent<Road>().NeighborCondition(a, b);
+
+		}
 
 		return map.IsUnblockedRoadAt(a, b);
 
@@ -215,12 +242,15 @@ public class Pathfinder {
 
 	}
 
-	bool CheckBuildingAt(int a, int b, WalkerData walker) {
+	bool CheckBuildingAt(int a, int b, int currx, int curry, WalkerData walker) {
 
 		string str = map.GetBuildingNameAt(a, b);
 
-		if (str.Contains("MapEntrance") || str.Contains("MapExit"))
+		if (str.Contains("MapEntrance"))
 			return true;
+
+		if (str.Contains("Ramp"))
+			return map.GetBuildingAt(a, b).GetComponent<Road>().NeighborCondition(currx, curry);
 
 		if (map.IsRoadAt(a, b))
 			return true;

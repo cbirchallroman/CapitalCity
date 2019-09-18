@@ -36,7 +36,7 @@ public class Quarter  {
     }
 
     public override string ToString() {
-        return (Season)season + ", Year " + year;
+        return (Season)season + " " + year;
     }
 
 }

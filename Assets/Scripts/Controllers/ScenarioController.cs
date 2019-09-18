@@ -5,44 +5,53 @@ using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 [System.Serializable]
-public class ScenarioGoalsSave {
+public class ScenarioSave {
 
-    public int Prosperity, level, populationGoal, prosperityGoal, housingGoalAmount, housingGoalLevel;
+    public int Prosperity, level;
     public int[] HousingLevels;
     public bool openedVictory;
     public float timeDelta;
-    public string campaign, levelName, levelDesc;
-    public List<string> storageGoals;
+    public string campaign;
 
-    public ScenarioGoalsSave(ScenarioController s) {
+	public ScenarioGoals goals;
+
+    public ScenarioSave(ScenarioController s) {
         
-        populationGoal = s.populationGoal;
         openedVictory = s.openedVictory;
         timeDelta = s.timeDelta;
-
-        housingGoalAmount = s.housingGoalAmount;
-        housingGoalLevel = s.housingGoalLevel;
 
         HousingLevels = s.HousingLevels;
 
         Prosperity = s.Prosperity;
-        prosperityGoal = s.prosperityGoal;
-
-        levelName = s.levelName;
-        levelDesc = s.levelDesc;
-
-        storageGoals = s.storageGoals;
 
         level = CampaignManager.currentLevel;
         campaign = CampaignManager.currentCampaign;
 
+		goals = s.goals;
+
     }
+
+}
+
+[System.Serializable]
+public class ScenarioGoals {
+
+	public string levelName;
+
+	[TextArea]
+	public string levelDesc;
+	public int housingAmount;
+	public int housingLevel = 1;
+	public int population;
+	public int prosperity;
+	public List<string> storageGoals;
 
 }
 
 public class ScenarioController : MonoBehaviour {
 
     public Button nextLvlButton;
+	public Text scenarioLabel;
 	
     public WorldController worldController;
 
@@ -52,20 +61,16 @@ public class ScenarioController : MonoBehaviour {
     public GameObject bankruptPage;
     public bool openedVictory { get; set; }
 
-    [Header("Scenario Goals")]
+	[Header("Scenario Goals")]
+	public ScenarioGoals goals;
+	
+	public void changeName(string s) { goals.levelName = s; }
+	public void changeDesc(string s) { goals.levelDesc = s; }
 
-    [TextArea]
-    public string levelName;
-    public void changeName(string s) { levelName = s; }
-    public string levelDesc;
-    public void changeDesc(string s) { levelDesc = s; }
-
-    public int housingGoalAmount;
-    public void changeHousingGoalAmount(string i) { housingGoalAmount = int.Parse(i); }
-    public int housingGoalLevel = 1;
-    public void changeHousingGoalLevel(string i) { housingGoalLevel = int.Parse(i); }
+    public void changeHousingGoalAmount(string i) { goals.housingAmount = int.Parse(i); }
+    public void changeHousingGoalLevel(string i) { goals.housingLevel = int.Parse(i); }
     public int[] HousingLevels { get; set; }
-    public bool HasHouseGoal { get { return housingGoalAmount > 0 && housingGoalLevel > 0; } }
+    public bool HasHouseGoal { get { return goals.housingAmount > 0 && goals.housingLevel > 0; } }
     public float HousingProgress { get { //return Mathf.Clamp((float)HousingLevels[housingGoalLevel - 1] / housingGoalAmount, 0 , 1);
             return 0;
         } }
@@ -73,66 +78,55 @@ public class ScenarioController : MonoBehaviour {
 
         if (!HasHouseGoal)
             return null;
-        return housingGoalAmount + " houses reach Level " + housingGoalLevel;
+        return goals.housingAmount + " houses reach Level " + goals.housingLevel;
 
     }
 
-    public int populationGoal;
-    public void changePopulationGoal(string i) { populationGoal = int.Parse(i); }
-    public bool HasPopGoal { get { return populationGoal != 0; } }
-    public float PopulationProgress { get { return Mathf.Clamp((float)worldController.population.Population / populationGoal, 0, 1); } }
+    public void changePopulationGoal(string i) { goals.population = int.Parse(i); }
+    public bool HasPopGoal { get { return goals.population != 0; } }
+    public float PopulationProgress { get { return Mathf.Clamp((float)worldController.population.Population / goals.population, 0, 1); } }
     public string PopulationToString() {
 
         if (!HasPopGoal)
             return null;
-        return "Population of " + populationGoal;
+        return "Population of " + goals.population;
 
     }
 
-    public int prosperityGoal;
-    public void changeProsperityGoal(string i) { populationGoal = int.Parse(i); }
+    public void changeProsperityGoal(string i) { goals.population = int.Parse(i); }
     public int ProsperityIncreaseRate { get { return 2; } }
     public int Prosperity { get; set; }
-    public bool HasProspGoal { get { return prosperityGoal != 0; } }
-    public float ProsperityProgress { get { return Mathf.Clamp((float)Prosperity / prosperityGoal, 0, 1); } }
+    public bool HasProspGoal { get { return goals.prosperity != 0; } }
+    public float ProsperityProgress { get { return Mathf.Clamp((float)Prosperity / goals.prosperity, 0, 1); } }
     public string ProsperityToString() {
 
         if (!HasProspGoal)
             return null;
-        return "Prosperity rating of " + prosperityGoal;
+        return "Prosperity rating of " + goals.prosperity;
 
     }
 
-    public List<string> storageGoals;
-    public bool HasStorageGoals { get { return storageGoals.Count != 0; } }
+    public bool HasStorageGoals { get { return goals.storageGoals.Count != 0; } }
     public string StorageGoalToString(int i) {
 
-        if (i >= storageGoals.Count)
+        if (i >= goals.storageGoals.Count)
             Debug.LogError("Index " + i + " in storage goals list out of bounds");
 
-        ItemOrder io = new ItemOrder(storageGoals[i]);
+        ItemOrder io = new ItemOrder(goals.storageGoals[i]);
         return "Have " + io.amount + " " + io.name + " in storage";
 
     }
 
-    public void Load(ScenarioGoalsSave s) {
-
-        populationGoal = s.populationGoal;
+    public void Load(ScenarioSave s) {
+		
         openedVictory = s.openedVictory;
         timeDelta = s.timeDelta;
-
-        housingGoalAmount = s.housingGoalAmount;
-        housingGoalLevel = s.housingGoalLevel;
 
         HousingLevels = s.HousingLevels;
 
         Prosperity = s.Prosperity;
-        prosperityGoal = s.prosperityGoal;
 
-        storageGoals = s.storageGoals;
-
-        levelName = s.levelName;
-        levelDesc = s.levelDesc;
+		goals = s.goals;
 
         if (CampaignManager.currentLevel == -1) {
 
@@ -140,7 +134,6 @@ public class ScenarioController : MonoBehaviour {
             CampaignManager.currentCampaign = s.campaign;
 
         }
-
 
     }
 
@@ -170,8 +163,10 @@ public class ScenarioController : MonoBehaviour {
         CheckVictory();
 
         nextLvlButton.interactable = CampaignManager.HasNextLevel();
+		scenarioLabel.text = goals.levelName;
 
-    }
+
+	}
 
     public void CheckVictory() {
 
@@ -183,12 +178,12 @@ public class ScenarioController : MonoBehaviour {
 
     }
 
-    public bool PopulationComplete { get { return worldController.population.Population >= populationGoal; } }
-    public bool ProsperityComplete { get { return Prosperity >= prosperityGoal; } }
-    public bool HousingComplete { get { if (housingGoalLevel == 0) return false; return HousingLevels[housingGoalLevel - 1] >= housingGoalAmount; } }
+    public bool PopulationComplete { get { return worldController.population.Population >= goals.population; } }
+    public bool ProsperityComplete { get { return Prosperity >= goals.prosperity; } }
+    public bool HousingComplete { get { if (goals.housingLevel == 0) return false; return HousingLevels[goals.housingLevel - 1] >= goals.housingAmount; } }
     public bool StorageGoalsComplete{ get {
 
-            foreach (string s in storageGoals) {
+            foreach (string s in goals.storageGoals) {
 
                 ItemOrder io = new ItemOrder(s);
 

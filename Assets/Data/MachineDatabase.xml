@@ -2,43 +2,40 @@
 
   <Machine>
 
-	<Name>Water Wheel</Name>
-	<Type>Water</Type>
+	  <Name>Water Wheel</Name>
+	  <Type>Water</Type>
 	  
-	<Material>Wood</Material>
+	  <Material>Wood</Material>
+    <DeadLabor>60</DeadLabor>
 
-	  <Days>24</Days>
-	<Improvement>1.5</Improvement>
-	<Efficiency>2</Efficiency>
+	  <Days>6</Days>
 
   </Machine>
 
   <Machine>
 
-	<Name>Stove</Name>
-	<Type>Stove</Type>
+	  <Name>Stove</Name>
+	  <Type>Stove</Type>
 
-	<Material>Bricks</Material>
+	  <Material>Bricks</Material>
+    <DeadLabor>60</DeadLabor>
 
-	  <Days>24</Days>
-	<Improvement>1.25</Improvement>
-	  <Efficiency>2</Efficiency>
+	  <Days>6</Days>
 
-	 <Fuel>Coal</Fuel>
-	 <FuelPer100>10</FuelPer100>
+	  <Fuel>Coal</Fuel>
+	  <FuelPer100>10</FuelPer100>
 
   </Machine>
 	
   <Machine>
 
-	<Name>Steam Engine</Name>
-	<Type>Steam</Type>
+	  <Name>Steam Engine</Name>
+	  <Type>Steam</Type>
 
-	<Material>Steel</Material>
+	  <Material>Steel</Material>
+    <DeadLabor>60</DeadLabor>
 
-	  <Days>24</Days>
-	<Improvement>1.5</Improvement>
-	  <Efficiency>2</Efficiency>
+	  <Days>6</Days>
 
 	  <Fuel>Coal</Fuel>
 	  <FuelPer100>10</FuelPer100>

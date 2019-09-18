@@ -33,6 +33,7 @@ public class MenuController : MonoBehaviour {
 
         if (mainPage != null)
             OpenMenu(mainPage);
+
     }
 
     private void Update() {
@@ -116,8 +117,8 @@ public class MenuController : MonoBehaviour {
 
     public void CloseMenu() {
 
-        //if the game was supposed to be paused but was not paused before, start playing
-        if (timeController != null && pauseWhenOpen && (!wasPaused || wasOpen)) {
+		//if the game was supposed to be paused but was not paused before, start playing
+		if (timeController != null && pauseWhenOpen && (!wasPaused || wasOpen)) {
             timeController.StartTime();
         }
 
@@ -140,8 +141,6 @@ public class MenuController : MonoBehaviour {
                 if (wasVisible[go])
                     go.SetActive(true);
             }
-            
-                
 
         wasOpen = false;
 

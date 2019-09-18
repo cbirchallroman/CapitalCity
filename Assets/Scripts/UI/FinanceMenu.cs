@@ -14,7 +14,7 @@ public class FinanceMenu : MonoBehaviour {
 
 		GameObject g = Instantiate(UIObjectDatabase.GetUIElement("QuarterlyReport"));
 		QuarterlyReport currentReport = g.GetComponent<QuarterlyReport>();
-		currentReport.PrintReport(moneyController.currentQuarter);
+		currentReport.PrintReport(moneyController.CurrentQuarter);
 		g.transform.SetParent(grid.transform);
 		CurrentQuarter = currentReport;
 

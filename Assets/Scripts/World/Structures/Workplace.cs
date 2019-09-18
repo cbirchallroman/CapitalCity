@@ -1,27 +1,26 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 [System.Serializable]
 public class WorkplaceSave : StructureSave {
 
-    public int WorkersCount, timeToSpawnWalker, access, workingDay;
-    public bool activeBuilding, closedByPlayer, HireNonPreferredProles;
+    public int timeToSpawnWalker, access, workingDay;
+    public bool activeBuilding, closedByPlayer;
     public bool[] activeSchedule;
-    public Adult[] WorkerList, WorkerSave;
+    public List<Prole> WorkerList, WorkerSave;
 
     public WorkplaceSave(GameObject go) : base(go) {
 
         Workplace w = go.GetComponent<Workplace>();
-
-        WorkersCount = w.WorkersCount;
+		
         timeToSpawnWalker = w.TimeToSpawnWalker;
         access = w.Access;
         workingDay = w.WorkingDay;
 
         activeBuilding = w.ActiveBuilding;
         closedByPlayer = w.ClosedByPlayer;
-		HireNonPreferredProles = w.HireNonPreferredProles;
 
 		activeSchedule = w.ActiveSchedule;
         WorkerList = w.WorkerList;
@@ -37,29 +36,20 @@ public class Workplace : Structure {
     [Header("Workplace")]
     public int timeToSpawnWalkerMax;
     public int workersMax = 1;
+	public int minimumAbility = 10;
     public float baseWages = .4f;
-    public LaborDivision laborDivision;
 	public LaborType laborType = LaborType.Physical;
+	public string deathDesc = "died in a workplace accident.";
 
     public int TimeToSpawnWalker { get; set; }
     
-    public Adult[] WorkerList { get; set; }
-    public Adult[] WorkerSave { get; set; }
-    public int WorkersCount { get; set; }
-
-    public int NumWorkers() {
-
-        int sum = 0;
-        for (int i = 0; i < workersMax; i++)
-            if (WorkerList[i] != null)
-                sum++;
-        return sum;
-
-    }
+    //public Prole[] WorkerList { get; set; }
+	public List<Prole> WorkerList { get; set; }
+	public List<Prole> WorkerSave { get; set; }
 
     public bool ActiveBuilding { get; set; }
     public bool ClosedByPlayer { get; set; }
-	public bool HireNonPreferredProles { get; set; }
+	public bool HireRetiredProles { get; set; }
 
     public bool[] ActiveSchedule { get; set; }
     public int WorkingDay { get; set; } //from 1 to 16
@@ -72,26 +62,27 @@ public class Workplace : Structure {
 
     //vars that come from other vars
     public virtual bool Operational { get { return EnoughWorkers && ActiveBuilding; } }
-    public bool EnoughWorkers { get { return WorkersCount > 0; } }
-    public float WagesOverall { get { return WagesPerWorker * NumWorkers(); } }
+    public bool EnoughWorkers { get { return WorkerList.Count > 0; } }
+    public float WagesOverall { get { return WagesPerWorker * WorkerList.Count; } }
     public float WagesPerWorker { get { return WorkingDay * baseWages; } }
-    public float PercentEmployed { get { return (float)NumWorkers() / workersMax; } }
+    public float PercentEmployed { get { return (float)WorkerList.Count / workersMax; } }
 	public float WorkerEffectiveness { get; set; }
+
+	//UI thingy
+	public event Action<Prole, Workplace> ProleEmploymentAction;
 
     public override void Load(ObjSave o) {
         base.Load(o);
 
         //load vars for workplaces
         WorkplaceSave w = (WorkplaceSave)o;
-
-        WorkersCount = w.WorkersCount;
+		
         TimeToSpawnWalker = w.timeToSpawnWalker;
         Access = w.access;
         WorkingDay = w.workingDay;
         
         ActiveBuilding = w.activeBuilding;
         ClosedByPlayer = w.closedByPlayer;
-		HireNonPreferredProles = w.HireNonPreferredProles;
 
 		ActiveSchedule = w.activeSchedule;
 
@@ -113,7 +104,7 @@ public class Workplace : Structure {
             ActiveSchedule[a] = true;
         ToggleLabor(true);
         WorkingDay = BaseWorkingDay;
-        WorkerList = new Adult[workersMax];
+        WorkerList = new List<Prole>();
 		CalculateWorkerEffectiveness();
 
 		//labor.AddWorkplace(this);
@@ -140,7 +131,7 @@ public class Workplace : Structure {
         //spawn walker or laborseeker process
         if (!ActiveRandomWalker) {
 
-            if (WorkersCount < workersMax && ActiveBuilding)
+            if (WorkerList.Count < workersMax && ActiveBuilding)
                 SpawnLaborSeeker();
             else if (Operational && timeToSpawnWalkerMax != 0)
                 RandomWalkerCounter();
@@ -181,8 +172,7 @@ public class Workplace : Structure {
         
         else if (!b && ActiveBuilding) {
             ActiveBuilding = false;
-            WorkerSave = new Adult[workersMax];
-            WorkerList.CopyTo(WorkerSave, 0);
+            WorkerSave = WorkerList;
             RemoveAllWorkers();
             //labor.RemoveLaborReq(laborDivision, workersMax);
         }
@@ -213,23 +203,12 @@ public class Workplace : Structure {
 
     }
 
-    public bool RemoveWorker(int index) {
+    public bool RemoveWorker(Prole p) {
 
-        if (index >= workersMax)
-            Debug.LogError("Index of worker to be fired at " + name + " is out of bounds");
+		if (!WorkerList.Contains(p))
+			Debug.LogError("Removing " + p + " who doesn't work at " + this);
 
-        if (WorkerList[index] == null)
-            return true;
-
-        //remove this workplace from prole
-        WorkerList[index].workNode = null;
-
-		//record this in the population thingy
-		population.UnemployProle(WorkerList[index]);
-
-		//clear worker's spot in list of workers
-		WorkerList[index] = null;
-        WorkersCount--;
+		WorkerList.Remove(p);
 		CalculateWorkerEffectiveness();
 			
 		return true;
@@ -238,18 +217,22 @@ public class Workplace : Structure {
 
     public void RemoveAllWorkers() {
 
-        for (int i = 0; i < workersMax; i++)
-            RemoveWorker(i);
+        for (int i = WorkerList.Count - 1; i >= 0; i--)
+            RemoveWorker(WorkerList[i]);
 
     }
 
     public void RehireWorkers() {
 
-        foreach(Adult p in WorkerSave) {
+        foreach(Prole p in WorkerSave) {
 
             //if null spot, continue
             if (p == null)
                 continue;
+
+			//if prole should be dead, remove from array and continue
+			if (p.markedForDeath)
+				continue;
 
             //if no longer existing, continue
             if (!p.CheckExistence())
@@ -264,29 +247,23 @@ public class Workplace : Structure {
 
     }
 
-    public bool AddWorker(Adult p) {
+    public bool AddWorker(Prole p) {
 
-        if (WorkersCount >= workersMax)
+        if (WorkerList.Count >= workersMax)
             return false;
 
-        bool hired = false;
-        for(int i=0; i < workersMax && !hired; i++) {
-            
-            if (WorkerList[i] == null) {
-
-                p.JoinWork(this, i);
-                WorkerList[i] = p;
-                hired = true;
-                WorkersCount++;
-				population.EmployProle(p);	//record change in population
-
-            } 
-
-        }
+		population.EmployProle(p);
+		WorkerList.Add(p);
+		p.JoinWork(this);
 
 		CalculateWorkerEffectiveness();
-		
-		return hired;
+
+		//update UI if possible
+		Action<Prole, Workplace> act = ProleEmploymentAction;
+		if(act != null)
+			act.Invoke(p, this);
+
+		return true;
 
     }
 
@@ -294,30 +271,62 @@ public class Workplace : Structure {
 
         base.DoEveryMonth();
 
-        PayWages();
+        PayWagesAndSpreadDisease();
 
     }
 
-    void PayWages() {
+	//since we're iterating, might as well do both things at once
+    void PayWagesAndSpreadDisease() {
 
-        foreach(Adult p in WorkerList) {
+		int numDiseased = 0;
+
+        foreach(Prole p in WorkerList) {
 
             if (p == null)
                 continue;
 
-            p.PayWages(WagesPerWorker);
+			if (p.diseased)
+				numDiseased++;	//add to sum of diseased workers
 
-        }
-        money.SpendOnWages(WagesOverall);
+			p.PayWages(WagesPerWorker); //pay wages
+			money.SpendOnWages(WagesOverall);	//record this
+
+		}
+		
+		if (numDiseased == 0 || numDiseased == WorkerList.Count)		//don't continue if chance is 0% or if all workers here are diseased
+			return;
+
+		int diseaseChance = numDiseased * 5;	//the chance for disease to spread
+
+		//on a successful roll, spread disease to one other person here
+		if (UnityEngine.Random.Range(1, 100) <= diseaseChance) {	//had to specify UnityEngine bc that and System are both here
+
+			foreach (Prole p in WorkerList) {
+
+				if (p == null)
+					continue;
+
+				if (p.diseased)		//don't turn diseased if already diseased
+					continue;
+
+				p.TurnDiseased();
+				break;		//after finding someone to disease, break
+
+
+			}
+
+		}
 
     }
 
 	void CalculateWorkerEffectiveness() {
 
 		float sum = 0;
-		foreach (Adult w in WorkerList) {
-			if (w == null) continue;
-			sum += w.laborPref == laborType ? 1 : 0.75f;
+		foreach (Prole w in WorkerList) {
+
+			if (w != null)
+				sum += w.GetWorkerEffectiveness(laborType);
+
 		}
 
 		WorkerEffectiveness = sum / workersMax;

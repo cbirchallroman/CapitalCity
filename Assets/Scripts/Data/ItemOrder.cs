@@ -40,7 +40,10 @@ public class ItemOrder {
         else if (Enums.peopleDict.ContainsKey(i))
             n = Enums.peopleDict[i];
 
-        else
+		else if (Enums.mealDict.ContainsKey(i))
+			n = Enums.mealDict[i];
+
+		else
             Debug.LogError(i + " does not exist as an item.");
 
         name = i;
@@ -91,9 +94,15 @@ public class ItemOrder {
 
         return Enums.GetItemName(item, type);
 
-    }
+	}
 
-    public override int GetHashCode() {
+	public string GetItemDisplayName() {
+
+		return Enums.GetItemDisplayName(item, type);
+
+	}
+
+	public override int GetHashCode() {
         return base.GetHashCode();
     }
 

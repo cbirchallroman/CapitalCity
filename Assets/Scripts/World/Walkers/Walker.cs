@@ -9,7 +9,7 @@ public class WalkerSave : ObjSave {
     public int prevx, prevy, laborPoints, lifeTime, yield;
     public float movementDistance;
     public Node origin, destination, direction;
-    public bool stuck, SpawnedFollower;
+    public bool stuck, SpawnedFollower, GoingOnRamp;
     public Queue<Node> path;
     public List<string> visitedSpots;
     public ItemOrder order;
@@ -17,7 +17,7 @@ public class WalkerSave : ObjSave {
     public WalkerSave follower;
     public Float3d skin;
 	public WalkerData data;
-	public Adult PersonData;
+	public Prole PersonData;
 
 	public WalkerSave(GameObject go) : base(go) {
 
@@ -41,8 +41,9 @@ public class WalkerSave : ObjSave {
         
         stuck = w.Stuck;
         SpawnedFollower = w.SpawnedFollower;
+		GoingOnRamp = w.GoingOnRamp;
 
-        direction = w.Direction;
+		direction = w.Direction;
         order = w.Order;
 
         path = w.Path;
@@ -76,6 +77,7 @@ public class Walker : Obj {
     
     public bool SpawnedFollower { get; set; }
     public bool Stuck { get; set; }
+	public bool GoingOnRamp { get; set; }
     public Color Skin { get; set; }
     public Walker Follower { get; set; }
     
@@ -91,7 +93,7 @@ public class Walker : Obj {
     public Node Direction { get; set; }
 
 	public WalkerData data = null;
-	public Adult PersonData { get; set; }
+	public Prole PersonData { get; set; }
 
 	public NaviType preferredRandomNavigation = NaviType.Random;
 
@@ -160,8 +162,9 @@ public class Walker : Obj {
         
         Stuck = w.stuck;
         SpawnedFollower = w.SpawnedFollower;
+		GoingOnRamp = w.GoingOnRamp;
 
-        Prevx = w.prevx;
+		Prevx = w.prevx;
         Prevy = w.prevy;
         LaborPoints = w.laborPoints;
         lifeTime = w.lifeTime;
@@ -211,8 +214,6 @@ public class Walker : Obj {
 
 	public void UpdateRandomMovement() {
 
-		transform.position = new Vector3(X, 0, Y);
-
 		//create potential moves and delete last position if found in list
 		List<Node> moves = pathfinder.Neighbors(new Node(X, Y), data);
 		moves.Remove(new Node(Prevx, Prevy));
@@ -247,7 +248,7 @@ public class Walker : Obj {
 		}
 
 		//otherwise go backwards
-		else if (pathfinder.CanGoTo(Prevx, Prevy, data)) {
+		else if (pathfinder.CanGoTo(Prevx, Prevy, X, Y, data)) {
 			next = new Node(Prevx, Prevy);
 		}
 
@@ -256,8 +257,6 @@ public class Walker : Obj {
 	}
 
     public void UpdatePathedMovement() {
-
-		transform.position = new Vector3(X, 0, Y);
 
 		////we shouldn't be on the same tile, but just in case
   //      if (nextx == X && nexty == Y) {
@@ -276,10 +275,16 @@ public class Walker : Obj {
 
 	void MoveToTile(Node n) {
 
+		//update position incl. elevation
+		float currentHeight = transform.position.y; //this is the current elevation
+		Vector3 pos = new Vector3(X, world.GetObjectFloat(X, Y), Y);	//maybe set elevation for next tile instead of current
+		transform.position = pos;
+
 		Prevx = X;
 		Prevy = Y;
 		X = n.x;
 		Y = n.y;
+		float newHeight = world.GetObjectFloat(n.x, n.y);	//elevation we're climbing up/down to
 
 		world.LeaveSquare(this, Prevx, Prevy);
 		world.EnterSquare(this, X, Y);
@@ -351,12 +356,12 @@ public class Walker : Obj {
 
     public void LeaveMap() {
 
-        Structure mapExit = GameObject.FindGameObjectWithTag("MapExit").GetComponent<Structure>();
-        if (mapExit == null)
+        Structure mapEntrance = GameObject.FindGameObjectWithTag("MapEntrance").GetComponent<Structure>();
+        if (mapEntrance == null)
             DestroySelf();
 
         Node start = new Node(this);
-        Node end = new Node(mapExit);
+        Node end = new Node(mapEntrance);
 
         Path = pathfinder.FindPath(start, end, name);
 		data.ReturningHome = true;
@@ -483,7 +488,7 @@ public class Walker : Obj {
 
 	}
 
-	public void SetPersonData(Adult p) {
+	public void SetPersonData(Prole p) {
 
 		PersonData = p;
 

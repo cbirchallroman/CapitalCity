@@ -61,7 +61,11 @@ public class DiplomacyMenu : MonoBehaviour {
         exports = c.GetPossibleExports();
         foreach(ItemOrder export in exports) {
 
-            GameObject deal = Instantiate(UIObjectDatabase.GetUIElement("TradeDeal"));
+			//don't allow trade if item is not whitelisted
+			if (!ResourcesDatabase.ItemAllowed(export.GetItemName()))
+				continue;
+
+			GameObject deal = Instantiate(UIObjectDatabase.GetUIElement("TradeDeal"));
             deal.transform.SetParent(exportsGrid.transform);
 
             TradeDeal td = deal.GetComponent<TradeDeal>();
@@ -74,10 +78,11 @@ public class DiplomacyMenu : MonoBehaviour {
         imports = c.GetPossibleImports();
         foreach (ItemOrder import in imports) {
 
-            //if (tradeController.TradeOrders.ContainsKey(import))
-            //    Debug.Log("This order already exists");
+			//don't allow trade if item is not whitelisted
+			if (!ResourcesDatabase.ItemAllowed(import.GetItemName()))
+				continue;
 
-            GameObject deal = Instantiate(UIObjectDatabase.GetUIElement("TradeDeal"));
+			GameObject deal = Instantiate(UIObjectDatabase.GetUIElement("TradeDeal"));
             deal.transform.SetParent(importsGrid.transform);
 
             TradeDeal td = deal.GetComponent<TradeDeal>();

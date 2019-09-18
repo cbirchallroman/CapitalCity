@@ -6,6 +6,7 @@ using UsefulThings;
 public class WorldController : MonoBehaviour {
 
     public Camera objViewCamera;
+	public MeshCombiner meshCombiner;
     public WorldGenerator mapGenerator;
     public GameObject objectMenus;
     public GameObject structures;
@@ -64,10 +65,12 @@ public class WorldController : MonoBehaviour {
         
         Map = new World(size);
         Map.terrain = mapGenerator.GetRandomTerrain(size);
-		if (!MakeMapEntranceExit(szx, szy)) {
-			CreateWorld();
-			return;
-		}
+		Map.elevation = mapGenerator.GetRandomElevation(size);
+		//Map.elevation = new float[szx, szy];
+
+		//until we've successfully placed the map entrance/exit, keep trying
+		bool success = false;
+		do { success = CreateMapEntrance(szx, szy); } while (!success);	
 
         money.Money = 10000;
         
@@ -76,38 +79,43 @@ public class WorldController : MonoBehaviour {
         if (notifications != null)
             notifications.FreshEvents();
         ProductivityController.CreateProductivities();
+		ResourcesDatabase.CreateWhitelist();
+		money.FreshStartingQuarter((int)timeController.CurrentSeason, timeController.CurrentYear);
+		timeController.finances.LoadFinancialReports();
 
 	}
 
-	bool MakeMapEntranceExit(int szx, int szy) {
+	bool CreateMapEntrance(int szx, int szy) {
 
+		//try to find a place for the mapentrance until it is found
 		Node entranceSpot = new Node(0, Random.Range(2, szx - 2));
-		Node exitSpot = new Node(szx - 1, Random.Range(2, szy - 2));
-		//Node entranceSpot = new Node(0, 0);
-		//Node exitSpot = new Node(szx - 1, szy-1);
-
-		Queue<Node> path = new Pathfinder(Map).FindPath(entranceSpot, exitSpot, "");
-		if (path.Count == 0)
-			return false;
-
 		Structure m1 = SpawnStructure("MapEntrance", entranceSpot.x, entranceSpot.y, 0);
-		Structure m2 = SpawnStructure("MapExit", exitSpot.x, exitSpot.y, 0);
 
-        if (m1 == null || m2 == null)
-            return false;
+		if (m1 == null)
+			return false;
+		
+		//make roads out from the mapentrance as far as possible
+		for(int i = 1; i < 11; i++) {
 
-        for(Node spot = path.Dequeue(); path.Count > 0; spot = path.Dequeue())
-			SpawnStructure("Road", spot.x, spot.y, 0);
+			if (SpawnStructure("Road", i, entranceSpot.y, 0) == null)
+				break;
+
+		}
 
 		cameraController.MoveCameraTo(m1.X, m1.Y);
 		return true;
 
 	}
 
+	GameObject[,] tiles;
+
     public void GenerateWorld() {
 
         GameObject worldObj = new GameObject();
         worldObj.name = "WorldMap";
+
+		//List<GameObject> tiles = new List<GameObject>();
+		tiles = new GameObject[Map.size.x, Map.size.y];
 
         for (int a = 0; a < Map.size.x; a++) {
 
@@ -117,39 +125,44 @@ public class WorldController : MonoBehaviour {
 
             for (int b = 0; b < Map.size.y; b++) {
 
-                GenerateTile(a, b, row);
+				GameObject tile = GenerateTile(a, b, row);
+				tiles[a, b] = tile;
 
             }
 
         }
 
-        //tilemap.BuildMesh(Map);
+		meshCombiner.CreateTilemapMesh(tiles);
 
-        //actionSelecter.LoadActionButtons();
-        actionSelecter.LoadActionEnablers();
+		//actionSelecter.LoadActionButtons();
+		actionSelecter.LoadActionEnablers();
 
         ProductivityController.LoadProductivityLists();
         ProductivityController.LoadCompetitors(diplomacy.cities);
         ProductivityController.UpdateProductivities();
 
+		immigration.LoadImmigrantData();
+
 		WalkerGrid = Map.size.CreateArrayOfSize < List<Walker> > ();
 
 	}
 
-    public void GenerateTile(int x, int y, GameObject row) {
-
-        //destroy old tile if it exists
-        GameObject old = GameObject.Find("Tile_" + x + "_" + y);
-        if (old != null)
-            Destroy(old);
+    public GameObject GenerateTile(int x, int y, GameObject row) {
 
 		//create new tile
-		GameObject tile = SpawnObject("Tiles", (Terrain)Map.terrain[x, y] + "", x, y);
-        float height = tile.transform.localScale.y;
-        tile.transform.parent = row.transform;
-        tile.name = "Tile_" + x + "_" + y;
+		GameObject newTile = SpawnObject("Tiles", (Terrain)Map.terrain[x, y] + "", x, y);
+        newTile.transform.parent = row.transform;
+        newTile.name = "Tile_" + x + "_" + y;
+
+		return newTile;
 
     }
+
+	public GameObject GetTileAt(int x, int y) {
+
+		return tiles[x, y];
+
+	}
 
     public void LoadScenario(BasicWorldSave w) {
 
@@ -166,6 +179,9 @@ public class WorldController : MonoBehaviour {
 		
         if (notifications != null)
             notifications.FreshEvents();
+
+		//load whitelist for items
+		ResourcesDatabase.LoadWhitelist(w.Whitelist);
 
     }
 
@@ -186,11 +202,16 @@ public class WorldController : MonoBehaviour {
 		ProductivityController.LoadProductivities(w.productivities, w.automation);
 		notifications.LoadEvents(w.Events);
 
+		//load whitelist for items
+		ResourcesDatabase.LoadWhitelist(w.Whitelist);
+
 		//GO THROUGH LISTS OF OBJECTS AND ACTIVATE THEM USING THE LOADMAPOBJECT() FUNCTION
 		//structures
 		foreach (ObjSave save in w.structures)
             LoadMapObject(save).transform.parent = structures.transform;
-        foreach (ObjSave save in w.workplaces)
+		foreach (ObjSave save in w.jobcentres)
+			LoadMapObject(save).transform.parent = structures.transform;
+		foreach (ObjSave save in w.workplaces)
             LoadMapObject(save).transform.parent = structures.transform;
         foreach (ObjSave save in w.storagebuildings)
             LoadMapObject(save).transform.parent = structures.transform;
@@ -248,6 +269,8 @@ public class WorldController : MonoBehaviour {
             sizey = tempszx;
         }
 
+		float elevation = Map.elevation[x, y];
+
         for (int a = x; a < x + sizex; a++)
             for (int b = y; b < y + sizey; b++) {
 
@@ -255,34 +278,45 @@ public class WorldController : MonoBehaviour {
                 int m = a - x;
                 int n = b - y;
 
-                if (Map.OutOfBounds(a, b))
-                    return false;
+				if (Map.OutOfBounds(a, b))
+					return false;
 
-                //if building has road tiles beneath
-                else if (data.hasRoadTiles) {
+				//if building has road tiles beneath
+				else if (data.hasRoadTiles) {
 
-                    int[,] roads = ArrayFunctions.RotatedArray(data.roadTiles, buildingRotation);
+					int[,] roads = ArrayFunctions.RotatedArray(data.roadTiles, buildingRotation);
 
-                    //if there should be a road at this tile
-                    if(roads[m, n] == 1) {
+					//if there should be a road at this tile
+					if (roads[m, n] == 1) {
 
-                        //if no structure at all, return false
-                        if (string.IsNullOrEmpty(Map.structures[a, b]))
-                            return false;
+						//if no structure at all, return false
+						if (string.IsNullOrEmpty(Map.structures[a, b]))
+							return false;
 
-                        //else if there's not a road here or it does not contain "Road", return false
-                        else if (Map.roads[a, b] != 2 || !Map.GetBuildingNameAt(a, b).Contains("Road_"))
-                            return false;
+						//else if there's not a road here or it does not contain "Road", return false
+						else if (Map.roads[a, b] != 2 || !Map.GetBuildingNameAt(a, b).Contains("Road_"))
+							return false;
 
-                    }
+					}
 
-                }
+				}
 
-                //else if there's a structure on this tile when there shouldn't be
-                else if(!string.IsNullOrEmpty(Map.structures[a, b]))
-                    return false;
+				//else if there's a structure on this tile when there shouldn't be
+				else if (!string.IsNullOrEmpty(Map.structures[a, b])) {
+					return false;
+				}
 
-                if (data.hasWaterTiles) {
+				//else if there's a walker on this tile (make sure that walker grid exists before checking for a list on it)
+				else if (WalkerGrid != null) {
+					if (WalkerGrid[a, b] != null && !type.Contains("House") && !type.Contains("Rubble"))
+						return false;
+				}
+
+				//else if the elevation is different
+				if (Map.elevation[a, b] != elevation)
+					return false;
+				
+				if (data.hasWaterTiles) {
 
                     int[,] water = ArrayFunctions.RotatedArray(data.waterTiles, buildingRotation);
 
@@ -382,7 +416,7 @@ public class WorldController : MonoBehaviour {
         //rename the area it takes up to its name
         Map.RenameArea(go.name, x, y, sizex, sizey);
 
-        Structure s = go.GetComponent<Structure>();
+		Structure s = go.GetComponent<Structure>();
         if (s == null)
             Debug.LogError(type + " has no structure component");
         s.X = x;
@@ -453,9 +487,19 @@ public class WorldController : MonoBehaviour {
         if (!CanPaintTerrain(type, x, y))
             return;
 
-        Map.terrain[x, y] = (int)Enums.terrainDict[type];
-        //tilemap.PaintTile(x, y);
-        GenerateTile(x, y, GameObject.Find("Row_" + x));
+		//get old tile if it exists
+		GameObject oldTile = tiles[x, y];
+
+		//set new terrain
+		Map.terrain[x, y] = (int)Enums.terrainDict[type];
+
+		//make new tile
+		GameObject newTile = GenerateTile(x, y, GameObject.Find("Row_" + x));
+		tiles[x, y] = newTile;  //put tile into tile grid
+		Debug.Log(newTile);
+
+		//replace tile in mesh
+		meshCombiner.ReplaceTile(oldTile, newTile);
 
     }
 	
@@ -488,7 +532,8 @@ public class WorldController : MonoBehaviour {
 		Destroy(x, y);
 		for (int a = x; a < x + sizex; a++)
 			for (int b = y; b < y + sizey; b++) {
-				SpawnStructure("Rubble", a, b, 0);
+				if(SpawnStructure("Rubble", a, b, 0) == null)
+					Debug.LogError("Couldn't create rubble");
 			}
 
 	}
@@ -544,11 +589,15 @@ public class WorldController : MonoBehaviour {
 
 	public GameObject SpawnObject(string path, string name, int x, int y, float r) {
 
+		//modify elevation
 		Vector3 pos = new Vector3(x, 0, y);
+		pos.y = GetObjectFloat(x, y);
+
 		Vector3 rot = new Vector3(0, r, 0);
 		GameObject go = Resources.Load<GameObject>(path + "/" + name);
 		GameObject clone = Instantiate(go, pos, Quaternion.Euler(rot));
 		clone.name = go.name;
+
 		return clone;
 
 	}
@@ -611,6 +660,12 @@ public class WorldController : MonoBehaviour {
 			walkers += w + " ";
 
 		Debug.Log(walkers);
+	}
+
+	public float GetObjectFloat(int x, int y) {
+
+		return Map.elevation[x, y] * 0.5f;
+
 	}
 
 }

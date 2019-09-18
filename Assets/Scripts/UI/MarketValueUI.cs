@@ -13,9 +13,11 @@ public class MarketValueUI : MonoBehaviour {
 	void Start () {
 		
 		List<string> items = Enums.GetAllItems();
-
-		int even = 0;
+		
 		foreach (string item in items) {
+
+			if (!ResourcesDatabase.ItemAllowed(item))
+				continue;
 
 			GameObject go = Instantiate(UIObjectDatabase.GetUIElement("ItemValueUI"));
 			go.transform.SetParent(grid.transform);
@@ -23,9 +25,6 @@ public class MarketValueUI : MonoBehaviour {
 			ItemValueUI iv = go.GetComponent<ItemValueUI>();
 			iv.ItemName = item;
 			iv.Tooltip = tooltip;
-
-			go.GetComponent<Image>().enabled = even == 1;
-			even = even == 0 ? 1 : 0;
 
 		}
 

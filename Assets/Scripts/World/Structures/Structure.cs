@@ -43,6 +43,7 @@ public class Structure : Obj {
 
 
 	public int stockpile = 100;
+	public MeshRenderer groundMR;
 	public float AmountStored { get; set; }
 
 	public int Sizex { get; set; }
@@ -61,6 +62,8 @@ public class Structure : Obj {
     public bool ActiveSmartWalker { get; set; }
     public string RandomWalker;
 
+	public bool groundColorSet = false;	//should NOT be serialized because this has to do with the visuals of the object
+
 	public override void Activate() {
 
         base.Activate();
@@ -71,9 +74,6 @@ public class Structure : Obj {
         collapseRiskMax = (int)(collapseRiskMax * Difficulty.GetModifier());
         fireRiskMax = (int)(fireRiskMax * Difficulty.GetModifier());
         DoDesirability();
-
-		//if (GetComponent<BoxCollider>() == null)
-		//	AddBoxCollider();
 
 	}
 
@@ -99,16 +99,15 @@ public class Structure : Obj {
         collapseRiskMax = (int)(collapseRiskMax * Difficulty.GetModifier());
         fireRiskMax = (int)(fireRiskMax * Difficulty.GetModifier());
 
-		//if (GetComponent<BoxCollider>() == null)
-		//	AddBoxCollider();
-
 	}
 
-	void AddBoxCollider() {
+	public void SetGroundColor() {
 		
-		BoxCollider bc = gameObject.AddComponent<BoxCollider>();
-		bc.size = new Vector3(Sizex, .5f, Sizey);
-		bc.center = new Vector3(0, .25f, 0);
+		Material m = world.GetTileAt(X, Y).GetComponent<MeshRenderer>().material;
+		//Debug.Log(m.name);
+		if (groundMR != null)
+			groundMR.material = m;
+		groundColorSet = true;
 
 	}
 
@@ -116,6 +115,9 @@ public class Structure : Obj {
 
 		if(Settings.oldGraphics)
 			UpdateRotation();
+
+		if (!groundColorSet)
+			SetGroundColor();
 
         TimeDelta += Time.deltaTime;
         if (time == null)
@@ -220,11 +222,17 @@ public class Structure : Obj {
 
         List<Node> tiles = new List<Node>();
         World map = world.Map;
+		float elev = map.elevation[X, Y];
 
-        //this demon magic works, don't think about it too much but it just checks surrounding tiles for roads
-        for (int a = X; a < X + Sizex; a++) {
+		//if out of bounds or on a different elevation, continue
+		//otherwise add if there's a road tile
+
+		//this demon magic works, don't think about it too much but it just checks surrounding tiles for roads
+		for (int a = X; a < X + Sizex; a++) {
             if (map.OutOfBounds(a, Y - 1))
                 continue;
+			if (elev != map.elevation[a, Y - 1])
+				continue;
             if (map.IsUnblockedRoadAt(a, Y - 1))
                 tiles.Add(new Node(a, Y - 1));
         }
@@ -232,21 +240,27 @@ public class Structure : Obj {
         for (int b = Y; b < Y + Sizey; b++) {
             if (map.OutOfBounds(X + Sizex, b))
                 continue;
-            if (map.IsUnblockedRoadAt(X + Sizex, b))
+			if (elev != map.elevation[X + Sizex, b])
+				continue;
+			if (map.IsUnblockedRoadAt(X + Sizex, b))
                 tiles.Add(new Node(X + Sizex, b));
         }
 
         for (int a = X; a < X + Sizex; a++) {
             if (map.OutOfBounds(a, Y + Sizey))
                 continue;
-            if (map.IsUnblockedRoadAt(a, Y + Sizey))
+			if (elev != map.elevation[a, Y + Sizey])
+				continue;
+			if (map.IsUnblockedRoadAt(a, Y + Sizey))
                 tiles.Add(new Node(a, Y + Sizey));
         }
 
         for (int b = Y; b < Y + Sizey; b++) {
             if (map.OutOfBounds(X - 1, b))
                 continue;
-            if (map.IsUnblockedRoadAt(X - 1, b))
+			if (elev != map.elevation[X - 1, b])
+				continue;
+			if (map.IsUnblockedRoadAt(X - 1, b))
                 tiles.Add(new Node(X - 1, b));
         }
 
@@ -260,32 +274,44 @@ public class Structure : Obj {
 
         List<Node> tiles = new List<Node>();
         World map = world.Map;
+		float elev = map.elevation[X, Y];
 
-        for (int a = X; a < X + Sizex; a++) {
+		//if out of bounds or on a different elevation, continue
+		//otherwise add if there's an empty ground tile
+
+		for (int a = X; a < X + Sizex; a++) {
             if (map.OutOfBounds(a, Y - 1))
                 continue;
-            if (map.terrain[a, Y - 1] != (int)Terrain.Water && string.IsNullOrEmpty(map.structures[a, Y - 1]))
+			if (elev != map.elevation[a, Y - 1])
+				continue;
+			if (map.terrain[a, Y - 1] != (int)Terrain.Water && string.IsNullOrEmpty(map.structures[a, Y - 1]))
                 tiles.Add(new Node(a, Y - 1));
         }
 
         for (int b = Y; b < Y + Sizey; b++) {
             if (map.OutOfBounds(X + Sizex, b))
                 continue;
-            if (map.terrain[X + Sizex, b] != (int)Terrain.Water && string.IsNullOrEmpty(map.structures[X + Sizex, b]))
+			if (elev != map.elevation[X + Sizex, b])
+				continue;
+			if (map.terrain[X + Sizex, b] != (int)Terrain.Water && string.IsNullOrEmpty(map.structures[X + Sizex, b]))
                 tiles.Add(new Node(X + Sizex, b));
         }
 
         for (int a = X; a < X + Sizex; a++) {
             if (map.OutOfBounds(a, Y + Sizey))
                 continue;
-            if (map.terrain[a, Y + Sizey] != (int)Terrain.Water && string.IsNullOrEmpty(map.structures[a, Y + Sizey]))
+			if (elev != map.elevation[a, Y + Sizey])
+				continue;
+			if (map.terrain[a, Y + Sizey] != (int)Terrain.Water && string.IsNullOrEmpty(map.structures[a, Y + Sizey]))
                 tiles.Add(new Node(a, Y + Sizey));
         }
 
         for (int b = Y; b < Y + Sizey; b++) {
             if (map.OutOfBounds(X - 1, b))
                 continue;
-            if (map.terrain[X - 1, b] != (int)Terrain.Water && string.IsNullOrEmpty(map.structures[X - 1, b]))
+			if (elev != map.elevation[X - 1, b])
+				continue;
+			if (map.terrain[X - 1, b] != (int)Terrain.Water && string.IsNullOrEmpty(map.structures[X - 1, b]))
                 tiles.Add(new Node(X - 1, b));
         }
 
@@ -296,32 +322,44 @@ public class Structure : Obj {
 
         List<Node> tiles = new List<Node>();
         World map = world.Map;
+		float elev = map.elevation[X, Y];
 
-        for (int a = X; a < X + Sizex; a++) {
+		//if out of bounds or on a different elevation, continue
+		//otherwise add if there's a ground tile
+
+		for (int a = X; a < X + Sizex; a++) {
             if (map.OutOfBounds(a, Y - 1))
                 continue;
-            if (map.terrain[a, Y - 1] != (int)Terrain.Water)
+			if (elev != map.elevation[a, Y - 1])
+				continue;
+			if (map.terrain[a, Y - 1] != (int)Terrain.Water)
                 tiles.Add(new Node(a, Y - 1));
         }
 
         for (int b = Y; b < Y + Sizey; b++) {
             if (map.OutOfBounds(X + Sizex, b))
                 continue;
-            if (map.terrain[X + Sizex, b] != (int)Terrain.Water)
+			if (elev != map.elevation[X + Sizex, b])
+				continue;
+			if (map.terrain[X + Sizex, b] != (int)Terrain.Water)
                 tiles.Add(new Node(X + Sizex, b));
         }
 
         for (int a = X; a < X + Sizex; a++) {
             if (map.OutOfBounds(a, Y + Sizey))
                 continue;
-            if (map.terrain[a, Y + Sizey] != (int)Terrain.Water)
+			if (elev != map.elevation[a, Y + Sizey])
+				continue;
+			if (map.terrain[a, Y + Sizey] != (int)Terrain.Water)
                 tiles.Add(new Node(a, Y + Sizey));
         }
 
         for (int b = Y; b < Y + Sizey; b++) {
             if (map.OutOfBounds(X - 1, b))
                 continue;
-            if (map.terrain[X - 1, b] != (int)Terrain.Water)
+			if (elev != map.elevation[X - 1, b])
+				continue;
+			if (map.terrain[X - 1, b] != (int)Terrain.Water)
                 tiles.Add(new Node(X - 1, b));
         }
 
@@ -332,32 +370,44 @@ public class Structure : Obj {
 
         List<Node> tiles = new List<Node>();
         World map = world.Map;
+		float elev = map.elevation[X, Y];
 
-        for (int a = X; a < X + Sizex; a++) {
+		//if out of bounds or on a different elevation, continue
+		//otherwise add if there's an empty water tile
+
+		for (int a = X; a < X + Sizex; a++) {
             if (map.OutOfBounds(a, Y - 1))
                 continue;
-            if (map.terrain[a, Y - 1] == (int)Terrain.Water && string.IsNullOrEmpty(map.structures[a, Y - 1]))
+			if (elev != map.elevation[a, Y - 1])
+				continue;
+			if (map.terrain[a, Y - 1] == (int)Terrain.Water && string.IsNullOrEmpty(map.structures[a, Y - 1]))
                 tiles.Add(new Node(a, Y - 1));
         }
 
         for (int b = Y; b < Y + Sizey; b++) {
             if (map.OutOfBounds(X + Sizex, b))
                 continue;
-            if (map.terrain[X + Sizex, b] == (int)Terrain.Water && string.IsNullOrEmpty(map.structures[X + Sizex, b]))
+			if (elev != map.elevation[X + Sizex, b])
+				continue;
+			if (map.terrain[X + Sizex, b] == (int)Terrain.Water && string.IsNullOrEmpty(map.structures[X + Sizex, b]))
                 tiles.Add(new Node(X + Sizex, b));
         }
 
         for (int a = X; a < X + Sizex; a++) {
             if (map.OutOfBounds(a, Y + Sizey))
                 continue;
-            if (map.terrain[a, Y + Sizey] == (int)Terrain.Water && string.IsNullOrEmpty(map.structures[a, Y + Sizey]))
+			if (elev != map.elevation[a, Y + Sizey])
+				continue;
+			if (map.terrain[a, Y + Sizey] == (int)Terrain.Water && string.IsNullOrEmpty(map.structures[a, Y + Sizey]))
                 tiles.Add(new Node(a, Y + Sizey));
         }
 
         for (int b = Y; b < Y + Sizey; b++) {
             if (map.OutOfBounds(X - 1, b))
                 continue;
-            if (map.terrain[X - 1, b] == (int)Terrain.Water && string.IsNullOrEmpty(map.structures[X - 1, b]))
+			if (elev != map.elevation[X - 1, b])
+				continue;
+			if (map.terrain[X - 1, b] == (int)Terrain.Water && string.IsNullOrEmpty(map.structures[X - 1, b]))
                 tiles.Add(new Node(X - 1, b));
         }
 
@@ -375,7 +425,9 @@ public class Structure : Obj {
 		if (entrances.Count == 0)
 			return;
 
-		GameObject go = world.SpawnObject("Walkers/RandomWalkers", RandomWalker, entrances[0]);
+		Node start = entrances[0];
+
+		GameObject go = world.SpawnObject("Walkers/RandomWalkers", RandomWalker, start);
 		Walker w = go.GetComponent<Walker>();
 		w.world = world;
 		w.Origin = this;
@@ -498,7 +550,57 @@ public class Structure : Obj {
 
     }
 
-    public SimplePriorityQueue<StorageBuilding> FindStorageBuildingThatHas(ItemOrder io) {
+	public SimplePriorityQueue<Generator> FindGeneratorToAccept(ItemOrder io) {
+
+		int num = io.amount;
+		string item = io.GetItemName();
+
+		GameObject[] objs = GameObject.FindGameObjectsWithTag("Generator");
+		SimplePriorityQueue<Generator> queue = new SimplePriorityQueue<Generator>();
+
+		if (objs.Length == 0)
+			return queue;
+
+
+		foreach (GameObject go in objs) {
+
+			Generator gen = go.GetComponent<Generator>();
+
+
+			//if null, continue
+			if (gen == null)
+				continue;
+
+			if (!gen.Operational)
+				continue;
+
+			int index = gen.IngredientIndex(item);
+
+			//only add to list if it needs this ingredient
+			if (index == -1)
+				continue;
+
+			//only add to list if it has an entrance
+			List<Node> entrancesHere = GetAdjRoadTiles();
+			List<Node> entrancesThere = gen.GetAdjRoadTiles();
+			if (entrancesHere.Count == 0 || entrancesThere.Count == 0)
+				continue;
+
+			//only add to list if it has none of this item
+			if (gen.IngredientNeeded(index) <= 0)
+				continue;
+
+			float distance = entrancesHere[0].DistanceTo(entrancesThere[0]);
+
+			queue.Enqueue(gen, distance);
+
+		}
+
+		return queue;
+
+	}
+
+	public SimplePriorityQueue<StorageBuilding> FindStorageBuildingThatHas(ItemOrder io) {
 
 		int num = io.amount;
 		int item = io.item;
@@ -625,13 +727,50 @@ public class Structure : Obj {
 
 	}
 
+	public Carryer SpawnGiverToGenerator(ItemOrder io) {
+
+		List<Node> entrances = GetAdjRoadTiles();
+		if (entrances.Count == 0)
+			return null;
+		Node start = entrances[0];
+
+		SimplePriorityQueue<Generator> queue = FindGeneratorToAccept(io);
+
+		for (int i = 0; queue.Count > 0 && i < 5 && !ActiveSmartWalker; i++) {
+
+			Structure strg = queue.Dequeue();
+			List<Node> exits = strg.GetAdjRoadTiles();
+			if (exits.Count == 0)
+				continue;
+
+			Queue<Node> path = pathfinder.FindPath(start, exits, "GiverCart");
+			if (path.Count == 0)
+				continue;
+
+			GameObject go = world.SpawnObject("Walkers", "GiverCart", start);
+
+			Carryer c = go.GetComponent<Carryer>();
+			c.world = world;
+			c.Order = io;
+			c.Origin = this;
+			c.Destination = strg;
+			c.Activate();
+			c.SetPath(path);
+			return c;
+
+		}
+
+		return null;
+
+	}
+
     public void RequestImmigrant() {
 
         immigration.Requests.Add(this);
 
     }
 
-	public virtual void ReceiveImmigrant(Adult p) {
+	public virtual void ReceiveImmigrant(Prole p) {
 
 		Debug.LogError(name + " received prole " + p + " and can't do anything with it");
 

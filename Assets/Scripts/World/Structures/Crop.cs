@@ -32,7 +32,7 @@ public class Crop : Structure {
     public bool ReadyForHarvest { get { return planted && GrowTimer == 0; } }
     public float PercentDone { get { return (int)((float)(ActualDaysToGrow - GrowTimer) / ActualDaysToGrow * 100); } }
 	public float Productivity { get { return (float)BaseDaysToGrow / ActualDaysToGrow; } }
-	public int ActualDaysToGrow { get { return BaseDaysToGrow; } }
+	public int ActualDaysToGrow { get { return BaseDaysToGrow / amountToGrowPerFertility; } }
     public float startHeight = -0.36f;
 
 	public override void Load(ObjSave o) {
@@ -60,6 +60,12 @@ public class Crop : Structure {
 	public override float GetActualProductivity(string item) {
 
 		return Productivity;
+
+	}
+
+	public override float GetAutomationValue(string item) {
+
+		return 0;
 
 	}
 

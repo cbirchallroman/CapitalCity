@@ -7,7 +7,7 @@ using UnityEngine.UI;
 public class PopulationSave {
 
 	public int Working;
-	public List<Adult> Proles;
+	public List<Prole> Proles;
 
 	public PopulationSave(PopulationController pc) {
 
@@ -20,7 +20,7 @@ public class PopulationSave {
 
 public class PopulationController : MonoBehaviour {
 
-	public List<Adult> Proles { get; set; }
+	public List<Prole> Proles { get; set; }
 	public TextAsset firstnameList;
 	public TextAsset surnameList;
 	public Text popLabel;
@@ -30,8 +30,6 @@ public class PopulationController : MonoBehaviour {
 	public int Unemployed { get { return Population - Working; } }
 	public int UnemployedPercent { get { return (int)((float)Unemployed / Population * 100); } }
 	public int EmployedPercent { get { return (int)((float)Working / Population * 100); } }
-
-	public static string[] surnames, firstnames;
 	
 	public void Update() {
 
@@ -44,11 +42,7 @@ public class PopulationController : MonoBehaviour {
 
 	public void Start() {
 		
-		Proles = new List<Adult>();
-
-		//load surname database
-		firstnames = firstnameList.text.Split('\n');
-		surnames = surnameList.text.Split('\n');
+		Proles = new List<Prole>();
 
 	}
 
@@ -59,41 +53,27 @@ public class PopulationController : MonoBehaviour {
 
 	}
 
-	public void AddProle(Adult p) {
+	public void AddProle(Prole p) {
 
 		Proles.Add(p);
 
 	}
 
-	public void RemoveProle(Adult p) {
+	public void RemoveProle(Prole p) {
 
-		Proles.Add(p);
+		Proles.Remove(p);
 
 	}
 
-	public void EmployProle(Adult p) {
+	public void EmployProle(Prole p) {
 
 		Working++;
 
 	}
 
-	public void UnemployProle(Adult p) {
+	public void UnemployProle(Prole p) {
 
 		Working--;
-
-	}
-
-	public static string GetRandomSurname() {
-
-		int rand = Random.Range(0, surnames.Length);
-		return surnames[rand];
-
-	}
-
-	public static string GetRandomFirstName() {
-
-		int rand = Random.Range(0, firstnames.Length);  //note: masc names are even, femme names are odd
-		return firstnames[rand];
 
 	}
 

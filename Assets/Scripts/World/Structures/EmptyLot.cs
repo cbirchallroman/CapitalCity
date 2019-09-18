@@ -4,8 +4,6 @@ using UnityEngine;
 
 public class EmptyLot : Structure {
 
-    public string house;
-
     public override void DoEveryDay() {
 
         if (RoadAccess() && !ActiveSmartWalker && !immigration.Contains(this))
@@ -13,14 +11,16 @@ public class EmptyLot : Structure {
 
     }
 
-    void TurnIntoHouse(Adult immigrant) {
+    void TurnIntoHouse(Prole immigrant) {
 
 		//demolish this and build new house
 		float rot = transform.position.y;
 		world.Demolish(X, Y);
-        world.SpawnStructure(house, X, Y, rot);
+        Structure str = world.SpawnStructure(immigration.startingHouse, X, Y, rot);
 
-        House newHouse = world.Map.GetBuildingAt(X, Y).GetComponent<House>();
+		Debug.Log(str);
+
+        House newHouse = str.GetComponent<House>();
         newHouse.FreshHouse(immigrant);
 
     }
@@ -34,7 +34,7 @@ public class EmptyLot : Structure {
         return false;
     }
 
-	public override void ReceiveImmigrant(Adult p) {
+	public override void ReceiveImmigrant(Prole p) {
 
 		TurnIntoHouse(p);
 

@@ -36,25 +36,29 @@ public class Generator : Workplace {
 
 	//PRODUCTIVITY
 	public float BaseProductivity { get; set; }     //determined by machinery or lack thereof
-	public float ActualProductivity { get { return BaseProductivity * WorkerEffectiveness * RelativeWorkingDay * MachineryPerformance; } }
-	public int BaseProductionCycle { get { return Mathf.RoundToInt(ResourcesDatabase.GetBaseDays(product) / BaseProductivity * RelativeStockpile); } }    //time to produce product without taking variables into account
-	public int ActualProductionCycle { get { return Mathf.RoundToInt(ResourcesDatabase.GetBaseDays(product) / ActualProductivity * RelativeStockpile); } }    //actual time to produce product
+	public float ActualProductivity { get { return BaseProductivity * WorkerEffectiveness * RelativeWorkingDay; } }
+	public int BaseProductionCycle { get { return Mathf.RoundToInt(ResourcesDatabase.GetBaseDays(product) / BaseProductivity * RelativeStockpile * RelativeWorkerStrength); } }    //time to produce product without taking variables into account
+	public int ActualProductionCycle { get { return Mathf.RoundToInt(ResourcesDatabase.GetBaseDays(product) / ActualProductivity * RelativeStockpile * RelativeWorkerStrength); } }    //actual time to produce product
 	public float SocialProductivity { get { return ProductivityController.GetAverageProductivityEverywhere(product); } }    //social average time to produce
 	
 	//PRODUCTION
 	//	the number of hours that it take something to be produced assumes an average workday of 8 hr and 4 workers
 	public float ProductPerWorker { get { return (float)stockpile / (BaseProductionCycle * BaseWorkingDay * BaseWorkers); } }   //amount of product produced by a worker each day
-	public float ProductsPerDay { get { return ProductPerWorker * WorkingDay * NumWorkers() * MachineryPerformance; } }
+	public float ProductsPerDay { get { return ProductPerWorker * WorkingDay * WorkerList.Count; } }
 
 	//RELATIVE STATS
 	public float RelativeWorkingDay { get { return ((float)WorkingDay) / BaseWorkingDay; } }
 	public float RelativeStockpile { get { return stockpile / 100f; } }
 	public int RelativeProductivity { get { return (int)((ActualProductivity > 0 ? ActualProductivity : BaseProductivity) / SocialProductivity * 100); } }  //percent efficiency relative to social average time
+	public float RelativeWorkerStrength { get { return (float)workersMax / BaseWorkers; } }
 
 	//ECONOMICS
 	public float ValueProduced { get { return ResourcesDatabase.GetBasePrice(product, stockpile); } }
     public float SurplusValue { get { return ValueProduced - WagesOverall * ActualProductionCycle / TimeController.DaysInAMonth; } }
     public float SuperProfits { get { return ValueProduced * (ActualProductivity - SocialProductivity) / SocialProductivity;} }
+
+	//DELIVERY
+	public bool DontSendItemsToGenerators { get; set; }
 
     //INGREDIENTS
     public int[] IngredientsPer100 { get; set; }
@@ -68,13 +72,12 @@ public class Generator : Workplace {
 	//DETERIORATION
 	public Machine MachineData { get; set; }
 	public MachineType machineryType = MachineType.END;
-    public int MachineryValue { get { return DeteriorationPerCycle * 10; } }	//total amount of machinery in the generator; can last for 10 cycles before needing to be replaced
+    public int MachineryValue { get { return MachineData != null ? MachineData.GetTotalDeadLabor() : 0; } }	//total amount of machinery in the generator
     public ResourceType MachineryResource { get; set; }		//determined by machinery
 	public ResourceType Fuel { get; set; }		//determined by machinery
 	public int Deterioration { get; set; }
     public int DeteriorationPerCycle { get { return MachineData.GetDeteriorationPerCycle(stockpile); } }		//amount of constant capital consumed each cycle
-	public float MachineryPerformance { get { if (MachineData == null) return 1f; return 1f - (float)Deterioration / MachineryValue; } }	//what % of the machinery needs to be replaced
-	public bool BrokenDown { get { return MachineryPerformance == 0; } }
+	public bool BrokenDown { get { return Deterioration >= MachineryValue && machineryType != MachineType.END; } }
 	public int RepairsNeeded { get { return MachineryValue - Deterioration; } }
 
     public override void Load(ObjSave o) {
@@ -152,7 +155,7 @@ public class Generator : Workplace {
             return;
 
         //restart production if building is inactive or not sending out cart
-        if (Operational && !ActiveSmartWalker) {
+        if (Operational && !ActiveSmartWalker && !ActiveRandomWalker) {
 
             if (Producing)
                 ProductionTimer();
@@ -165,7 +168,6 @@ public class Generator : Workplace {
         if (!Producing && !StartConditions && Operational && !ActiveSmartWalker && !ActiveRandomWalker)
             GetIngredients();
 
-		//Debug.Log(RelativeEmployment + " " + BaseProductionCycle + " " + ActualProductionCycle);
 
     }
 
@@ -193,7 +195,7 @@ public class Generator : Workplace {
 
     public virtual void ProductionTimer() {
 
-        if (ProductionComplete && !ActiveSmartWalker)
+        if (ProductionComplete && !ActiveSmartWalker && !ActiveRandomWalker)
             ExportProduct();
 
         //byproduct
@@ -212,7 +214,12 @@ public class Generator : Workplace {
 
         ItemOrder io = new ItemOrder(stockpile, product);
 
-        SpawnGiverToStorage(io);
+		//try to send carryer to other generator first; then try to storage
+		if(DontSendItemsToGenerators)
+			SpawnGiverToStorage(io);
+		else if (SpawnGiverToGenerator(io) == null)
+			SpawnGiverToStorage(io);
+		
 		if (!ActiveSmartWalker)
 			return;
         Producing = false;
@@ -220,11 +227,25 @@ public class Generator : Workplace {
         if(!string.IsNullOrEmpty(byproduct))
             ByproductsMade += ByproductsStored;
 
-        //Deteriorate();
+		//only deteriorate machinery once this production cycle is finished
+        Deteriorate();
 
-    }
-	
-    void Deteriorate() {
+	}
+
+	public void ExportByproduct() {
+
+		ItemOrder io = new ItemOrder(ByproductsMade, byproduct);
+
+		if (SpawnGiverToGenerator(io) == null || DontSendItemsToGenerators)
+			SpawnGiverToStorage(io);
+		
+		if (!ActiveSmartWalker)
+			return;
+		ByproductsMade = 0;
+
+	}
+
+	void Deteriorate() {
 
 		if (MachineData == null)
 			return;
@@ -242,17 +263,6 @@ public class Generator : Workplace {
         if (io.item != (int)MachineryResource)
             Debug.LogError("Tried to receive " + (ResourceType)io.item + " instead of " + MachineryResource);
         Deterioration -= io.amount;
-
-    }
-
-    public void ExportByproduct() {
-
-        ItemOrder io = new ItemOrder(ByproductsMade, byproduct);
-
-        SpawnGiverToStorage(io);
-		if (!ActiveSmartWalker)
-			return;
-        ByproductsMade = 0;
 
     }
 
@@ -302,7 +312,6 @@ public class Generator : Workplace {
 		if(Fuel != ResourceType.END) {
 			int fuelIndex = length - 1;
 			Ingredients[fuelIndex] = Fuel + "";
-
 		}
 
 		if(Fuel != ResourceType.END)
@@ -372,6 +381,15 @@ public class Generator : Workplace {
 		base.UponDestruction();
 
 		LeaveProductivityLists();
+
+	}
+
+	public int IngredientIndex(string item) {
+
+		for (int index = 0; index < Ingredients.Length; index++)
+			if (Ingredients[index].Equals(item))
+				return index;
+		return -1;
 
 	}
 

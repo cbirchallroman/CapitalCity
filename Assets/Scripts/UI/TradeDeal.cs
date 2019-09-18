@@ -15,7 +15,7 @@ public class TradeDeal : MonoBehaviour {
 
     private void Start() {
 
-		string itemName = order.GetItemName();
+		string itemName = order.GetItemDisplayName();
         desc.text = order.amount + " " + itemName + " for " + MoneyController.symbol + order.ExchangeValue().ToString("n2");
 		Sprite spr = ResourcesDatabase.GetSprite(itemName);
 		if (spr != null)

@@ -16,7 +16,7 @@ public class RandomWalker : Walker {
         if (Origin is Workplace && modifyLifeTime) {
 
             Workplace w = (Workplace)Origin;
-            lifeTime = (int)((float)w.WorkersCount / w.workersMax * w.WorkingDay / 8f * lifeTime);
+            lifeTime = (int)((float)w.WorkerList.Count / w.workersMax * w.WorkingDay / 8f * lifeTime);
 
         }
 
@@ -57,7 +57,7 @@ public class RandomWalker : Walker {
 
 	public override void DoEveryStep() {
 
-		if (Origin == null || !pathfinder.CanGoTo(X, Y, data))
+		if (Origin == null || !pathfinder.CanGoTo(X, Y, Prevx, Prevy, data))
 			DestroySelf();
 
 		VisitBuildings();
@@ -109,7 +109,7 @@ public class RandomWalker : Walker {
 
         if (laborSeeker && w != null && h != null) {
 
-            if (w.WorkersCount == w.workersMax) {
+            if (w.WorkerList.Count == w.workersMax) {
 
                 //if this is ONLY a laborseeker and it is not returning home yet, make it go home by setting its lifetime to 0
                 if (!data.ReturningHome && name.Contains("LaborSeeker"))
@@ -120,11 +120,11 @@ public class RandomWalker : Walker {
 
             }
 
-            foreach(Adult p in h.Residents) {
+            foreach(Prole p in h.Residents) {
 
 				if (p == null)
 					continue;
-				if (p.laborPref != w.laborType && !w.HireNonPreferredProles)	//if this prole's labor type is not preferred and we will not hire proles with unpreferred types, continue
+				if (p.GetLaborScore(w.laborType) < w.minimumAbility)	//if this prole's labor type is not preferred and we will not hire proles with unpreferred types, continue
 					continue;
                 if (p.SeekingWork)
                     w.AddWorker(p);

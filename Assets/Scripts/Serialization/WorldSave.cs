@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -9,8 +10,9 @@ public class BasicWorldSave {
     public ActionSelecterControllerSave actionSelecter;
     public MoneySave money;
     public DiplomacySave diplomacy;
-    public ScenarioGoalsSave scenario;
+    public ScenarioSave scenario;
     public List<StructureSave> structures = new List<StructureSave>();
+	public List<string> Whitelist;
 
     public BasicWorldSave() { }
 
@@ -22,7 +24,9 @@ public class BasicWorldSave {
         money = new MoneySave(wc.money);
         actionSelecter = new ActionSelecterControllerSave(wc.actionSelecter);
         diplomacy = new DiplomacySave(wc.diplomacy);
-        scenario = new ScenarioGoalsSave(wc.scenario);
+        scenario = new ScenarioSave(wc.scenario);
+		Whitelist = ResourcesDatabase.Whitelist;
+
         foreach (Transform t in wc.structures.transform) {
 
             GameObject str = t.gameObject;
@@ -47,6 +51,8 @@ public class WorldProgressSave : BasicWorldSave {
 	public DictContainer<string, float> productivities;
 	public DictContainer<string, float> automation;
 
+	public DateTime saveDate;
+
 	//notifications
 	public List<Notification> Events;
 
@@ -60,9 +66,10 @@ public class WorldProgressSave : BasicWorldSave {
     public List<WTPSave> wtps = new List<WTPSave>();
     public List<CanalSave> canals = new List<CanalSave>();
     public List<FarmhouseSave> farmhouses = new List<FarmhouseSave>();
+	public List<JobcentreSave> jobcentres = new List<JobcentreSave>();
 
-    //walkers
-    public List<AnimalSave> animals = new List<AnimalSave>();
+	//walkers
+	public List<AnimalSave> animals = new List<AnimalSave>();
     public List<WalkerSave> walkers = new List<WalkerSave>();
 
     public WorldProgressSave(GameObject go) {
@@ -73,6 +80,9 @@ public class WorldProgressSave : BasicWorldSave {
 
 		productivities = new DictContainer<string, float>(ProductivityController.productivities);
 		automation = new DictContainer<string, float>(ProductivityController.automationValue);
+
+		saveDate = DateTime.Now;
+		Debug.Log(saveDate.ToString("MM/dd/yyyy"));
 
 		Events = w.notifications.Events;
 
@@ -85,7 +95,7 @@ public class WorldProgressSave : BasicWorldSave {
         actionSelecter = new ActionSelecterControllerSave(w.actionSelecter);
         trade = new TradeSave(w.trade);
         diplomacy = new DiplomacySave(w.diplomacy);
-        scenario = new ScenarioGoalsSave(w.scenario);
+        scenario = new ScenarioSave(w.scenario);
 		research = new ResearchSave(w.research);
 
         //SAVE OBJECTS FROM PARENT
@@ -121,7 +131,10 @@ public class WorldProgressSave : BasicWorldSave {
             else if (str.GetComponent<Workplace>() != null)
                 workplaces.Add(new WorkplaceSave(str));
 
-            else if (str.GetComponent<Structure>() != null)
+			else if (str.GetComponent<Jobcentre>() != null)
+				jobcentres.Add(new JobcentreSave(str));
+
+			else if (str.GetComponent<Structure>() != null)
                 structures.Add(new StructureSave(str));
 
             else

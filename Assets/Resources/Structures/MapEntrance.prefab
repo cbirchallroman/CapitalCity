@@ -765,6 +765,8 @@ MonoBehaviour:
   noway: {fileID: 1448717198000426}
   evolution: 
   devolution: 
+  ramp: 
   desirabilityNeeded: 0
   desirabilityWanted: 0
   connectToOutside: 1
+  turnIntoRamp: 0

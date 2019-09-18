@@ -173,38 +173,36 @@ MonoBehaviour:
   DisplayName: House
   defaultDesc: This is an object.
   resourcePath: Structures/House2s
-  randomModel: {fileID: 0}
   radiusOfInfluence: 0
-  rightclick: 1
+  openWindow: 1
+  randomModel: {fileID: 0}
   collapseRiskMax: 0
   fireRiskMax: 20
   canBeDemolished: 1
   radiusActive: 0
   autoRotate: 1
   desirability: 00000000
-  storage: 400
+  stockpile: 100
+  groundMR: {fileID: 0}
   RandomWalker: 
+  groundColorSet: 0
   level: 2
-  residentsMax: 1
-  peopleType: 0
-  prosperityRating: 0
-  desirabilityNeeded: -10
-  desirabilityWanted: -10
   evolvesTo: House3s
   devolvesTo: House1s
   biggerHouse: 
+  residentsMax: 1
+  prosperityRating: 0
+  desirabilityNeeded: -10
+  desirabilityWanted: -10
   cholera: {fileID: 1590231534767502}
-  diseaseLength: 12
   waterQualNeeded: 1
   waterQualWanted: 1
-  foodTypesNeeded: 0
-  foodTypesWant: 1
-  goodsTypesNeeded: 0
-  goodsTypesWant: 0
+  foodQualNeeded: 0
+  foodQualWant: 1
+  goodsNeeded: 
+  goodWanted: 10
   cultureNeeded: 0
   cultureWant: 0
-  growthRate: 2
-  growthChanceMax: 0
 --- !u!198 &198949734456024004
 ParticleSystem:
   m_ObjectHideFlags: 1

@@ -263,19 +263,6 @@
 
   <Structure>
 
-    <Name>MapExit</Name>
-    <DisplayName>Map Exit</DisplayName>
-
-    <Sizex>1</Sizex>
-    <Sizey>1</Sizey>
-    <BaseCost>0</BaseCost>
-
-    <BuiltOnce>true</BuiltOnce>
-
-  </Structure>
-
-  <Structure>
-
     <Name>Roadblock</Name>
     <DisplayName>Roadblock</DisplayName>
 
@@ -653,6 +640,39 @@
     <Sizex>1</Sizex>
     <Sizey>1</Sizey>
     <BaseCost>5</BaseCost>
+
+  </Structure>
+
+	<Structure>
+
+		<Name>JobHouse</Name>
+		<DisplayName>Jobcentre</DisplayName>
+
+		<Sizex>2</Sizex>
+		<Sizey>2</Sizey>
+		<BaseCost>5</BaseCost>
+
+	</Structure>
+
+  <Structure>
+
+    <Name>Bakery</Name>
+    <DisplayName>Bakery</DisplayName>
+
+    <Sizex>1</Sizex>
+    <Sizey>1</Sizey>
+    <BaseCost>5</BaseCost>
+
+  </Structure>
+
+  <Structure>
+
+    <Name>Ramp</Name>
+    <DisplayName>Ramp</DisplayName>
+
+    <Sizex>1</Sizex>
+    <Sizey>1</Sizey>
+    <BaseCost>1</BaseCost>
 
   </Structure>
 

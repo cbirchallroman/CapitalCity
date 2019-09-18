@@ -16,12 +16,14 @@ public class TiledStructure : Structure {
 
     public void Update() {
         UpdateTiling();
-    }
+		if (!groundColorSet)
+			SetGroundColor();
+	}
 
     public void UpdateTiling() {
-        int n = FindNeighbors();
-        if (Neighbors != n && !(n == 0 && !NotJustPlaced)) {
-            Neighbors = n;
+        int newNeighbors = FindNeighbors();
+        if (Neighbors != newNeighbors && !(newNeighbors == 0 && !NotJustPlaced)) {
+            Neighbors = newNeighbors;
             NotJustPlaced = true;
             UpdateGraphic();
         }
@@ -46,7 +48,7 @@ public class TiledStructure : Structure {
 
     public void UpdateGraphic() {
         
-        int neighbors = FindNeighbors();
+        int newNeighbors = FindNeighbors();
 
         if (threeway == null || corner == null || fourway == null || twoway == null || oneway == null || noway == null)
             return;
@@ -58,71 +60,71 @@ public class TiledStructure : Structure {
         noway.SetActive(false);
 
         //Cross roads
-        if (neighbors == 15) {
+        if (newNeighbors == 15) {
             fourway.SetActive(true);
             transform.eulerAngles = new Vector3(0, Random.Range(0, 4) * 90, 0);
         }
 
         //T-shaped roads
-        else if (neighbors == 11) {
+        else if (newNeighbors == 11) {
             threeway.SetActive(true);
             transform.eulerAngles = new Vector3(0, 90, 0);
         }
-        else if (neighbors == 13) {
+        else if (newNeighbors == 13) {
             threeway.SetActive(true);
             transform.eulerAngles = new Vector3(0, 0, 0);
         }
-        else if (neighbors == 14) {
+        else if (newNeighbors == 14) {
             threeway.SetActive(true);
             transform.eulerAngles = new Vector3(0, 270, 0);
         }
-        else if (neighbors == 7) {
+        else if (newNeighbors == 7) {
             threeway.SetActive(true);
             transform.eulerAngles = new Vector3(0, 180, 0);
         }
 
         //Corner roads
-        else if (neighbors == 9) {
+        else if (newNeighbors == 9) {
             corner.SetActive(true);
             transform.eulerAngles = new Vector3(0, 0, 0);
         }
-        else if (neighbors == 12) {
+        else if (newNeighbors == 12) {
             corner.SetActive(true);
             transform.eulerAngles = new Vector3(0, 270, 0);
         }
-        else if (neighbors == 6) {
+        else if (newNeighbors == 6) {
             corner.SetActive(true);
             transform.eulerAngles = new Vector3(0, 180, 0);
         }
-        else if (neighbors == 3) {
+        else if (newNeighbors == 3) {
             corner.SetActive(true);
             transform.eulerAngles = new Vector3(0, 90, 0);
         }
 
         //Straight roads
-        else if (neighbors == 10) {
+        else if (newNeighbors == 10) {
             twoway.SetActive(true);
             transform.eulerAngles = new Vector3(0, 90, 0);
         }
-        else if (neighbors == 5) {
+        else if (newNeighbors == 5) {
             twoway.SetActive(true);
             transform.eulerAngles = new Vector3(0, 0, 0);
         }
 
         //End roads
-        else if (neighbors == 1) {
+        else if (newNeighbors == 1) {
             oneway.SetActive(true);
             transform.eulerAngles = new Vector3(0, 0, 0);
         }
-        else if (neighbors == 2) {
+        else if (newNeighbors == 2) {
             oneway.SetActive(true);
             transform.eulerAngles = new Vector3(0, 90, 0);
         }
-        else if (neighbors == 4) {
+        else if (newNeighbors == 4) {
             oneway.SetActive(true);
             transform.eulerAngles = new Vector3(0, 180, 0);
         }
-        else if (neighbors == 8) {
+        else if (newNeighbors == 8) {
             oneway.SetActive(true);
             transform.eulerAngles = new Vector3(0, 270, 0);
         }

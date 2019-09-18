@@ -40,7 +40,7 @@ public class TimeController : MonoBehaviour {
     public int Years { get; set; }
 
     public static int DayTime { get { return 1; } }
-    public static int WeekTime { get { return 8; } }	//make 8 to double time
+    public static int WeekTime { get { return 4; } }	//make 8 to double time
     public static int MonthTime { get { return 4; } }
     public static int SeasonTime { get { return 3; } }
     public static int YearTime { get { return 4; } }
@@ -115,7 +115,6 @@ public class TimeController : MonoBehaviour {
         //update label
         UpdateTimeLabel();
         UpdateClockColor();
-        finances.LoadFinancialReports();
     }
 
     void Update () {

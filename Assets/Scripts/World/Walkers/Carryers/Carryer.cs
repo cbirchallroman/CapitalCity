@@ -13,7 +13,7 @@ public class Carryer : Walker {
 
 	public override void DoEveryStep() {
 
-		if (Origin == null || Destination == null || !pathfinder.CanGoTo(X, Y, data))
+		if (Origin == null || Destination == null || !pathfinder.CanGoTo(X, Y, Prevx, Prevy, data))
 			DestroySelf();
 
 		if (Path.Count > 0)

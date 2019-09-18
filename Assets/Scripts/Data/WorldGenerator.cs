@@ -35,21 +35,43 @@ public class WorldGenerator {
 
             }
 
-        if (terrain[0, 0] == (int)Terrain.Water)
-            terrain[0, 0] = (int)Terrain.Grass;
-
-        if (terrain[szx - 1, szx - 1] == (int)Terrain.Water)
-            terrain[szy - 1, szy - 1] = (int)Terrain.Grass;
-
         return terrain;
 
+	}
+
+	public float[,] GetRandomElevation(int szx, int szy) {
+
+		float[,] elevation = new float[szx, szy];
+		float[,] perlin = PerlinNoise(frequency, new Node(szx, szy));
+
+		for (int x = 0; x < szx; x++)
+			for (int y = 0; y < szy; y++) {
+
+				float noise = perlin[x, y];
+
+				elevation[x, y] = 0;
+				if (noise > 75)
+					elevation[x, y] = 2;
+				else if (noise > 50)
+					elevation[x, y] = 1;
+
+			}
+
+		return elevation;
+
+	}
+
+	public int[,] GetRandomTerrain(Node size) {
+
+        return GetRandomTerrain(size.x, size.y);
+
     }
 
-    public int[,] GetRandomTerrain(Node size) {
+	public float[,] GetRandomElevation(Node size) {
 
-        return GetRandomTerrain((int)size.x, (int)size.y);
+		return GetRandomElevation(size.x, size.y);
 
-    }
+	}
 
     public List<Node> GetTrees(int szx, int szy) {
 

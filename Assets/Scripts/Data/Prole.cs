@@ -6,16 +6,19 @@ using System.Collections.Generic;
 public class Person {
 
 	public string surname, name, ID;
-	public int yearsOld, deltaDays;
+	public int yearsOld, deltaDays, diseaseLength;
 	public bool diseased, markedForDeath;
 	public Float3d skinColor;
 	public World world;
 
-	public readonly int ageInterval = TimeController.DaysInASeason;
+	public readonly int ageInterval = TimeController.DaysInAYear;
+	public readonly int subInterval = TimeController.DaysInAMonth;
 	public readonly int comingOfAge = 16;
 	public readonly int retirementAge = 65;
+	public readonly int diseaseLengthMax = (int)(6.0 * Difficulty.GetModifier());
 	
-	public virtual int DeathChance { get { return 0; } }
+	public virtual int DeathChance { get { return diseased ? DeathChanceFromDisease : 0; } }
+	public virtual int DeathChanceFromDisease { get { return 5; } }
 
 	public string FullName { get { return name + " " + surname; } }
 
@@ -25,9 +28,9 @@ public class Person {
 
 		deltaDays = randomAge? Random.Range(0, ageInterval) : 0;
 
-		surname = PopulationController.GetRandomSurname();
-		name = PopulationController.GetRandomFirstName();
-		skinColor = GetSkinColor();
+		surname = ImmigrationController.GetRandomSurname();
+		name = ImmigrationController.GetRandomFirstName();
+		skinColor = ImmigrationController.GetRandomSkinColor();
 		ID = surname + name + Random.Range(0, 100);
 
 	}
@@ -35,46 +38,50 @@ public class Person {
 	public virtual void UpdateAge() {
 
 		deltaDays++;
-		if(deltaDays == ageInterval) {
+		if (deltaDays % subInterval == 0)	//basically, every month
+			EveryMonth();
+
+		if(deltaDays == ageInterval) {		//basically, every year
 
 			deltaDays = 0;
 			yearsOld++;
+			EveryBirthday();
 			//Debug.Log("Happy birthday to " + this + "!");
-
-		}
-
-		//check for chance of death
-		if(DeathChance > 0) {
-
-			int roll = Random.Range(0, 100);
-			if (roll <= DeathChance)
-				MarkForDeath();
 
 		}
 
 	}
 
-	Float3d GetSkinColor() {
+	public virtual void EveryMonth() {
 
-		float start_r = 61f / 255f;
-		float start_g = 28f / 255f;
-		float start_b = 10f / 255f;
-		float diff_r = (229f - 61) / 255f;
-		float diff_g = (186f - 28) / 255f;
-		float diff_b = (84f - 10) / 255f;
+		//check for chance of death
+		if (DeathChance > 0) {
+			
+			if (Random.Range(1, 100) <= DeathChance)
+				MarkForDeath();
 
-		float percent = Random.Range(0f, 1);
-		diff_r *= percent;
-		diff_g *= percent;
-		diff_b *= percent;
+		}
 
-		return new Float3d(start_r + diff_r, start_g + diff_g, start_b + diff_b);
+		//decrease disease duration
+		if (diseased) {
+
+			diseaseLength--;
+			if (diseaseLength == 0)
+				CureOfDisease();
+
+		}
+
+	}
+
+	public virtual void EveryBirthday() {
+		
 
 	}
 
 	public void MarkForDeath() {
 
 		markedForDeath = true;
+		Debug.Log(this + " " + GetCauseOfDeath());
 
 	}
 
@@ -85,8 +92,29 @@ public class Person {
 	}
 
 	public virtual void Kill() {
+		
 
 
+	}
+
+	public virtual string GetCauseOfDeath() {
+
+		return "died of drinking dirty water.";
+
+	}
+
+	public void TurnDiseased() {
+
+		diseased = true;
+		diseaseLength = diseaseLengthMax;
+		//Debug.Log(this + " turned diseased");
+
+	}
+
+	public void CureOfDisease() {
+
+		diseased = false;
+		Debug.Log(this + " cured of disease");
 
 	}
 
@@ -94,24 +122,22 @@ public class Person {
 
 [System.Serializable]
 public class Child : Person {
+	
+	public bool GrownUp { get { return yearsOld >= comingOfAge; } }
+	
+	public override int DeathChanceFromDisease { get { return 16 - yearsOld + base.DeathChanceFromDisease; } }
 
-	bool GrownUp { get { return yearsOld >= comingOfAge; } }
+	public Child(bool randomAge, Prole parent) : base(randomAge) {
 
-	//add 20% death chance if diseased
-	public override int DeathChance { get { return diseased ? 20 : 0; } }
-
-	public Child(bool randomAge, Adult parent) : base(randomAge) {
-
-		yearsOld = randomAge ? Random.Range(0, comingOfAge - 1) : 0;
+		//if parent already has children, we want to be younger than the most recent child; otherwise we can be anywhere from 0 to 15 years old
+		yearsOld = randomAge ? Random.Range(0, (parent.children.Count > 0 ? parent.children[parent.children.Count - 1].yearsOld : comingOfAge)) : 0;
 		surname = parent.surname;
 		skinColor = parent.skinColor;
 		ID = surname + name + Random.Range(0, 100);
 
 	}
 
-	public override void UpdateAge() {
-
-		base.UpdateAge();
+	public override void EveryBirthday() {
 
 		if (GrownUp)
 			Debug.Log(this + " should be an adult now");
@@ -121,27 +147,47 @@ public class Child : Person {
 }
 
 [System.Serializable]
-public class Adult : Person {
-	
-    public int workIndex;
-    public Node homeNode, workNode;
-	public float personalSavings;
+public class Prole : Person {
+
+	//PERSONAL STUFF
+	public Node homeNode;
 	public List<Child> children;
-	public LaborType laborPref;
+	public float personalSavings;
+	public int physique, intellect, empathy;
+
+	//WAITING FOR ACCEPTANCE STUFF
+	public int waitCountdown;
+	public bool accepted, rejected;
+
+	//WORK STUFF
+	public Node workNode;
 
 	public bool SeekingWork { get { return !Employed && !Retired; } }
-    public bool Employed { get { return workNode != null; } }
+    public bool Employed { get { if (workNode == null) return false; return !workNode.Equals(unemploymentNode); } }
+	public bool Homeless { get { if (homeNode == null) return true; return homeNode.Equals(unemploymentNode); } }
 	public bool Retired { get { return yearsOld >= retirementAge; } }
+
+	public int BirthChance { get; set; }
+	readonly int birthChanceMax = 10;
+	readonly int childrenMax = 4;
+
+	Node unemploymentNode = new Node(-1, -1);
 
 	//add 10% death chance if diseased
 	//add 15% death chance if retired
 	//add X% death chance depending on work hours
-	public override int DeathChance { get { return (diseased ? 10 : 0) + (Retired ? 15 : 0) + WorkDeathRisk(); } }
+	public override int DeathChance { get { return base.DeathChance + (Retired ? DeathChanceFromAge : 0) + (Employed ? WorkDeathRisk() : 0); } }
+	public int DeathChanceFromAge { get { return 15; } }
 
 	//constructor
-	public Adult(bool randomAge, bool wChildren, LaborType pref) : base(randomAge) {
+	public Prole(bool randomAge, bool wChildren, LaborType pref) : base(randomAge) {
 
-		yearsOld = randomAge ? Random.Range(comingOfAge, retirementAge - 1) : 0;
+		//default status
+		workNode = unemploymentNode;
+		homeNode = unemploymentNode;
+
+		//random years old (14 + 2d6) if we need
+		yearsOld = randomAge ? comingOfAge - 2 + Random.Range(1,7) + Random.Range(1, 7) : comingOfAge;
 		children = new List<Child>();
 
 		//if prole moves into the city with children
@@ -149,25 +195,24 @@ public class Adult : Person {
 
 			int numChildren = Random.Range(0, 3);	//max of 2 children
 			for (int i = 0; i < numChildren; i++)
-				children.Add(new Child(true, this));  //create children with random age
+				CreateChild();  //create children with random age
 
 		}
 
-		laborPref = pref;
-		
-	}
-
-	public override void UpdateAge() {
-
-		base.UpdateAge();
-
-		if (Retired) {
-			QuitWork();
-		}
+		//roll random stats, taking pref into account
+		RollStats(pref);
 
 	}
 
-	Adult(Person person, LaborType pref) {
+	public Prole(Person person, LaborType pref) {
+
+		//default status
+		workNode = unemploymentNode;
+		homeNode = unemploymentNode;
+
+		//if coming from a child, make a new children list
+		if (person is Child)
+			children = new List<Child>();
 
 		//we want same name, same age, same skin color, same ID
 		yearsOld = person.yearsOld;
@@ -176,22 +221,127 @@ public class Adult : Person {
 		name = person.name;
 		skinColor = person.skinColor;
 		ID = person.ID;
-		laborPref = pref;
+
+		//roll random stats, taking pref into account
+		RollStats(pref);
 
 	}
-    
-    public override int GetHashCode() {
+
+	public void RollStats(LaborType pref) {
+
+		//physique = Random.Range(1, 7) + Random.Range(1, 7) + Random.Range(1, 7);
+		//intellect = Random.Range(1, 7) + Random.Range(1, 7) + Random.Range(1, 7);
+		//empathy = Random.Range(1, 7) + Random.Range(1, 7) + Random.Range(1, 7);
+		physique = 10;
+		intellect = 10;
+		empathy = 10;
+
+		//TAKE PREF INTO ACCOUNT SOMEHOW
+
+	}
+
+	public override void UpdateAge() {
+
+		base.UpdateAge();
+
+		//only do if prole is waiting for a job at the job centre
+		if (waitCountdown > 0) {
+			waitCountdown--;
+			if (waitCountdown <= 0 || Retired)     //if countdown is over or got too old, leave the city
+				rejected = true;
+		}
+
+	}
+
+	public override void EveryMonth() {
+
+		base.EveryMonth();
+
+		//THINGS RELATED TO BIRTH CHANCE
+		//increase birth chance if less than max
+		if (BirthChance < birthChanceMax)
+			BirthChance++;
+
+		//roll to see whether birth occurs (when chance > 0, have less than max children, and is not diseased)
+		if (BirthChance > 0 && children.Count <= childrenMax && !diseased) {
+
+			int roll = Random.Range(1, 100);
+
+			if (roll <= BirthChance) {
+				CreateChild();
+				BirthChance = 0;
+			}
+
+		}
+
+	}
+
+	public override void EveryBirthday() {
+
+		base.EveryBirthday();
+
+		//quit work if too old
+		if (Retired && Employed) {
+
+			GameObject go = world.GetBuildingAt(workNode);
+			workNode = unemploymentNode;
+
+			if (go == null)
+				Debug.LogError("Workplace at " + workNode + " for " + this + " does not exist");
+
+			Workplace wrk = go.GetComponent<Workplace>();
+			if(!wrk.HireRetiredProles)
+				QuitWork();
+		}
+
+	}
+
+	public override string GetCauseOfDeath() {
+
+		int roll = Random.Range(1, DeathChanceFromAge + DeathChanceFromDisease + WorkDeathRisk());
+
+		//get death message for old age
+		if (roll <= DeathChanceFromAge && Retired)
+			return "passed away peacefully.";
+
+		//get death message for disease
+		else if (roll <= (DeathChanceFromAge + DeathChanceFromDisease) && diseased)
+			return "died of drinking dirty water.";
+
+		//get death message for workplace accident
+		else if(roll <= DeathChanceFromAge + DeathChanceFromDisease + WorkDeathRisk() && Employed) {
+
+			GameObject go = world.GetBuildingAt(workNode);
+
+			if (go == null)
+				Debug.LogError("Workplace at " + workNode + " for " + this + " does not exist");
+
+			Workplace wrk = go.GetComponent<Workplace>();
+			return wrk.deathDesc;
+		}
+
+		return "died mysteriously.";
+
+	}
+
+	public override int GetHashCode() {
         return base.GetHashCode();
     }
 
     public override bool Equals(object obj) {
 
-        Adult pr = (Adult)obj;
+        Prole pr = (Prole)obj;
         return ID == pr.ID;
 
 	}
 
-	public Adult GrowUpChild(Child c) {
+	void CreateChild() {
+
+		children.Add(new Child(true, this));
+
+	}
+
+	public Prole GrowUpChild(Child c) {
 
 		if (!children.Contains(c))
 			Debug.LogError(this + " trying to grow up child " + c + " which is not its own");
@@ -199,7 +349,10 @@ public class Adult : Person {
 		//SOMEWHERE HERE DETERMINE RANDOM LABOR PREF FOR
 
 		children.Remove(c);
-		return new Adult(c, LaborType.Physical);
+
+		Prole grownup = new Prole(c, LaborType.Physical);
+
+		return grownup;
 
 	}
 
@@ -232,36 +385,43 @@ public class Adult : Person {
 
     public void QuitWork() {
 
-        if (workNode == null)
+        if (!Employed)
             return;
 
         GameObject go = world.GetBuildingAt(workNode);
-		workNode = null;
+		workNode = unemploymentNode;
 
 		if (go == null)
             Debug.LogError("Workplace at " + workNode + " for " + this + " does not exist");
 
         Workplace wrk = go.GetComponent<Workplace>();
-        wrk.RemoveWorker(workIndex);
+        wrk.RemoveWorker(this);
 
     }
 
 	public void EvictHouse(bool separateChildren) {
 
-		if (homeNode == null)
+		if (Homeless)
 			return;
 
 		GameObject go = world.GetBuildingAt(homeNode);
-		homeNode = null;
+		homeNode = unemploymentNode;
 
 		if (go == null)
 			return;
 
-		//cycle through house's residents and delete this one
+		//go through house's residents and delete this one
 		House h = go.GetComponent<House>();
-		for (int i = 0; i < h.Residents.Count; i++)
-			if (h.Residents[i] == this)
-				h.Residents.RemoveAt(i);
+		h.Residents.Remove(this);
+
+		//if was diseased upon eviction, remove disease from count
+		if(diseased)
+			h.RemoveDiseasedResident();
+
+		//cycle through children; if any are diseased, remove from diseased count
+		foreach (Child c in children)
+			if (c.diseased)
+				h.RemoveDiseasedResident();
 
 		if (separateChildren) {
 
@@ -272,16 +432,16 @@ public class Adult : Person {
 	}
 
 	public override void Kill() {
-		
+
+		base.Kill();
 		QuitWork();
 		EvictHouse(true);
 
 	}
 
-    public void JoinWork(Workplace w, int i) {
+    public void JoinWork(Workplace w) {
 
         workNode = new Node(w);
-        workIndex = i;
 
     }
 
@@ -297,7 +457,7 @@ public class Adult : Person {
         GameObject go = world.GetBuildingAt(homeNode);
 
         if (go == null)
-            Debug.LogError(surname + " does not have a house at " + homeNode + " anymore");
+            Debug.LogError(this + " does not have a house at " + homeNode + " anymore");
 
         House house = go.GetComponent<House>();
         house.Savings += wages;
@@ -306,23 +466,95 @@ public class Adult : Person {
 
 	public int WorkDeathRisk() {
 
-		if (workNode == null)
+		if (!Employed)
 			return 0;
 
 		GameObject go = world.GetBuildingAt(workNode);
-		workNode = null;
 
 		if (go == null)
-			Debug.LogError("Workplace at " + workNode + " for " + this + " does not exist");
+			return 0;
 
 		Workplace wrk = go.GetComponent<Workplace>();
 
+		//workplace accidents only happen with physical jobs
 		if (wrk.laborType != LaborType.Physical)
 			return 0;
+		
+		int excess = wrk.WorkingDay - 8;
+		int riskFromExcess = excess > 0 ? excess : 0;	//risk from working for too many hours
 
-		int workingDay = wrk.WorkingDay;
-		int excess = workingDay - 8;
-		return excess > 0 ? excess * (wrk.laborType != laborPref ? 2 : 1) : 0;	//multiple risk by 2 if this prole does not prefer physical labor
+		int minus = GetLaborBonus(LaborType.Physical) * -1;
+		int riskFromPhysique = minus < 0 ? (minus + 1) : 0;        //risk from having weaker physique
+
+		int ageDiff = yearsOld - retirementAge;
+		int riskFromAge = ageDiff > 0 ? (ageDiff + 1) : 0;		//risk from being too old to work physically
+
+		return riskFromAge + riskFromExcess + riskFromPhysique;	//multiple total risk by 2 if this prole does not prefer physical labor
+
+	}
+
+	public LaborType HighestValue() {
+
+		if (physique >= intellect && physique >= empathy)
+			return LaborType.Physical;
+
+		else if (intellect >= physique && intellect >= empathy)
+			return LaborType.Intellectual;
+
+		else if (empathy >= physique && empathy >= intellect)
+			return LaborType.Emotional;
+
+		return LaborType.END;
+
+	}
+
+	public int GetLaborScore(LaborType lt) {
+
+		if (lt == LaborType.Physical)
+			return physique;
+		else if (lt == LaborType.Intellectual)
+			return intellect;
+		else if (lt == LaborType.Emotional)
+			return empathy;
+
+		return -1;
+
+	}
+	
+	public int WaitTime { get { return TimeController.DaysInASeason; } }
+
+	public void StartWaitCountdown() {
+		
+		waitCountdown = WaitTime;
+
+	}
+
+	public float WaitTimePercent() {
+
+		return (float)(WaitTime - waitCountdown) / WaitTime;
+
+	}
+
+	public int GetLaborBonus(LaborType lt) {
+
+		int score = GetLaborScore(lt);
+
+		//exceptions to the rule for extremes
+		if (score == 18)
+			return 3;
+		if (score == 1)
+			return -4;
+
+		return (int)((float)(score - 10) / 3);	//each point in bonus represents +5% in productivity
+
+	}
+
+	public float GetWorkerEffectiveness(LaborType lt) {
+		
+		float eff = Retired ? .75f : 1;   //retired status makes worker less effective
+		float bonus = GetLaborBonus(lt);
+		eff += bonus * .05f;  //each bonus point is equal to +5% productivity
+		return eff;
 
 	}
 

@@ -650,6 +650,8 @@ MonoBehaviour:
   noway: {fileID: 1811956395294934}
   evolution: RoadPaved
   devolution: 
+  ramp: Ramp
   desirabilityNeeded: 0
   desirabilityWanted: 5
   connectToOutside: 0
+  turnIntoRamp: 1

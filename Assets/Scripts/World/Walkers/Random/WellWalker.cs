@@ -4,9 +4,10 @@ using UnityEngine;
 
 public class WellWalker : RandomWalker {
 
-    public Quality waterQuality;
+	public Quality waterQuality;
+	public int waterQuantity = 10;
 
-    public float Multiplier { get { return 2 - (float)waterQuality * 0.5f * Difficulty.GetModifier(); } }
+	public float Multiplier { get { return 2 - (float)waterQuality * 0.5f * Difficulty.GetModifier(); } }
 
     public override void Activate() {
         base.Activate();
@@ -16,30 +17,56 @@ public class WellWalker : RandomWalker {
 
         base.VisitBuilding(a, b);
 
-        House h = world.Map.GetBuildingAt(a, b).GetComponent<House>();
-        if (h == null)
-            return;
+		House house = world.Map.GetBuildingAt(a, b).GetComponent<House>();
+		if (house == null)
+			return;
 
-        //give water
-        if (h.WaterQual == waterQuality || h.waterQualWanted <= waterQuality)
-            h.AddWater(h.WaterNeeded(waterQuality), waterQuality);
+		//give water regardless of how many times visited
+		if (house.WillAcceptWaterVisit(waterQuality))
+			house.ReceiveWater(waterQuality, waterQuantity);
 
-        UpdateCleanliness();
+		//check if spot visited
+		string spot = a + "_" + b;
+		if (VisitedSpots.Contains(spot))
+			return;
+		VisitedSpots.Add(spot);		//house has been visited
 
-        //give disease
-        string spot = a + "_" + b;
-        if (VisitedSpots.Contains(spot))
-            return;
-        int roll = Random.Range(1, 100);
-        if (yield == 0)
-            roll = 100;
-        if (roll <= yield)
-            h.StartDisease();
 
-        //house has been visited
-        VisitedSpots.Add(spot);
+		//give water
+		UpdateCleanliness();    //yield is the average filthiness of roads that the wellwalker has walked on
+
+		//give disease
+		if (yield != 0)
+			TryDisease(house);
+
 
     }
+
+	void TryDisease(House house) {
+		
+		foreach(Prole res in house.Residents) {
+			
+			TryDiseaseAtPerson(res, house);
+			foreach (Child child in res.children)
+				TryDiseaseAtPerson(child, house);
+
+		}
+
+	}
+
+	void TryDiseaseAtPerson(Person p, House house) {
+
+		if (p.diseased)
+			return;
+
+		if (Random.Range(1, 100) + house.Hygiene <= yield) {
+
+			p.TurnDiseased();
+			house.AddDiseasedResident();
+
+		}	//want to roll low to cause disease
+
+	}
 
     void UpdateCleanliness() {
 
