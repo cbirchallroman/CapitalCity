@@ -401,7 +401,6 @@ public class House : Structure {
 					//if c was diseased upon death, remove one from diseased count
 					if (c.diseased) RemoveDiseasedResident();
 					p.children.Remove(c);
-					c.Kill();
 					Corpses++;
 
 				}

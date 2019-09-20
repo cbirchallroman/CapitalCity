@@ -92,12 +92,6 @@ public class Person {
 
 	}
 
-	public virtual void Kill() {
-		
-
-
-	}
-
 	public virtual string GetCauseOfDeath() {
 
 		return "died of drinking dirty water.";
@@ -414,14 +408,6 @@ public class Prole : Person {
 		//go through house's residents and delete this one
 		House h = go.GetComponent<House>();
 		h.RemoveResident(this, separateChildren);
-
-	}
-
-	public override void Kill() {
-
-		base.Kill();
-		QuitWork();
-		EvictHouse(true);
 
 	}
 
