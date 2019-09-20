@@ -112,7 +112,7 @@ public class StorageBuilding : Workplace {
             WillAccept[a] = defaultPercent;
 
         WillGet = new bool[NumOfTotalTypes];
-        //FireRisk = 100;
+        CollapseRisk = 100;
 
     }
 

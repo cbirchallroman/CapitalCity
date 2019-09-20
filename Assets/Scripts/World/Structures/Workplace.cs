@@ -117,8 +117,6 @@ public class Workplace : Structure {
 
         if (IsPreview)
             return;
-
-        ToggleLabor(false);
 		
 		if(Disaster){
 			
@@ -127,7 +125,6 @@ public class Workplace : Structure {
 				//don't need to remove from workplace bc we'll do this anyway and also all refs will be gone
 				p.EvictHouse(true);	//true bc children will not be at the workplace during the disaster, will be orphaned
 				population.RemoveProle(p);
-				Debug.Log("killed " + p);
 				
 			}
 			
