@@ -335,15 +335,15 @@ public class WorldController : MonoBehaviour {
             }
 
         if (data.buildNearWater)
-            if (!Map.IsNearWater(x, y, sizex, sizex))
+            if (!IsNearWater(x, y, sizex, sizex))
                 return false;
 
         if (!string.IsNullOrEmpty(data.placeOnTerrain))
-            if (!Map.IsOnTile(x, y, sizex, sizey, Enums.terrainDict[data.placeOnTerrain]))
+            if (!IsOnTile(x, y, sizex, sizey, Enums.terrainDict[data.placeOnTerrain]))
                 return false;
 
         if (!string.IsNullOrEmpty(data.placeNearby))
-            if (!Map.IsNearStructure(x, y, sizex, sizey, data.placeNearby))
+            if (!IsNearStructure(x, y, sizex, sizey, data.placeNearby))
                 return false;
 
         return true;
@@ -434,11 +434,9 @@ public class WorldController : MonoBehaviour {
 
     public void Demolish(int x, int y) {
 
-        GameObject go = Map.GetBuildingAt(x, y);
-        if (go == null)
-            return;
-
-        Structure s = go.GetComponent<Structure>();
+		Structure s = GetBuildingAt(x, y);
+		if (s == null)
+			return;
 
         if (!s.canBeDemolished && modeController.currentMode != Mode.Edit)
             return;
@@ -448,12 +446,10 @@ public class WorldController : MonoBehaviour {
     }
 
     public void Destroy(int x, int y) {
-
-        GameObject go = Map.GetBuildingAt(x, y);
-        if (go == null)
-            return;
-
-        Structure s = go.GetComponent<Structure>();
+		
+        Structure s = GetBuildingAt(x, y);
+		if (s == null)
+			return;
 
         int sizex = s.Sizex;
         int sizey = s.Sizey;
@@ -462,7 +458,7 @@ public class WorldController : MonoBehaviour {
 
         s.DeleteDesirability();
         Map.RenameArea(null, x, y, sizex, sizey);
-        Destroy(go);
+        Destroy(s.gameObject);
 
     }
 
@@ -477,7 +473,7 @@ public class WorldController : MonoBehaviour {
         if (Map.terrain[x, y] == (int)Enums.terrainDict[type])
             return false;
 
-        if (Enums.terrainDict[type] == Terrain.Water && Map.IsBuildingAt(x, y))
+        if (Enums.terrainDict[type] == Terrain.Water && IsBuildingAt(x, y))
             return false;
 
         return true;
@@ -686,6 +682,109 @@ public class WorldController : MonoBehaviour {
 				StructureGrid[a, b] = null;
 			}
 		}
+	}
+
+	public bool IsBuildingAt(int x, int y) {
+
+		return GetBuildingAt(x, y) != null;
+
+	}
+
+	public Structure GetBuildingAt(int x, int y) {
+
+		return StructureGrid[x, y];
+
+	}
+
+	public Structure GetBuildingAt(Node n) {
+
+		return GetBuildingAt(n.x, n.y);
+
+	}
+
+	public string GetBuildingNameAt(int x, int y) {
+
+		if (StructureGrid[x, y] == null)
+			return null;
+
+		return StructureGrid[x, y].name; ;
+
+	}
+
+	public bool IsNearWater(int x, int y, int sizex, int sizey) {
+
+		for (int a = x - 2; a < x + sizex + 2; a++)
+			for (int b = y - 2; b < y + sizey + 2; b++) {
+				if (Map.OutOfBounds(a, b))
+					continue;
+				if (Map.terrain[a, b] == (int)Terrain.Water)
+					return true;
+			}
+
+		return false;
+
+	}
+
+	public bool IsOnTile(int x, int y, int sizex, int sizey, Terrain t) {
+
+		for (int a = x; a < x + sizex; a++)
+			for (int b = y; b < y + sizey; b++) {
+				if (Map.OutOfBounds(a, b))
+					continue;
+				if (Map.terrain[a, b] == (int)t)
+					return true;
+			}
+
+		return false;
+
+	}
+
+	public bool IsNearStructure(int x, int y, int sizex, int sizey, string str) {
+
+		for (int a = x - 2; a < x + sizex + 2; a++)
+			for (int b = y - 2; b < y + sizey + 2; b++) {
+				if (Map.OutOfBounds(a, b))
+					continue;
+				string s = GetBuildingNameAt(a, b);
+				if (string.IsNullOrEmpty(s))
+					continue;
+				if (s.Contains(str))
+					return true;
+			}
+
+		return false;
+
+	}
+
+	public bool IsNearCanal(int x, int y, int sizex, int sizey) {
+
+		for (int a = x - 2; a < x + sizex + 2; a++)
+			for (int b = y - 2; b < y + sizey + 2; b++) {
+				if (Map.OutOfBounds(a, b))
+					continue;
+				Structure str = GetBuildingAt(a, b);
+				if (str == null)
+					continue;
+				Canal c = str.GetComponent<Canal>();
+				if (c == null)
+					continue;
+				if (c.WaterAccess)
+					return true;
+			}
+
+		return false;
+
+	}
+
+	public int Fertility(int x, int y) {
+
+		int fert = (int)Terrain.END + 1 - Map.terrain[x, y];
+
+		if (IsNearCanal(x, y, 2, 2) && fert < 5)
+			fert++;
+
+		return fert;
+
 	}
 
 	public float GetObjectFloat(int x, int y) {
