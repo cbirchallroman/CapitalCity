@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor.SceneManagement;
 
 [System.Serializable]
 public class Person {
@@ -229,12 +230,13 @@ public class Prole : Person {
 
 	public void RollStats(LaborType pref) {
 
-		//physique = Random.Range(1, 7) + Random.Range(1, 7) + Random.Range(1, 7);
-		//intellect = Random.Range(1, 7) + Random.Range(1, 7) + Random.Range(1, 7);
-		//empathy = Random.Range(1, 7) + Random.Range(1, 7) + Random.Range(1, 7);
 		physique = 10;
 		intellect = 10;
 		empathy = 10;
+		physique = Random.Range(1, 7) + Random.Range(1, 7) + Random.Range(1, 7);
+		intellect = Random.Range(1, 7) + Random.Range(1, 7) + Random.Range(1, 7);
+		empathy = Random.Range(1, 7) + Random.Range(1, 7) + Random.Range(1, 7);
+		
 
 		//TAKE PREF INTO ACCOUNT SOMEHOW
 
@@ -391,7 +393,7 @@ public class Prole : Person {
         GameObject go = world.GetBuildingAt(workNode);
 
 		if (go == null)
-            Debug.LogError("Workplace at " + workNode + " for " + this + " does not exist");
+            return;
 
         Workplace wrk = go.GetComponent<Workplace>();
         wrk.RemoveWorker(this);
@@ -411,22 +413,7 @@ public class Prole : Person {
 
 		//go through house's residents and delete this one
 		House h = go.GetComponent<House>();
-		h.Residents.Remove(this);
-
-		//if was diseased upon eviction, remove disease from count
-		if(diseased)
-			h.RemoveDiseasedResident();
-
-		//cycle through children; if any are diseased, remove from diseased count
-		foreach (Child c in children)
-			if (c.diseased)
-				h.RemoveDiseasedResident();
-
-		if (separateChildren) {
-
-			Debug.Log("Children should go to orphanage");
-
-		}
+		h.RemoveResident(this, separateChildren);
 
 	}
 

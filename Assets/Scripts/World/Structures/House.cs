@@ -304,30 +304,28 @@ public class House : Structure {
 
 		//ONLY DO THIS IF HOUSE IS NOT EVOLVING OR DEVOLVING
 		if (!changingHouse && !Disaster)
-			foreach (Prole mover in Residents) {
+			for(int i = Residents.Count - 1; i >= 0; i--) {
 
-				p.QuitWork();
+				Prole mover = Residents[i];
+				mover.QuitWork();
 				mover.personalSavings += Savings / Residents.Count;
 				immigration.TryEmigrant(mover);
-				population.RemoveProle(mover);
+				RemoveResident(mover, false);
 
 			}
 
 		else if (!changingHouse && Disaster) {
 
-			foreach (Prole p in Residents) {
+			for (int i = Residents.Count - 1; i >= 0; i--) {
 
 				//don't need them to evict the house because the house won't exist anymore and they'll be gone from other references
 				//	we can't call p.Kill() because that will try to spawn orphans and also try to search for the house through Find()
-				p.QuitWork();
-				population.RemoveProle(p);
+				//	children will die indirectly
+				RemoveResident(Residents[i], false);
 
 			}
 
 		}
-
-
-
 
 	}
 
@@ -356,6 +354,25 @@ public class House : Structure {
 		p.personalSavings = 0;
 		population.AddProle(p);     //add to prole list of town
 
+	}
+	
+	public void RemoveResident(Prole p, bool separateChildren){
+		
+		p.homeNode = p.unemploymentNode;
+		Residents.Remove(p);
+		population.RemoveProle(p);
+		
+		if(p.diseased)
+			RemoveDiseasedResident();
+
+		//cycle through children; if any are diseased, remove from diseased count
+		foreach (Child c in p.children)
+			if (c.diseased)
+				RemoveDiseasedResident();
+			
+		if(separateChildren)
+			Debug.Log("Children should go to orphanage");
+		
 	}
 
 	void UpdateResidentsAge() {
@@ -403,10 +420,9 @@ public class House : Structure {
 			if (p.markedForDeath) {
 
 				//if c was diseased upon death, remove one from diseased count
-				if (p.diseased) RemoveDiseasedResident();
 
-				p.Kill();
-				population.RemoveProle(p);
+				p.QuitWork();
+				RemoveResident(p, true);
 				Corpses++;
 
 			}

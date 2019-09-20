@@ -28,7 +28,7 @@ public class PopulationController : MonoBehaviour {
 	public int Population { get { return Proles.Count; } }
 	public int Working { get; set; }
 	public int Unemployed { get { return Population - Working; } }
-	public int UnemployedPercent { get { return (int)((float)Unemployed / Population * 100); } }
+	public int UnemployedPercent { get { if (Unemployed < 0) return 0; return (int)((float)Unemployed / Population * 100); } }
 	public int EmployedPercent { get { return (int)((float)Working / Population * 100); } }
 	
 	public void Update() {

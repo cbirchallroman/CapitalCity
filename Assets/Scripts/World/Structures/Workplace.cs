@@ -119,6 +119,20 @@ public class Workplace : Structure {
             return;
 
         ToggleLabor(false);
+		
+		if(Disaster){
+			
+			foreach(Prole p in WorkerList){
+				
+				//don't need to remove from workplace bc we'll do this anyway and also all refs will be gone
+				p.EvictHouse(true);	//true bc children will not be at the workplace during the disaster, will be orphaned
+				population.RemoveProle(p);
+				Debug.Log("killed " + p);
+				
+			}
+			
+		}
+		
 		//labor.RemoveWorkplace(this);
         RemoveAllWorkers();
 
@@ -211,6 +225,7 @@ public class Workplace : Structure {
 		p.workNode = p.unemploymentNode;
 		WorkerList.Remove(p);
 		CalculateWorkerEffectiveness();
+		population.UnemployProle(p);
 			
 		return true;
 
