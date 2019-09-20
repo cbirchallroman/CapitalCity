@@ -35,6 +35,7 @@ public class WorldController : MonoBehaviour {
     public bool PlaceOnRoads { get; set; }
 
 	List<Walker>[,] WalkerGrid;
+	Structure[,] StructureGrid;
 
     private void Start() {
         Enums.LoadDictionaries();
@@ -413,8 +414,6 @@ public class WorldController : MonoBehaviour {
         if (data.builtOnce)
             go.name = type;
 
-        //rename the area it takes up to its name
-        Map.RenameArea(go.name, x, y, sizex, sizey);
 
 		Structure s = go.GetComponent<Structure>();
         if (s == null)
@@ -426,6 +425,9 @@ public class WorldController : MonoBehaviour {
         s.DisplayName = data.displayName;
         s.world = this;
         s.Activate();
+
+		//rename the area it takes up to its name
+		Map.RenameArea(go.name, x, y, sizex, sizey);
 
 		return s;
     }
@@ -660,6 +662,30 @@ public class WorldController : MonoBehaviour {
 			walkers += w + " ";
 
 		Debug.Log(walkers);
+	}
+
+	public void AssignArea(Structure s, int x, int y, int szx, int szy) {
+
+		if (StructureGrid == null)
+			StructureGrid = Map.size.CreateArrayOfSize<Structure>();
+		
+		for (int a = x; a < szx + x; a++) {
+			for (int b = y; b < szy + y; b++) {
+				StructureGrid[a, b] = s;
+			}
+		}
+	}
+
+	public void ClearArea(int x, int y, int szx, int szy) {
+
+		if (StructureGrid == null)
+			return;
+		
+		for (int a = x; a < szx + x; a++) {
+			for (int b = y; b < szy + y; b++) {
+				StructureGrid[a, b] = null;
+			}
+		}
 	}
 
 	public float GetObjectFloat(int x, int y) {
