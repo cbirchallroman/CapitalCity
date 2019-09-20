@@ -36,6 +36,7 @@ public class Structure : Obj {
 
     public int collapseRiskMax;
     public int fireRiskMax;
+	public bool Disaster { get; set; }
     public bool canBeDemolished = true;
     public bool radiusActive;
 	public bool autoRotate = true;
@@ -489,12 +490,14 @@ public class Structure : Obj {
 	public void Collapse() {
 
 		world.CollapseStructure(X, Y, Sizex, Sizey);
+		Disaster = true;
 
 	}
 
 	public void TurnToRubble() {
 
 		world.TurnToRubble(X, Y, Sizex, Sizey);
+		Disaster = true;
 
 	}
     

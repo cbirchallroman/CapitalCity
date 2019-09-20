@@ -208,6 +208,7 @@ public class Workplace : Structure {
 		if (!WorkerList.Contains(p))
 			Debug.LogError("Removing " + p + " who doesn't work at " + this);
 
+		p.workNode = p.unemploymentNode;
 		WorkerList.Remove(p);
 		CalculateWorkerEffectiveness();
 			

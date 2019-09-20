@@ -302,18 +302,31 @@ public class House : Structure {
 		base.UponDestruction();
 		scenario.RemoveHouseLevel(level - 1);
 
-		if (changingHouse)
-			return;
-
 		//ONLY DO THIS IF HOUSE IS NOT EVOLVING OR DEVOLVING
-		foreach (Prole mover in Residents) {
+		if (!changingHouse && !Disaster)
+			foreach (Prole mover in Residents) {
 
-			//p.QuitWork();
-			mover.personalSavings += Savings / Residents.Count;
-			immigration.TryEmigrant(mover);
-			population.RemoveProle(mover);
+				p.QuitWork();
+				mover.personalSavings += Savings / Residents.Count;
+				immigration.TryEmigrant(mover);
+				population.RemoveProle(mover);
+
+			}
+
+		else if (!changingHouse && Disaster) {
+
+			foreach (Prole p in Residents) {
+
+				//don't need them to evict the house because the house won't exist anymore and they'll be gone from other references
+				//	we can't call p.Kill() because that will try to spawn orphans and also try to search for the house through Find()
+				p.QuitWork();
+				population.RemoveProle(p);
+
+			}
 
 		}
+
+
 
 
 	}

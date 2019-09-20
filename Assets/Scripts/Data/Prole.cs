@@ -171,7 +171,7 @@ public class Prole : Person {
 	readonly int birthChanceMax = 10;
 	readonly int childrenMax = 4;
 
-	Node unemploymentNode = new Node(-1, -1);
+	public Node unemploymentNode { get { return new Node(-1, -1); } }
 
 	//add 10% death chance if diseased
 	//add 15% death chance if retired
@@ -389,7 +389,6 @@ public class Prole : Person {
             return;
 
         GameObject go = world.GetBuildingAt(workNode);
-		workNode = unemploymentNode;
 
 		if (go == null)
             Debug.LogError("Workplace at " + workNode + " for " + this + " does not exist");

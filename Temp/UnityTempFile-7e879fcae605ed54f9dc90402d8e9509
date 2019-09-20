@@ -1,0 +1,356 @@
+-debug
+-target:library
+-nowarn:0169
+-langversion:4
+-out:Temp/Assembly-CSharp.dll
+-nostdlib
+-r:"C:\Program Files\Unity\Editor\Data\Managed/UnityEngine/UnityEngine.dll"
+-r:"C:\Program Files\Unity\Editor\Data\Managed/UnityEngine/UnityEngine.AIModule.dll"
+-r:"C:\Program Files\Unity\Editor\Data\Managed/UnityEngine/UnityEngine.ARModule.dll"
+-r:"C:\Program Files\Unity\Editor\Data\Managed/UnityEngine/UnityEngine.AccessibilityModule.dll"
+-r:"C:\Program Files\Unity\Editor\Data\Managed/UnityEngine/UnityEngine.AnimationModule.dll"
+-r:"C:\Program Files\Unity\Editor\Data\Managed/UnityEngine/UnityEngine.AssetBundleModule.dll"
+-r:"C:\Program Files\Unity\Editor\Data\Managed/UnityEngine/UnityEngine.AudioModule.dll"
+-r:"C:\Program Files\Unity\Editor\Data\Managed/UnityEngine/UnityEngine.BaselibModule.dll"
+-r:"C:\Program Files\Unity\Editor\Data\Managed/UnityEngine/UnityEngine.ClothModule.dll"
+-r:"C:\Program Files\Unity\Editor\Data\Managed/UnityEngine/UnityEngine.CloudWebServicesModule.dll"
+-r:"C:\Program Files\Unity\Editor\Data\Managed/UnityEngine/UnityEngine.ClusterInputModule.dll"
+-r:"C:\Program Files\Unity\Editor\Data\Managed/UnityEngine/UnityEngine.ClusterRendererModule.dll"
+-r:"C:\Program Files\Unity\Editor\Data\Managed/UnityEngine/UnityEngine.CoreModule.dll"
+-r:"C:\Program Files\Unity\Editor\Data\Managed/UnityEngine/UnityEngine.CrashReportingModule.dll"
+-r:"C:\Program Files\Unity\Editor\Data\Managed/UnityEngine/UnityEngine.DirectorModule.dll"
+-r:"C:\Program Files\Unity\Editor\Data\Managed/UnityEngine/UnityEngine.FacebookModule.dll"
+-r:"C:\Program Files\Unity\Editor\Data\Managed/UnityEngine/UnityEngine.FileSystemHttpModule.dll"
+-r:"C:\Program Files\Unity\Editor\Data\Managed/UnityEngine/UnityEngine.GameCenterModule.dll"
+-r:"C:\Program Files\Unity\Editor\Data\Managed/UnityEngine/UnityEngine.GridModule.dll"
+-r:"C:\Program Files\Unity\Editor\Data\Managed/UnityEngine/UnityEngine.HotReloadModule.dll"
+-r:"C:\Program Files\Unity\Editor\Data\Managed/UnityEngine/UnityEngine.IMGUIModule.dll"
+-r:"C:\Program Files\Unity\Editor\Data\Managed/UnityEngine/UnityEngine.ImageConversionModule.dll"
+-r:"C:\Program Files\Unity\Editor\Data\Managed/UnityEngine/UnityEngine.InputModule.dll"
+-r:"C:\Program Files\Unity\Editor\Data\Managed/UnityEngine/UnityEngine.JSONSerializeModule.dll"
+-r:"C:\Program Files\Unity\Editor\Data\Managed/UnityEngine/UnityEngine.LocalizationModule.dll"
+-r:"C:\Program Files\Unity\Editor\Data\Managed/UnityEngine/UnityEngine.ParticleSystemModule.dll"
+-r:"C:\Program Files\Unity\Editor\Data\Managed/UnityEngine/UnityEngine.PerformanceReportingModule.dll"
+-r:"C:\Program Files\Unity\Editor\Data\Managed/UnityEngine/UnityEngine.PhysicsModule.dll"
+-r:"C:\Program Files\Unity\Editor\Data\Managed/UnityEngine/UnityEngine.Physics2DModule.dll"
+-r:"C:\Program Files\Unity\Editor\Data\Managed/UnityEngine/UnityEngine.ProfilerModule.dll"
+-r:"C:\Program Files\Unity\Editor\Data\Managed/UnityEngine/UnityEngine.ScreenCaptureModule.dll"
+-r:"C:\Program Files\Unity\Editor\Data\Managed/UnityEngine/UnityEngine.SharedInternalsModule.dll"
+-r:"C:\Program Files\Unity\Editor\Data\Managed/UnityEngine/UnityEngine.SpriteMaskModule.dll"
+-r:"C:\Program Files\Unity\Editor\Data\Managed/UnityEngine/UnityEngine.SpriteShapeModule.dll"
+-r:"C:\Program Files\Unity\Editor\Data\Managed/UnityEngine/UnityEngine.StreamingModule.dll"
+-r:"C:\Program Files\Unity\Editor\Data\Managed/UnityEngine/UnityEngine.StyleSheetsModule.dll"
+-r:"C:\Program Files\Unity\Editor\Data\Managed/UnityEngine/UnityEngine.SubstanceModule.dll"
+-r:"C:\Program Files\Unity\Editor\Data\Managed/UnityEngine/UnityEngine.TLSModule.dll"
+-r:"C:\Program Files\Unity\Editor\Data\Managed/UnityEngine/UnityEngine.TerrainModule.dll"
+-r:"C:\Program Files\Unity\Editor\Data\Managed/UnityEngine/UnityEngine.TerrainPhysicsModule.dll"
+-r:"C:\Program Files\Unity\Editor\Data\Managed/UnityEngine/UnityEngine.TextRenderingModule.dll"
+-r:"C:\Program Files\Unity\Editor\Data\Managed/UnityEngine/UnityEngine.TilemapModule.dll"
+-r:"C:\Program Files\Unity\Editor\Data\Managed/UnityEngine/UnityEngine.TimelineModule.dll"
+-r:"C:\Program Files\Unity\Editor\Data\Managed/UnityEngine/UnityEngine.UIModule.dll"
+-r:"C:\Program Files\Unity\Editor\Data\Managed/UnityEngine/UnityEngine.UIElementsModule.dll"
+-r:"C:\Program Files\Unity\Editor\Data\Managed/UnityEngine/UnityEngine.UNETModule.dll"
+-r:"C:\Program Files\Unity\Editor\Data\Managed/UnityEngine/UnityEngine.UmbraModule.dll"
+-r:"C:\Program Files\Unity\Editor\Data\Managed/UnityEngine/UnityEngine.UnityAnalyticsModule.dll"
+-r:"C:\Program Files\Unity\Editor\Data\Managed/UnityEngine/UnityEngine.UnityConnectModule.dll"
+-r:"C:\Program Files\Unity\Editor\Data\Managed/UnityEngine/UnityEngine.UnityWebRequestModule.dll"
+-r:"C:\Program Files\Unity\Editor\Data\Managed/UnityEngine/UnityEngine.UnityWebRequestAssetBundleModule.dll"
+-r:"C:\Program Files\Unity\Editor\Data\Managed/UnityEngine/UnityEngine.UnityWebRequestAudioModule.dll"
+-r:"C:\Program Files\Unity\Editor\Data\Managed/UnityEngine/UnityEngine.UnityWebRequestTextureModule.dll"
+-r:"C:\Program Files\Unity\Editor\Data\Managed/UnityEngine/UnityEngine.UnityWebRequestWWWModule.dll"
+-r:"C:\Program Files\Unity\Editor\Data\Managed/UnityEngine/UnityEngine.VRModule.dll"
+-r:"C:\Program Files\Unity\Editor\Data\Managed/UnityEngine/UnityEngine.VehiclesModule.dll"
+-r:"C:\Program Files\Unity\Editor\Data\Managed/UnityEngine/UnityEngine.VideoModule.dll"
+-r:"C:\Program Files\Unity\Editor\Data\Managed/UnityEngine/UnityEngine.WindModule.dll"
+-r:"C:\Program Files\Unity\Editor\Data\Managed/UnityEngine/UnityEngine.XRModule.dll"
+-r:"C:\Program Files\Unity\Editor\Data\Managed/UnityEditor.dll"
+-r:"C:\Program Files\Unity\Editor\Data\Managed/Unity.Locator.dll"
+-r:Library/ScriptAssemblies/Assembly-CSharp-firstpass.dll
+-r:Library/ScriptAssemblies/UnityEditor.StandardEvents.dll
+-r:Library/ScriptAssemblies/Unity.TextMeshPro.Editor.dll
+-r:Library/ScriptAssemblies/Unity.PackageManagerUI.Editor.dll
+-r:Library/ScriptAssemblies/Unity.TextMeshPro.dll
+-r:"C:/Program Files/Unity/Editor/Data/UnityExtensions/Unity/GUISystem/UnityEngine.UI.dll"
+-r:"C:/Program Files/Unity/Editor/Data/UnityExtensions/Unity/Timeline/RuntimeEditor/UnityEngine.Timeline.dll"
+-r:"C:/Program Files/Unity/Editor/Data/UnityExtensions/Unity/Networking/UnityEngine.Networking.dll"
+-r:"C:/Program Files/Unity/Editor/Data/UnityExtensions/Unity/UnityGoogleAudioSpatializer/RuntimeEditor/UnityEngine.GoogleAudioSpatializer.dll"
+-r:"C:/Program Files/Unity/Editor/Data/UnityExtensions/Unity/UnityHoloLens/RuntimeEditor/UnityEngine.HoloLens.dll"
+-r:"C:/Program Files/Unity/Editor/Data/UnityExtensions/Unity/UnitySpatialTracking/RuntimeEditor/UnityEngine.SpatialTracking.dll"
+-r:C:/Users/ambit/AppData/Local/Unity/cache/packages/packages.unity.com/com.unity.analytics@2.0.16/UnityEngine.Analytics.dll
+-r:C:/Users/ambit/AppData/Local/Unity/cache/packages/packages.unity.com/com.unity.standardevents@1.0.13/UnityEngine.StandardEvents.dll
+-r:"C:\Program Files\Unity\Editor\Data\MonoBleedingEdge\lib\mono\unity\mscorlib.dll"
+-r:"C:\Program Files\Unity\Editor\Data\MonoBleedingEdge\lib\mono\unity\System.dll"
+-r:"C:\Program Files\Unity\Editor\Data\MonoBleedingEdge\lib\mono\unity\System.Core.dll"
+-r:"C:\Program Files\Unity\Editor\Data\MonoBleedingEdge\lib\mono\unity\System.Runtime.Serialization.dll"
+-r:"C:\Program Files\Unity\Editor\Data\MonoBleedingEdge\lib\mono\unity\System.Xml.dll"
+-r:"C:\Program Files\Unity\Editor\Data\MonoBleedingEdge\lib\mono\unity\System.Xml.Linq.dll"
+-r:"C:\Program Files\Unity\Editor\Data\MonoBleedingEdge\lib\mono\unity\UnityScript.dll"
+-r:"C:\Program Files\Unity\Editor\Data\MonoBleedingEdge\lib\mono\unity\UnityScript.Lang.dll"
+-r:"C:\Program Files\Unity\Editor\Data\MonoBleedingEdge\lib\mono\unity\Boo.Lang.dll"
+-define:UNITY_5_3_OR_NEWER
+-define:UNITY_5_4_OR_NEWER
+-define:UNITY_5_5_OR_NEWER
+-define:UNITY_5_6_OR_NEWER
+-define:UNITY_2017_1_OR_NEWER
+-define:UNITY_2017_2_OR_NEWER
+-define:UNITY_2017_3_OR_NEWER
+-define:UNITY_2017_4_OR_NEWER
+-define:UNITY_2018_1_OR_NEWER
+-define:UNITY_2018_2_OR_NEWER
+-define:UNITY_2018_2_4
+-define:UNITY_2018_2
+-define:UNITY_2018
+-define:PLATFORM_ARCH_64
+-define:UNITY_64
+-define:UNITY_ANALYTICS
+-define:ENABLE_AUDIO
+-define:ENABLE_CACHING
+-define:ENABLE_CLOTH
+-define:ENABLE_DUCK_TYPING
+-define:ENABLE_MICROPHONE
+-define:ENABLE_MULTIPLE_DISPLAYS
+-define:ENABLE_PHYSICS
+-define:ENABLE_SPRITES
+-define:ENABLE_GRID
+-define:ENABLE_TILEMAP
+-define:ENABLE_TERRAIN
+-define:ENABLE_TEXTURE_STREAMING
+-define:ENABLE_DIRECTOR
+-define:ENABLE_UNET
+-define:ENABLE_LZMA
+-define:ENABLE_UNITYEVENTS
+-define:ENABLE_WEBCAM
+-define:ENABLE_WWW
+-define:ENABLE_CLOUD_SERVICES_COLLAB
+-define:ENABLE_CLOUD_SERVICES_COLLAB_SOFTLOCKS
+-define:ENABLE_CLOUD_SERVICES_ADS
+-define:ENABLE_CLOUD_HUB
+-define:ENABLE_CLOUD_PROJECT_ID
+-define:ENABLE_CLOUD_SERVICES_USE_WEBREQUEST
+-define:ENABLE_CLOUD_SERVICES_UNET
+-define:ENABLE_CLOUD_SERVICES_BUILD
+-define:ENABLE_CLOUD_LICENSE
+-define:ENABLE_EDITOR_HUB
+-define:ENABLE_EDITOR_HUB_LICENSE
+-define:ENABLE_WEBSOCKET_CLIENT
+-define:ENABLE_DIRECTOR_AUDIO
+-define:ENABLE_DIRECTOR_TEXTURE
+-define:ENABLE_TIMELINE
+-define:ENABLE_EDITOR_METRICS
+-define:ENABLE_EDITOR_METRICS_CACHING
+-define:ENABLE_MANAGED_JOBS
+-define:ENABLE_MANAGED_TRANSFORM_JOBS
+-define:ENABLE_MANAGED_ANIMATION_JOBS
+-define:INCLUDE_DYNAMIC_GI
+-define:INCLUDE_GI
+-define:ENABLE_MONO_BDWGC
+-define:PLATFORM_SUPPORTS_MONO
+-define:RENDER_SOFTWARE_CURSOR
+-define:INCLUDE_PUBNUB
+-define:ENABLE_VIDEO
+-define:ENABLE_PACKMAN
+-define:ENABLE_CUSTOM_RENDER_TEXTURE
+-define:ENABLE_LOCALIZATION
+-define:PLATFORM_STANDALONE_WIN
+-define:PLATFORM_STANDALONE
+-define:UNITY_STANDALONE_WIN
+-define:UNITY_STANDALONE
+-define:ENABLE_SUBSTANCE
+-define:ENABLE_RUNTIME_GI
+-define:ENABLE_MOVIES
+-define:ENABLE_NETWORK
+-define:ENABLE_CRUNCH_TEXTURE_COMPRESSION
+-define:ENABLE_UNITYWEBREQUEST
+-define:ENABLE_CLOUD_SERVICES
+-define:ENABLE_CLOUD_SERVICES_ANALYTICS
+-define:ENABLE_CLOUD_SERVICES_PURCHASING
+-define:ENABLE_CLOUD_SERVICES_CRASH_REPORTING
+-define:ENABLE_OUT_OF_PROCESS_CRASH_HANDLER
+-define:ENABLE_EVENT_QUEUE
+-define:ENABLE_CLUSTER_SYNC
+-define:ENABLE_CLUSTERINPUT
+-define:ENABLE_VR
+-define:ENABLE_AR
+-define:ENABLE_WEBSOCKET_HOST
+-define:ENABLE_MONO
+-define:NET_2_0_SUBSET
+-define:ENABLE_PROFILER
+-define:DEBUG
+-define:TRACE
+-define:UNITY_ASSERTIONS
+-define:UNITY_EDITOR
+-define:UNITY_EDITOR_64
+-define:UNITY_EDITOR_WIN
+-define:ENABLE_UNITY_COLLECTIONS_CHECKS
+-define:ENABLE_BURST_AOT
+-define:UNITY_TEAM_LICENSE
+-define:CROSS_PLATFORM_INPUT
+Assets/MinimapController.cs
+Assets/Scripts/Controllers/ActionController.cs
+Assets/Scripts/Controllers/AudioController.cs
+Assets/Scripts/Controllers/CameraController.cs
+Assets/Scripts/Controllers/DifficultyController.cs
+Assets/Scripts/Controllers/DiplomacyController.cs
+Assets/Scripts/Controllers/HappinessController.cs
+Assets/Scripts/Controllers/ImmigrationController.cs
+Assets/Scripts/Controllers/InputController.cs
+Assets/Scripts/Controllers/ModeController.cs
+Assets/Scripts/Controllers/MoneyController.cs
+Assets/Scripts/Controllers/MouseController.cs
+Assets/Scripts/Controllers/MusicController.cs
+Assets/Scripts/Controllers/NotificationController.cs
+Assets/Scripts/Controllers/PopulationController.cs
+Assets/Scripts/Controllers/ProductivityController.cs
+Assets/Scripts/Controllers/ResearchController.cs
+Assets/Scripts/Controllers/SaveController.cs
+Assets/Scripts/Controllers/ScenarioController.cs
+Assets/Scripts/Controllers/StartScreenMenu.cs
+Assets/Scripts/Controllers/TimeController.cs
+Assets/Scripts/Controllers/TradeController.cs
+Assets/Scripts/Controllers/UIObjectDatabase.cs
+Assets/Scripts/Controllers/WorldController.cs
+Assets/Scripts/Data/Campaign.cs
+Assets/Scripts/Data/City.cs
+Assets/Scripts/Data/DictContainer.cs
+Assets/Scripts/Data/GameFile.cs
+Assets/Scripts/Data/Inventory.cs
+Assets/Scripts/Data/ItemOrder.cs
+Assets/Scripts/Data/Machine.cs
+Assets/Scripts/Data/Node.cs
+Assets/Scripts/Data/Prole.cs
+Assets/Scripts/Data/Quarter.cs
+Assets/Scripts/Data/ResourceData.cs
+Assets/Scripts/Data/StructureData.cs
+Assets/Scripts/Data/Technology.cs
+Assets/Scripts/Data/WalkerData.cs
+Assets/Scripts/Data/WalkerGrid.cs
+Assets/Scripts/Data/WorldGenerator.cs
+Assets/Scripts/Serialization/WorldSave.cs
+Assets/Scripts/Static/CampaignManager.cs
+Assets/Scripts/Static/Difficulty.cs
+Assets/Scripts/Static/Enums.cs
+Assets/Scripts/Static/MachineDatabase.cs
+Assets/Scripts/Static/ResourcesDatabase.cs
+Assets/Scripts/Static/SaveLoadGame.cs
+Assets/Scripts/Static/Settings.cs
+Assets/Scripts/Static/StructureDatabase.cs
+Assets/Scripts/Static/WalkerDatabase.cs
+Assets/Scripts/Tilemap/MeshCombiner.cs
+Assets/Scripts/Tilemap/TileMap.cs
+Assets/Scripts/UI/ActionButton.cs
+Assets/Scripts/UI/ActionEnabler.cs
+Assets/Scripts/UI/ActionSelecterController.cs
+Assets/Scripts/UI/BackgroundToggler.cs
+Assets/Scripts/UI/CalendarUI.cs
+Assets/Scripts/UI/CampaignSelectMenu.cs
+Assets/Scripts/UI/CampaignUI.cs
+Assets/Scripts/UI/CityButton.cs
+Assets/Scripts/UI/DiplomacyMenu.cs
+Assets/Scripts/UI/EscapeMenuController.cs
+Assets/Scripts/UI/FinanceMenu.cs
+Assets/Scripts/UI/HouseWindow.cs
+Assets/Scripts/UI/IngredientInfo.cs
+Assets/Scripts/UI/ItemValueUI.cs
+Assets/Scripts/UI/LevelSelecterController.cs
+Assets/Scripts/UI/LoadFreshMap.cs
+Assets/Scripts/UI/LoadGameFileButton.cs
+Assets/Scripts/UI/LoadScenarioButton.cs
+Assets/Scripts/UI/MapSaveListGenerator.cs
+Assets/Scripts/UI/MarketValueUI.cs
+Assets/Scripts/UI/MenuController.cs
+Assets/Scripts/UI/Notifications.cs
+Assets/Scripts/UI/NotificationUI.cs
+Assets/Scripts/UI/ObjWindows/GeneratorWindow.cs
+Assets/Scripts/UI/ObjWindows/JobcentreWindow.cs
+Assets/Scripts/UI/ObjWindows/ObjWindow.cs
+Assets/Scripts/UI/ObjWindows/ProleInfo.cs
+Assets/Scripts/UI/ObjWindows/ProspectInfo.cs
+Assets/Scripts/UI/ObjWindows/StorageItem_adv.cs
+Assets/Scripts/UI/ObjWindows/StorageItem_smpl.cs
+Assets/Scripts/UI/ObjWindows/StorageWindow.cs
+Assets/Scripts/UI/ObjWindows/WorkplaceMonthScheduler.cs
+Assets/Scripts/UI/ObjWindows/WorkplaceWindow.cs
+Assets/Scripts/UI/OpenEscapeMenu.cs
+Assets/Scripts/UI/PausePlay.cs
+Assets/Scripts/UI/QuarterlyReport.cs
+Assets/Scripts/UI/ScenarioGoal.cs
+Assets/Scripts/UI/ScenarioInfo.cs
+Assets/Scripts/UI/TooltipController.cs
+Assets/Scripts/UI/TradeDeal.cs
+Assets/Scripts/UI/TutorialContent/Imagebox.cs
+Assets/Scripts/UI/TutorialContent/Textbox.cs
+Assets/Scripts/UI/TutorialController.cs
+Assets/Scripts/UI/WindowDrag.cs
+Assets/Scripts/UI/WorkplaceList.cs
+Assets/Scripts/UI/WorkplaceListItem.cs
+"Assets/Scripts/Utilities/Priority Queue/FastPriorityQueue.cs"
+"Assets/Scripts/Utilities/Priority Queue/FastPriorityQueueNode.cs"
+"Assets/Scripts/Utilities/Priority Queue/GenericPriorityQueue.cs"
+"Assets/Scripts/Utilities/Priority Queue/GenericPriorityQueueNode.cs"
+"Assets/Scripts/Utilities/Priority Queue/IFixedSizePriorityQueue.cs"
+"Assets/Scripts/Utilities/Priority Queue/IPriorityQueue.cs"
+"Assets/Scripts/Utilities/Priority Queue/Properties/AssemblyInfo.cs"
+"Assets/Scripts/Utilities/Priority Queue/SimplePriorityQueue.cs"
+"Assets/Scripts/Utilities/Priority Queue/StablePriorityQueue.cs"
+"Assets/Scripts/Utilities/Priority Queue/StablePriorityQueueNode.cs"
+Assets/Scripts/Utilities/SimplePool.cs
+Assets/Scripts/Utilities/UsefulThings.cs
+Assets/Scripts/World/Obj.cs
+Assets/Scripts/World/Pathfinder.cs
+Assets/Scripts/World/RandomModel.cs
+Assets/Scripts/World/StorageBlock.cs
+Assets/Scripts/World/Structures/Canal.cs
+Assets/Scripts/World/Structures/ConstructionSite.cs
+Assets/Scripts/World/Structures/Cottage.cs
+Assets/Scripts/World/Structures/Crop.cs
+Assets/Scripts/World/Structures/CulturalVenue.cs
+Assets/Scripts/World/Structures/Distributer.cs
+Assets/Scripts/World/Structures/EmptyLot.cs
+Assets/Scripts/World/Structures/Farmhouse.cs
+Assets/Scripts/World/Structures/Fence.cs
+Assets/Scripts/World/Structures/Generator.cs
+Assets/Scripts/World/Structures/House.cs
+Assets/Scripts/World/Structures/InspectorsTower.cs
+Assets/Scripts/World/Structures/Jobcentre.cs
+Assets/Scripts/World/Structures/LoggingCamp.cs
+Assets/Scripts/World/Structures/ResearchLab.cs
+Assets/Scripts/World/Structures/Road.cs
+Assets/Scripts/World/Structures/Roadblock.cs
+Assets/Scripts/World/Structures/RubbleOnFire.cs
+Assets/Scripts/World/Structures/Stable.cs
+Assets/Scripts/World/Structures/StorageBuilding.cs
+Assets/Scripts/World/Structures/Structure.cs
+Assets/Scripts/World/Structures/TiledStructure.cs
+Assets/Scripts/World/Structures/Well.cs
+Assets/Scripts/World/Structures/Workplace.cs
+Assets/Scripts/World/Structures/WTP.cs
+Assets/Scripts/World/Tile.cs
+Assets/Scripts/World/Walkers/Actors/Actor.cs
+Assets/Scripts/World/Walkers/Actors/Fireman.cs
+Assets/Scripts/World/Walkers/Actors/Lumberjack.cs
+Assets/Scripts/World/Walkers/Animals/Animal.cs
+Assets/Scripts/World/Walkers/Animals/FishingBoat.cs
+Assets/Scripts/World/Walkers/Animals/Livestock.cs
+Assets/Scripts/World/Walkers/Carryers/Caravan.cs
+Assets/Scripts/World/Walkers/Carryers/Carryer.cs
+Assets/Scripts/World/Walkers/Carryers/ExporterCaravan.cs
+Assets/Scripts/World/Walkers/Carryers/GetterCart.cs
+Assets/Scripts/World/Walkers/Carryers/GiverCart.cs
+Assets/Scripts/World/Walkers/Carryers/ImporterCaravan.cs
+Assets/Scripts/World/Walkers/Emigrant.cs
+Assets/Scripts/World/Walkers/Follower.cs
+Assets/Scripts/World/Walkers/Immigrant.cs
+Assets/Scripts/World/Walkers/Random/Architect.cs
+Assets/Scripts/World/Walkers/Random/CottageVender.cs
+Assets/Scripts/World/Walkers/Random/Healer.cs
+Assets/Scripts/World/Walkers/Random/Inspector.cs
+Assets/Scripts/World/Walkers/Random/Mechanic.cs
+Assets/Scripts/World/Walkers/Random/RandomWalker.cs
+Assets/Scripts/World/Walkers/Random/ShopVender.cs
+Assets/Scripts/World/Walkers/Random/StreetSweeper.cs
+Assets/Scripts/World/Walkers/Random/Vender.cs
+Assets/Scripts/World/Walkers/Random/WellWalker.cs
+Assets/Scripts/World/Walkers/Test.cs
+Assets/Scripts/World/Walkers/Walker.cs
+Assets/Scripts/World/World.cs
+-lib:"C:\Program Files\Unity\Editor\Data\MonoBleedingEdge\lib\mono\unity"
