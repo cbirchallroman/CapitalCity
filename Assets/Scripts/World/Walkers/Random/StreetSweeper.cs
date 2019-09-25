@@ -9,7 +9,7 @@ public class StreetSweeper : RandomWalker {
     public override void VisitBuildings() {
         for (int a = X - radiusOfInfluence; a <= X + radiusOfInfluence; a++)
             for (int b = Y - radiusOfInfluence; b <= Y + radiusOfInfluence; b++)
-                if (world.Map.IsBuildingAt(a, b))
+                if (world.IsBuildingAt(a, b))
                     VisitBuilding(a, b);
 
     }
@@ -18,7 +18,7 @@ public class StreetSweeper : RandomWalker {
 
         base.VisitBuilding(a, b);
 
-        if (!world.Map.IsUnblockedRoadAt(a, b))
+        if (!world.IsUnblockedRoadAt(a, b))
             return;
 
         world.Map.cleanliness[a, b] -= (int)(cleanRate * ((Workplace)Origin).WorkerEffectiveness);

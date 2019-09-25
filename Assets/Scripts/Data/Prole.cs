@@ -279,7 +279,7 @@ public class Prole : Person {
 		//quit work if too old
 		if (Retired && Employed) {
 
-			GameObject go = world.GetBuildingAt(workNode);
+			Structure go = world.GetBuildingAt(workNode);
 			workNode = unemploymentNode;
 
 			if (go == null)
@@ -307,7 +307,7 @@ public class Prole : Person {
 		//get death message for workplace accident
 		else if(roll <= DeathChanceFromAge + DeathChanceFromDisease + WorkDeathRisk() && Employed) {
 
-			GameObject go = world.GetBuildingAt(workNode);
+			Structure go = world.GetBuildingAt(workNode);
 
 			if (go == null)
 				Debug.LogError("Workplace at " + workNode + " for " + this + " does not exist");
@@ -355,19 +355,19 @@ public class Prole : Person {
 	public bool CheckExistence() {
 
         bool kill = false;
-        string h = world.GetBuildingNameAt(homeNode);
+        Structure h = world.GetBuildingAt(homeNode);
 
         if (h == null) {
             kill = true;
             return !kill;
         }
 
-        if (!h.Contains("House")) {
+        if (!h.name.Contains("House")) {
             kill = true;
             return !kill;
         }
 
-        House house = world.GetBuildingAt(homeNode).GetComponent<House>();
+        House house = h.GetComponent<House>();
 
         if (!house.Residents.Contains(this))
             kill = true;
@@ -384,7 +384,7 @@ public class Prole : Person {
         if (!Employed)
             return;
 
-        GameObject go = world.GetBuildingAt(workNode);
+        Structure go = world.GetBuildingAt(workNode);
 
 		if (go == null)
             return;
@@ -399,7 +399,7 @@ public class Prole : Person {
 		if (Homeless)
 			return;
 
-		GameObject go = world.GetBuildingAt(homeNode);
+		Structure go = world.GetBuildingAt(homeNode);
 		homeNode = unemploymentNode;
 
 		if (go == null)
@@ -426,7 +426,7 @@ public class Prole : Person {
 
     public void PayWages(float wages) {
 
-        GameObject go = world.GetBuildingAt(homeNode);
+        Structure go = world.GetBuildingAt(homeNode);
 
         if (go == null)
             Debug.LogError(this + " does not have a house at " + homeNode + " anymore");
@@ -441,7 +441,7 @@ public class Prole : Person {
 		if (!Employed)
 			return 0;
 
-		GameObject go = world.GetBuildingAt(workNode);
+		Structure go = world.GetBuildingAt(workNode);
 
 		if (go == null)
 			return 0;

@@ -200,7 +200,7 @@ public class ImmigrationController : MonoBehaviour {
 		//by the way: it's way easier to deal with the starting point as a node than a structure, especially because we don't need to know where the immigrant came from
 		//	no matter how weird that we instantiate 'end' here but not 'start'
 		
-		Queue<Node> path = new Pathfinder(worldController.Map).FindPath(start, new Node(requester), "Immigrant");
+		Queue<Node> path = new Pathfinder(worldController).FindPath(start, new Node(requester), "Immigrant");
 		if (path.Count == 0)
 			return;
 
@@ -272,7 +272,7 @@ public class ImmigrationController : MonoBehaviour {
 
 		Node end = new Node(mapEntrance.GetComponent<Structure>());
 
-		Queue<Node> path = new Pathfinder(worldController.Map).FindPath(start, end, "Emigrant");
+		Queue<Node> path = new Pathfinder(worldController).FindPath(start, end, "Emigrant");
 		if (path.Count == 0)
 			return;
 

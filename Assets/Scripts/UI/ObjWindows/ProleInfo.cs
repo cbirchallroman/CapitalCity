@@ -49,7 +49,7 @@ public class ProleInfo : MonoBehaviour {
 		if (homeNode == null)
 			return;
 
-		GameObject go = WP.world.Map.GetBuildingAt(homeNode);
+		Structure go = WP.world.GetBuildingAt(homeNode);
 		WP.world.MoveMainCameraTo(go.GetComponent<Obj>());
 		go.GetComponent<Obj>().OpenWindow();
 

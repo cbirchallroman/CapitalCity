@@ -57,9 +57,9 @@ public class Farmhouse : Workplace {
 
         for (int a = X - radiusOfInfluence; a < X + Sizex + radiusOfInfluence && numPlots > 0; a++)
             for (int b = Y - radiusOfInfluence; b < Y + Sizey + radiusOfInfluence; b++)
-                if (world.Map.IsBuildingAt(a, b) && !world.Map.IsRoadAt(a, b)) {
+                if (world.IsBuildingAt(a, b) && !world.IsRoadAt(a, b)) {
 
-                    if (world.Map.GetBuildingNameAt(a, b) == name)
+                    if (world.GetBuildingAt(a, b) == this)
                         continue;
                     VisitBuilding(a, b);
                     numPlots--;

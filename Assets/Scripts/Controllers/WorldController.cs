@@ -291,11 +291,11 @@ public class WorldController : MonoBehaviour {
 					if (roads[m, n] == 1) {
 
 						//if no structure at all, return false
-						if (string.IsNullOrEmpty(Map.structures[a, b]))
+						if (GetBuildingAt(a, b) == null)
 							return false;
 
 						//else if there's not a road here or it does not contain "Road", return false
-						else if (Map.roads[a, b] != 2 || !Map.GetBuildingNameAt(a, b).Contains("Road_"))
+						else if (Map.roads[a, b] != 2 || !GetBuildingNameAt(a, b).Contains("Road_"))
 							return false;
 
 					}
@@ -303,7 +303,7 @@ public class WorldController : MonoBehaviour {
 				}
 
 				//else if there's a structure on this tile when there shouldn't be
-				else if (!string.IsNullOrEmpty(Map.structures[a, b])) {
+				else if (GetBuildingAt(a, b) != null) {
 					return false;
 				}
 
@@ -414,10 +414,15 @@ public class WorldController : MonoBehaviour {
         if (data.builtOnce)
             go.name = type;
 
-
+		//get structure component
 		Structure s = go.GetComponent<Structure>();
-        if (s == null)
-            Debug.LogError(type + " has no structure component");
+		if (s == null)
+			Debug.LogError(type + " has no structure component");
+
+		//assign area to structure
+		AssignArea(s, x, y, sizex, sizey);
+
+		//set structure 
         s.X = x;
         s.Y = y;
         s.Sizex = sizex;
@@ -426,8 +431,6 @@ public class WorldController : MonoBehaviour {
         s.world = this;
         s.Activate();
 
-		//rename the area it takes up to its name
-		Map.RenameArea(go.name, x, y, sizex, sizey);
 
 		return s;
     }
@@ -457,7 +460,8 @@ public class WorldController : MonoBehaviour {
         y = s.Y;
 
         s.DeleteDesirability();
-        Map.RenameArea(null, x, y, sizex, sizey);
+		//clear area
+		ClearArea(x, y, sizex, sizey);
         Destroy(s.gameObject);
 
     }
@@ -503,7 +507,7 @@ public class WorldController : MonoBehaviour {
 	
 	public void CatchOnFire(int x, int y, int sizex, int sizey) {
 
-		string str = Map.GetBuildingNameAt(x, y);
+		string str = GetBuildingNameAt(x, y);
 		Destroy(x, y);
 		for (int a = x; a < x + sizex; a++)
 			for (int b = y; b < y + sizey; b++) {
@@ -517,7 +521,7 @@ public class WorldController : MonoBehaviour {
 
 	public void CollapseStructure(int x, int y, int sizex, int sizey) {
 
-		string str = Map.GetBuildingNameAt(x, y);
+		string str = GetBuildingNameAt(x, y);
 		Notification n = new Notification(NotificationType.Issue, str + " collapsed!", x, y, timeController);
 		notifications.NewNotification(n);
 
@@ -664,7 +668,8 @@ public class WorldController : MonoBehaviour {
 
 		if (StructureGrid == null)
 			StructureGrid = Map.size.CreateArrayOfSize<Structure>();
-		
+
+		StructureGrid[x, y] = s;
 		for (int a = x; a < szx + x; a++) {
 			for (int b = y; b < szy + y; b++) {
 				StructureGrid[a, b] = s;
@@ -674,30 +679,28 @@ public class WorldController : MonoBehaviour {
 
 	public void ClearArea(int x, int y, int szx, int szy) {
 
-		if (StructureGrid == null)
-			return;
-		
-		for (int a = x; a < szx + x; a++) {
-			for (int b = y; b < szy + y; b++) {
-				StructureGrid[a, b] = null;
-			}
-		}
+		AssignArea(null, x, y, szx, szy);
+
 	}
 
 	public bool IsBuildingAt(int x, int y) {
 
+		if (Map.OutOfBounds(x, y))
+			return false;
 		return GetBuildingAt(x, y) != null;
 
 	}
 
 	public Structure GetBuildingAt(int x, int y) {
 
+		if (StructureGrid == null)
+			return null;
 		return StructureGrid[x, y];
 
 	}
 
 	public Structure GetBuildingAt(Node n) {
-
+		
 		return GetBuildingAt(n.x, n.y);
 
 	}
@@ -785,6 +788,47 @@ public class WorldController : MonoBehaviour {
 
 		return fert;
 
+	}
+
+	public bool IsRoadAt(int x, int y) {
+
+		if (Map.OutOfBounds(x, y))
+			return false;
+
+		return Map.roads[x, y] > 0;
+
+	}
+
+	public bool IsUnblockedRoadAt(int x, int y) {
+
+		if (Map.OutOfBounds(x, y))
+			return false;
+
+		if (IsBuildingAt(x, y))
+			if (GetBuildingNameAt(x, y).Contains("Ramp"))
+				return false;
+
+		return Map.roads[x, y] == 2;
+
+	}
+
+	public bool IsRoadblockAt(int x, int y) {
+
+		if (Map.OutOfBounds(x, y))
+			return false;
+
+		return Map.roads[x, y] == 1;
+
+	}
+
+	public int TileCost(int x, int y) {
+		if (IsRoadAt(x, y))
+			return 1;
+		return 2;
+	}
+
+	public int TileCost(Node n) {
+		return TileCost(n.x, n.y);
 	}
 
 	public float GetObjectFloat(int x, int y) {

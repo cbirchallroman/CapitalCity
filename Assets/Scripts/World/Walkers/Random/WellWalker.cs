@@ -72,7 +72,7 @@ public class WellWalker : RandomWalker {
 
         string spot = X + "_" + Y;
 
-        if (!world.Map.IsUnblockedRoadAt(X, Y) || VisitedSpots.Contains(spot))
+        if (!world.IsUnblockedRoadAt(X, Y) || VisitedSpots.Contains(spot))
             return;
 
         VisitedSpots.Add(spot);

@@ -108,7 +108,7 @@ public class TradeController : MonoBehaviour {
 
 			//find a path, continue only if it exists
 			string caravanName = import ? "Importer" : "Exporter";
-			Queue<Node> path = new Pathfinder(worldController.Map).FindPath(start, exits, caravanName);
+			Queue<Node> path = new Pathfinder(worldController).FindPath(start, exits, caravanName);
 			if (path.Count == 0)
 				continue;
 

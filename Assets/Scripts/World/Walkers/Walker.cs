@@ -156,9 +156,9 @@ public class Walker : Obj {
 
 		//retrieve origin and destination structures
 		if (w.origin != null)
-            Origin = GameObject.Find(world.Map.GetBuildingNameAt(w.origin)).GetComponent<Structure>();
+            Origin = world.GetBuildingAt(w.origin);
         if (w.destination != null)
-            Destination = GameObject.Find(world.Map.GetBuildingNameAt(w.destination)).GetComponent<Structure>();
+            Destination = world.GetBuildingAt(w.destination);
         
         Stuck = w.stuck;
         SpawnedFollower = w.SpawnedFollower;

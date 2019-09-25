@@ -4,12 +4,12 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class Pathfinder {
+	
+	public WorldController wc;
 
-    public World map;
+    public Pathfinder(WorldController w) {
 
-    public Pathfinder(World w) {
-
-        map = w;
+        wc = w;
 
     }
 
@@ -59,7 +59,7 @@ public class Pathfinder {
 		}
 
 		//create path of nodes and array of visited nodes
-		bool[,] visited = map.size.CreateArrayOfSize<bool>();
+		bool[,] visited = wc.Map.size.CreateArrayOfSize<bool>();
 
 		//while there are unvisited nodes in the queue
 		while (queue.Count != 0) {
@@ -91,7 +91,7 @@ public class Pathfinder {
 				//g is equal to node's gScore plus neighbor's tile cost (Shortest distance from start)
 				//h is estimated distance from neighbor to goal (heuristic)
 				//f is g + h (priority)
-				float g = G_scores[current] + map.TileCost(neighbor);
+				float g = G_scores[current] + wc.TileCost(neighbor);
 				float h = neighbor.DistanceTo(goal, true);
 				float f = g + h;
 
@@ -161,7 +161,7 @@ public class Pathfinder {
     public bool CanGoTo(int a, int b, int currx, int curry, WalkerData walker) {
 
 		//if out of bounds, can't go
-		if (map.OutOfBounds(a, b))
+		if (wc.Map.OutOfBounds(a, b))
 			return false;
 		
 		//if road-only walker, check for roadblocks
@@ -173,32 +173,32 @@ public class Pathfinder {
 			return WaterWalkerCanGoThrough(a, b, walker);
 
 		//otherwise check if there is a building
-		else if (map.IsBuildingAt(a, b))
+		else if (wc.IsBuildingAt(a, b))
 			return CheckBuildingAt(a, b, currx, curry, walker);
 
 		//check if we're on a ramp right now; not mutually exclusive with the above
-		if(map.IsBuildingAt(currx, curry)) {
+		if(wc.IsBuildingAt(currx, curry)) {
 
-			if (map.GetBuildingNameAt(currx, curry).Contains("Ramp"))
-				return map.GetBuildingAt(currx, curry).GetComponent<Road>().NeighborCondition(a, b);
+			if (wc.GetBuildingNameAt(currx, curry).Contains("Ramp"))
+				return wc.GetBuildingAt(currx, curry).GetComponent<Road>().NeighborCondition(a, b);
 
 		}
 
-		if (map.elevation[a, b] != map.elevation[currx, curry])
+		if (wc.Map.elevation[a, b] != wc.Map.elevation[currx, curry])
 			return false;
 
 		//return false if there's water
-		return map.terrain[a, b] != (int)Terrain.Water;
+		return wc.Map.terrain[a, b] != (int)Terrain.Water;
 
 	}
 
 	bool RoadWalkerCanGoThrough(int a, int b, int currx, int curry, WalkerData walker) {
 
-		if (map.IsRoadblockAt(a, b)) {
+		if (wc.IsRoadblockAt(a, b)) {
 
 			//if this is a random walker, check if the roadblock will let them in
 			if (walker.RandomWalker && !walker.ReturningHome)
-				return map.GetBuildingAt(a, b).GetComponent<Roadblock>().AllowWalkerIn(walker);
+				return wc.GetBuildingAt(a, b).GetComponent<Roadblock>().AllowWalkerIn(walker);
 
 			//otherwise let them pass
 			return true;
@@ -206,27 +206,27 @@ public class Pathfinder {
 		}
 
 		//do not go through if there is a map entrance; we won't count these for roadwalker roads
-		string target = map.GetBuildingNameAt(a, b);
-		string current = map.GetBuildingNameAt(currx, curry);
-		if (!string.IsNullOrEmpty(target)) {
+		Structure target = wc.GetBuildingAt(a, b);
+		Structure current = wc.GetBuildingAt(currx, curry);
+		if (target != null) {
 
-			if (target.Contains("MapEntrance"))
+			if (target.name.Contains("MapEntrance"))
 				return false;
 
 			//check whether we're about to go onto a ramp
-			else if(target.Contains("Ramp"))
-				return map.GetBuildingAt(a, b).GetComponent<Road>().NeighborCondition(currx, curry);
+			else if(target.name.Contains("Ramp"))
+				return target.GetComponent<Road>().NeighborCondition(currx, curry);
 
 		}
-		if (!string.IsNullOrEmpty(current)) {	//not "else if" because this isn't mutually exclusive
+		if (current != null) {	//not "else if" because this isn't mutually exclusive
 
 			//check whether we're on a ramp right now
-			if(current.Contains("Ramp"))
-				return map.GetBuildingAt(currx, curry).GetComponent<Road>().NeighborCondition(a, b);
+			if(current.name.Contains("Ramp"))
+				return current.GetComponent<Road>().NeighborCondition(a, b);
 
 		}
 
-		return map.IsUnblockedRoadAt(a, b);
+		return wc.IsUnblockedRoadAt(a, b);
 
 	}
 
@@ -235,29 +235,29 @@ public class Pathfinder {
 		//bridges will count as roadblocks
 		//	they will allow all non-water walkers in
 		//	and allow water walkers in depending on height
-		if (map.IsBuildingAt(a, b) && !map.IsRoadAt(a, b))
+		if (wc.IsBuildingAt(a, b) && !wc.IsRoadAt(a, b))
 			return false;
 
-		return map.terrain[a, b] == (int)Terrain.Water;
+		return wc.Map.terrain[a, b] == (int)Terrain.Water;
 
 	}
 
 	bool CheckBuildingAt(int a, int b, int currx, int curry, WalkerData walker) {
 
-		string str = map.GetBuildingNameAt(a, b);
+		Structure str = wc.GetBuildingAt(a, b);
 
-		if (str.Contains("MapEntrance"))
+		if (str.name.Contains("MapEntrance"))
 			return true;
 
-		if (str.Contains("Ramp"))
-			return map.GetBuildingAt(a, b).GetComponent<Road>().NeighborCondition(currx, curry);
+		if (str.name.Contains("Ramp"))
+			return str.GetComponent<Road>().NeighborCondition(currx, curry);
 
-		if (map.IsRoadAt(a, b))
+		if (wc.IsRoadAt(a, b))
 			return true;
 
 		string exception = walker.CanPassThrough;
 		if (!string.IsNullOrEmpty(exception))
-			if (str.Contains(exception))
+			if (str.name.Contains(exception))
 				return true;
 
 		return false;

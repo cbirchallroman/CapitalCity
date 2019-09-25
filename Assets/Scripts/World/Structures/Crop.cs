@@ -25,7 +25,7 @@ public class Crop : Structure {
     public GameObject plant;
     public int BaseDaysToGrow { get; set; }
     public int amountToGrowPerFertility = 2;
-    public int AmountToGrow { get { return amountToGrowPerFertility * (world.Map.Fertility(X, Y) + 1); } }
+    public int AmountToGrow { get { return amountToGrowPerFertility * (world.Fertility(X, Y) + 1); } }
     public string cropType = "Grain";
     public int GrowTimer { get; set; }
     public bool planted;
