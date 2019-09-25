@@ -22,7 +22,7 @@ public class Road : TiledStructure {
 		//else check if there might be a ramp here
 		else if(world.Map.roads[a, b] > 0) {
 
-			GameObject str = world.Map.GetBuildingAt(a, b);
+			Structure str = world.GetBuildingAt(a, b);
 			if (str != null)
 				if (str.name.Contains("Ramp")) {
 
@@ -43,7 +43,7 @@ public class Road : TiledStructure {
 
 		}
 
-		return world.Map.IsRoadAt(a, b) && world.Map.elevation[X, Y] == world.Map.elevation[a, b];
+		return world.IsRoadAt(a, b) && world.Map.elevation[X, Y] == world.Map.elevation[a, b];
 	}
 
 	public bool RampNeighbor(int roadx, int roady, int rampx, int rampy, float rot) {

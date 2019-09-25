@@ -35,6 +35,7 @@ public class WorldController : MonoBehaviour {
     public bool PlaceOnRoads { get; set; }
 
 	List<Walker>[,] WalkerGrid;
+	Structure[,] StructureGrid;
 
     private void Start() {
         Enums.LoadDictionaries();
@@ -290,11 +291,11 @@ public class WorldController : MonoBehaviour {
 					if (roads[m, n] == 1) {
 
 						//if no structure at all, return false
-						if (string.IsNullOrEmpty(Map.structures[a, b]))
+						if (GetBuildingAt(a, b) == null)
 							return false;
 
 						//else if there's not a road here or it does not contain "Road", return false
-						else if (Map.roads[a, b] != 2 || !Map.GetBuildingNameAt(a, b).Contains("Road_"))
+						else if (Map.roads[a, b] != 2 || !GetBuildingNameAt(a, b).Contains("Road_"))
 							return false;
 
 					}
@@ -302,7 +303,7 @@ public class WorldController : MonoBehaviour {
 				}
 
 				//else if there's a structure on this tile when there shouldn't be
-				else if (!string.IsNullOrEmpty(Map.structures[a, b])) {
+				else if (GetBuildingAt(a, b) != null) {
 					return false;
 				}
 
@@ -334,15 +335,15 @@ public class WorldController : MonoBehaviour {
             }
 
         if (data.buildNearWater)
-            if (!Map.IsNearWater(x, y, sizex, sizex))
+            if (!IsNearWater(x, y, sizex, sizex))
                 return false;
 
         if (!string.IsNullOrEmpty(data.placeOnTerrain))
-            if (!Map.IsOnTile(x, y, sizex, sizey, Enums.terrainDict[data.placeOnTerrain]))
+            if (!IsOnTile(x, y, sizex, sizey, Enums.terrainDict[data.placeOnTerrain]))
                 return false;
 
         if (!string.IsNullOrEmpty(data.placeNearby))
-            if (!Map.IsNearStructure(x, y, sizex, sizey, data.placeNearby))
+            if (!IsNearStructure(x, y, sizex, sizey, data.placeNearby))
                 return false;
 
         return true;
@@ -413,12 +414,15 @@ public class WorldController : MonoBehaviour {
         if (data.builtOnce)
             go.name = type;
 
-        //rename the area it takes up to its name
-        Map.RenameArea(go.name, x, y, sizex, sizey);
-
+		//get structure component
 		Structure s = go.GetComponent<Structure>();
-        if (s == null)
-            Debug.LogError(type + " has no structure component");
+		if (s == null)
+			Debug.LogError(type + " has no structure component");
+
+		//assign area to structure
+		AssignArea(s, x, y, sizex, sizey);
+
+		//set structure 
         s.X = x;
         s.Y = y;
         s.Sizex = sizex;
@@ -427,16 +431,15 @@ public class WorldController : MonoBehaviour {
         s.world = this;
         s.Activate();
 
+
 		return s;
     }
 
     public void Demolish(int x, int y) {
 
-        GameObject go = Map.GetBuildingAt(x, y);
-        if (go == null)
-            return;
-
-        Structure s = go.GetComponent<Structure>();
+		Structure s = GetBuildingAt(x, y);
+		if (s == null)
+			return;
 
         if (!s.canBeDemolished && modeController.currentMode != Mode.Edit)
             return;
@@ -446,12 +449,10 @@ public class WorldController : MonoBehaviour {
     }
 
     public void Destroy(int x, int y) {
-
-        GameObject go = Map.GetBuildingAt(x, y);
-        if (go == null)
-            return;
-
-        Structure s = go.GetComponent<Structure>();
+		
+        Structure s = GetBuildingAt(x, y);
+		if (s == null)
+			return;
 
         int sizex = s.Sizex;
         int sizey = s.Sizey;
@@ -459,8 +460,9 @@ public class WorldController : MonoBehaviour {
         y = s.Y;
 
         s.DeleteDesirability();
-        Map.RenameArea(null, x, y, sizex, sizey);
-        Destroy(go);
+		//clear area
+		ClearArea(x, y, sizex, sizey);
+        Destroy(s.gameObject);
 
     }
 
@@ -475,7 +477,7 @@ public class WorldController : MonoBehaviour {
         if (Map.terrain[x, y] == (int)Enums.terrainDict[type])
             return false;
 
-        if (Enums.terrainDict[type] == Terrain.Water && Map.IsBuildingAt(x, y))
+        if (Enums.terrainDict[type] == Terrain.Water && IsBuildingAt(x, y))
             return false;
 
         return true;
@@ -505,7 +507,7 @@ public class WorldController : MonoBehaviour {
 	
 	public void CatchOnFire(int x, int y, int sizex, int sizey) {
 
-		string str = Map.GetBuildingNameAt(x, y);
+		string str = GetBuildingNameAt(x, y);
 		Destroy(x, y);
 		for (int a = x; a < x + sizex; a++)
 			for (int b = y; b < y + sizey; b++) {
@@ -519,7 +521,7 @@ public class WorldController : MonoBehaviour {
 
 	public void CollapseStructure(int x, int y, int sizex, int sizey) {
 
-		string str = Map.GetBuildingNameAt(x, y);
+		string str = GetBuildingNameAt(x, y);
 		Notification n = new Notification(NotificationType.Issue, str + " collapsed!", x, y, timeController);
 		notifications.NewNotification(n);
 
@@ -660,6 +662,173 @@ public class WorldController : MonoBehaviour {
 			walkers += w + " ";
 
 		Debug.Log(walkers);
+	}
+
+	public void AssignArea(Structure s, int x, int y, int szx, int szy) {
+
+		if (StructureGrid == null)
+			StructureGrid = Map.size.CreateArrayOfSize<Structure>();
+
+		StructureGrid[x, y] = s;
+		for (int a = x; a < szx + x; a++) {
+			for (int b = y; b < szy + y; b++) {
+				StructureGrid[a, b] = s;
+			}
+		}
+	}
+
+	public void ClearArea(int x, int y, int szx, int szy) {
+
+		AssignArea(null, x, y, szx, szy);
+
+	}
+
+	public bool IsBuildingAt(int x, int y) {
+
+		if (Map.OutOfBounds(x, y))
+			return false;
+		return GetBuildingAt(x, y) != null;
+
+	}
+
+	public Structure GetBuildingAt(int x, int y) {
+
+		if (StructureGrid == null)
+			return null;
+		return StructureGrid[x, y];
+
+	}
+
+	public Structure GetBuildingAt(Node n) {
+		
+		return GetBuildingAt(n.x, n.y);
+
+	}
+
+	public string GetBuildingNameAt(int x, int y) {
+
+		if (StructureGrid[x, y] == null)
+			return null;
+
+		return StructureGrid[x, y].name; ;
+
+	}
+
+	public bool IsNearWater(int x, int y, int sizex, int sizey) {
+
+		for (int a = x - 2; a < x + sizex + 2; a++)
+			for (int b = y - 2; b < y + sizey + 2; b++) {
+				if (Map.OutOfBounds(a, b))
+					continue;
+				if (Map.terrain[a, b] == (int)Terrain.Water)
+					return true;
+			}
+
+		return false;
+
+	}
+
+	public bool IsOnTile(int x, int y, int sizex, int sizey, Terrain t) {
+
+		for (int a = x; a < x + sizex; a++)
+			for (int b = y; b < y + sizey; b++) {
+				if (Map.OutOfBounds(a, b))
+					continue;
+				if (Map.terrain[a, b] == (int)t)
+					return true;
+			}
+
+		return false;
+
+	}
+
+	public bool IsNearStructure(int x, int y, int sizex, int sizey, string str) {
+
+		for (int a = x - 2; a < x + sizex + 2; a++)
+			for (int b = y - 2; b < y + sizey + 2; b++) {
+				if (Map.OutOfBounds(a, b))
+					continue;
+				string s = GetBuildingNameAt(a, b);
+				if (string.IsNullOrEmpty(s))
+					continue;
+				if (s.Contains(str))
+					return true;
+			}
+
+		return false;
+
+	}
+
+	public bool IsNearCanal(int x, int y, int sizex, int sizey) {
+
+		for (int a = x - 2; a < x + sizex + 2; a++)
+			for (int b = y - 2; b < y + sizey + 2; b++) {
+				if (Map.OutOfBounds(a, b))
+					continue;
+				Structure str = GetBuildingAt(a, b);
+				if (str == null)
+					continue;
+				Canal c = str.GetComponent<Canal>();
+				if (c == null)
+					continue;
+				if (c.WaterAccess)
+					return true;
+			}
+
+		return false;
+
+	}
+
+	public int Fertility(int x, int y) {
+
+		int fert = (int)Terrain.END + 1 - Map.terrain[x, y];
+
+		if (IsNearCanal(x, y, 2, 2) && fert < 5)
+			fert++;
+
+		return fert;
+
+	}
+
+	public bool IsRoadAt(int x, int y) {
+
+		if (Map.OutOfBounds(x, y))
+			return false;
+
+		return Map.roads[x, y] > 0;
+
+	}
+
+	public bool IsUnblockedRoadAt(int x, int y) {
+
+		if (Map.OutOfBounds(x, y))
+			return false;
+
+		if (IsBuildingAt(x, y))
+			if (GetBuildingNameAt(x, y).Contains("Ramp"))
+				return false;
+
+		return Map.roads[x, y] == 2;
+
+	}
+
+	public bool IsRoadblockAt(int x, int y) {
+
+		if (Map.OutOfBounds(x, y))
+			return false;
+
+		return Map.roads[x, y] == 1;
+
+	}
+
+	public int TileCost(int x, int y) {
+		if (IsRoadAt(x, y))
+			return 1;
+		return 2;
+	}
+
+	public int TileCost(Node n) {
+		return TileCost(n.x, n.y);
 	}
 
 	public float GetObjectFloat(int x, int y) {

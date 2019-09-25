@@ -24,10 +24,10 @@ public class Canal : TiledStructure {
     public List<MeshRenderer> meshRenderers;
     public bool WaterAccess { get; set; }
     public override bool NeighborCondition(int a, int b) {
-        string str = world.Map.GetBuildingNameAt(a, b);
-        if (string.IsNullOrEmpty(str))
+        Structure str = world.GetBuildingAt(a, b);
+        if (str == null)
             return world.Map.terrain[a, b] == (int)Terrain.Water;
-        return str.Contains("Canal");
+        return str.name.Contains("Canal");
     }
 
     public override void Load(ObjSave o) {
@@ -91,9 +91,9 @@ public class Canal : TiledStructure {
             return true;
         else if (index == visitedSpots.Length)
             return false;
-        else if (world.Map.IsBuildingAt(a,b)) {
+        else if (world.IsBuildingAt(a,b)) {
 
-            if (world.Map.GetBuildingNameAt(a, b).Contains("Canal")) {
+            if (world.GetBuildingNameAt(a, b).Contains("Canal")) {
                 bool up = FindWater(a, b - 1, visitedSpots, index);
                 bool down = FindWater(a, b + 1, visitedSpots, index);
                 bool left = FindWater(a - 1, b, visitedSpots, index);

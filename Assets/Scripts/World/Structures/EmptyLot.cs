@@ -28,8 +28,8 @@ public class EmptyLot : Structure {
     bool RoadAccess() {
         for (int a = X - 2; a <= X + 2; a++)
             for (int b = Y - 2; b <= Y + 2; b++)
-                if (world.Map.IsRoadAt(a, b))
-                    if(!world.Map.structures[a,b].Contains("MapE"))
+                if (world.IsRoadAt(a, b))
+                    if(!world.GetBuildingNameAt(a, b).Contains("MapE"))
                         return true;
         return false;
     }

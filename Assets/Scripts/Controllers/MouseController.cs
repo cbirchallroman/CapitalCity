@@ -103,12 +103,10 @@ public class MouseController : MonoBehaviour {
 		if (!InputController.GetPositiveInputDown("ClickObject"))
 			return;
 
-		World world = worldController.Map;
-
 		//if there's a building here with a window, open it
-		if(world.IsBuildingAt(mouseCoords.x, mouseCoords.y)) {
+		if(worldController.IsBuildingAt(mouseCoords.x, mouseCoords.y)) {
 
-			Structure str = world.GetBuildingAt(mouseCoords).GetComponent<Structure>();
+			Structure str = worldController.GetBuildingAt(mouseCoords);
 
 			if (str.openWindow) {
 				str.OpenWindow();

@@ -120,7 +120,7 @@ public class Obj : MonoBehaviour {
 		scenario = world.scenario;
 		population = world.population;
 		research = world.research;
-		pathfinder = new Pathfinder(world.Map);
+		pathfinder = new Pathfinder(world);
 
 	}
 

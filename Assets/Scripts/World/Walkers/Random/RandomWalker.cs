@@ -44,10 +44,9 @@ public class RandomWalker : Walker {
 				int a = X + dx;
 				int b = Y + dy;
 
-				string tile = world.Map.GetBuildingNameAt(a, b);
-				if (!string.IsNullOrEmpty(tile))
-					if (tile.Equals(Origin.name))
-						buildingDirection = new Node(dx, dy);
+				Structure tile = world.GetBuildingAt(a, b);
+				if (tile == Origin)
+					buildingDirection = new Node(dx, dy);
 			}
 		}
 		
@@ -97,7 +96,7 @@ public class RandomWalker : Walker {
 	public virtual void VisitBuildings() {
         for (int a = X - radiusOfInfluence; a <= X + radiusOfInfluence; a++)
             for (int b = Y - radiusOfInfluence; b <= Y + radiusOfInfluence; b++)
-                if(world.Map.IsBuildingAt(a,b) && !world.Map.IsRoadAt(a,b))
+                if(world.IsBuildingAt(a,b) && !world.IsRoadAt(a,b))
                     VisitBuilding(a, b);
 
     }

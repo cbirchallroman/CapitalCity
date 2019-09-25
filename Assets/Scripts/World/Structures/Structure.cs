@@ -95,7 +95,7 @@ public class Structure : Obj {
 		ActiveRandomWalker = s.activeRandomWalker;
         ActiveSmartWalker = s.activeSmartWalker;
 
-        world.Map.RenameArea(name, X, Y, Sizex, Sizey);
+		world.AssignArea(this, X, Y, Sizex, Sizey);
 
         collapseRiskMax = (int)(collapseRiskMax * Difficulty.GetModifier());
         fireRiskMax = (int)(fireRiskMax * Difficulty.GetModifier());
@@ -234,7 +234,7 @@ public class Structure : Obj {
                 continue;
 			if (elev != map.elevation[a, Y - 1])
 				continue;
-            if (map.IsUnblockedRoadAt(a, Y - 1))
+            if (world.IsUnblockedRoadAt(a, Y - 1))
                 tiles.Add(new Node(a, Y - 1));
         }
 
@@ -243,7 +243,7 @@ public class Structure : Obj {
                 continue;
 			if (elev != map.elevation[X + Sizex, b])
 				continue;
-			if (map.IsUnblockedRoadAt(X + Sizex, b))
+			if (world.IsUnblockedRoadAt(X + Sizex, b))
                 tiles.Add(new Node(X + Sizex, b));
         }
 
@@ -252,7 +252,7 @@ public class Structure : Obj {
                 continue;
 			if (elev != map.elevation[a, Y + Sizey])
 				continue;
-			if (map.IsUnblockedRoadAt(a, Y + Sizey))
+			if (world.IsUnblockedRoadAt(a, Y + Sizey))
                 tiles.Add(new Node(a, Y + Sizey));
         }
 
@@ -261,11 +261,11 @@ public class Structure : Obj {
                 continue;
 			if (elev != map.elevation[X - 1, b])
 				continue;
-			if (map.IsUnblockedRoadAt(X - 1, b))
+			if (world.IsUnblockedRoadAt(X - 1, b))
                 tiles.Add(new Node(X - 1, b));
         }
 
-        if (map.IsUnblockedRoadAt(X, Y) && Sizex == 1 && Sizey == 1)
+        if (world.IsUnblockedRoadAt(X, Y) && Sizex == 1 && Sizey == 1)
             tiles.Add(new Node(X, Y));
 
         return tiles;
@@ -285,7 +285,7 @@ public class Structure : Obj {
                 continue;
 			if (elev != map.elevation[a, Y - 1])
 				continue;
-			if (map.terrain[a, Y - 1] != (int)Terrain.Water && string.IsNullOrEmpty(map.structures[a, Y - 1]))
+			if (map.terrain[a, Y - 1] != (int)Terrain.Water && !world.IsBuildingAt(a, Y - 1))
                 tiles.Add(new Node(a, Y - 1));
         }
 
@@ -294,7 +294,7 @@ public class Structure : Obj {
                 continue;
 			if (elev != map.elevation[X + Sizex, b])
 				continue;
-			if (map.terrain[X + Sizex, b] != (int)Terrain.Water && string.IsNullOrEmpty(map.structures[X + Sizex, b]))
+			if (map.terrain[X + Sizex, b] != (int)Terrain.Water && !world.IsBuildingAt(X + Sizex, b))
                 tiles.Add(new Node(X + Sizex, b));
         }
 
@@ -303,7 +303,7 @@ public class Structure : Obj {
                 continue;
 			if (elev != map.elevation[a, Y + Sizey])
 				continue;
-			if (map.terrain[a, Y + Sizey] != (int)Terrain.Water && string.IsNullOrEmpty(map.structures[a, Y + Sizey]))
+			if (map.terrain[a, Y + Sizey] != (int)Terrain.Water && !world.IsBuildingAt(a, Y + Sizey))
                 tiles.Add(new Node(a, Y + Sizey));
         }
 
@@ -312,7 +312,7 @@ public class Structure : Obj {
                 continue;
 			if (elev != map.elevation[X - 1, b])
 				continue;
-			if (map.terrain[X - 1, b] != (int)Terrain.Water && string.IsNullOrEmpty(map.structures[X - 1, b]))
+			if (map.terrain[X - 1, b] != (int)Terrain.Water && !world.IsBuildingAt(X - 1, b))
                 tiles.Add(new Node(X - 1, b));
         }
 
@@ -381,7 +381,7 @@ public class Structure : Obj {
                 continue;
 			if (elev != map.elevation[a, Y - 1])
 				continue;
-			if (map.terrain[a, Y - 1] == (int)Terrain.Water && string.IsNullOrEmpty(map.structures[a, Y - 1]))
+			if (map.terrain[a, Y - 1] == (int)Terrain.Water && !world.IsBuildingAt(a, Y - 1))
                 tiles.Add(new Node(a, Y - 1));
         }
 
@@ -390,7 +390,7 @@ public class Structure : Obj {
                 continue;
 			if (elev != map.elevation[X + Sizex, b])
 				continue;
-			if (map.terrain[X + Sizex, b] == (int)Terrain.Water && string.IsNullOrEmpty(map.structures[X + Sizex, b]))
+			if (map.terrain[X + Sizex, b] == (int)Terrain.Water && !world.IsBuildingAt(X + Sizex, b))
                 tiles.Add(new Node(X + Sizex, b));
         }
 
@@ -399,7 +399,7 @@ public class Structure : Obj {
                 continue;
 			if (elev != map.elevation[a, Y + Sizey])
 				continue;
-			if (map.terrain[a, Y + Sizey] == (int)Terrain.Water && string.IsNullOrEmpty(map.structures[a, Y + Sizey]))
+			if (map.terrain[a, Y + Sizey] == (int)Terrain.Water && !world.IsBuildingAt(a, Y + Sizey))
                 tiles.Add(new Node(a, Y + Sizey));
         }
 
@@ -408,7 +408,7 @@ public class Structure : Obj {
                 continue;
 			if (elev != map.elevation[X - 1, b])
 				continue;
-			if (map.terrain[X - 1, b] == (int)Terrain.Water && string.IsNullOrEmpty(map.structures[X - 1, b]))
+			if (map.terrain[X - 1, b] == (int)Terrain.Water && !world.IsBuildingAt(X - 1, b))
                 tiles.Add(new Node(X - 1, b));
         }
 
@@ -783,9 +783,9 @@ public class Structure : Obj {
 
         for (int a = X - radiusOfInfluence; a < X + Sizex + radiusOfInfluence; a++)
             for (int b = Y - radiusOfInfluence; b < Y + Sizey + radiusOfInfluence; b++)
-                if (world.Map.IsBuildingAt(a, b) && !world.Map.IsRoadAt(a, b)) {
+                if (world.IsBuildingAt(a, b) && !world.IsRoadAt(a, b)) {
 
-                    if (world.Map.GetBuildingNameAt(a, b) == name)
+                    if (world.GetBuildingAt(a, b) == this)
                         continue;
                     VisitBuilding(a, b);
 
@@ -804,14 +804,14 @@ public class Structure : Obj {
                 if (world.Map.OutOfBounds(a, b))
                     continue;
 
-                if (world.Map.GetBuildingNameAt(a, b) == this.name)
+                if (world.GetBuildingAt(a, b) == this)
                     continue;
 
                 //find the shortest distance, along X or Y. this affects the desirability of the building
                 int dist_a = a > X ? a - X - Sizex + 1 : X - a;
                 int dist_b = b > Y ? b - Y - Sizey + 1 : Y - b;
                 int distance = dist_a > dist_b ? dist_a : dist_b;
-                
+				
                 world.Map.desirability[a, b] += desirability[distance-1];
 
             }
@@ -829,7 +829,7 @@ public class Structure : Obj {
                 if (world.Map.OutOfBounds(a, b))
                     continue;
 
-                if (world.Map.GetBuildingNameAt(a, b) == this.name)
+                if (world.GetBuildingAt(a, b) == this)
                     continue;
 
                 //find the shortest distance, along X or Y. this affects the desirability of the building

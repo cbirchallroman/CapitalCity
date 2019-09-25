@@ -8,7 +8,6 @@ public class World {
     public Node size;
     public int[,] terrain, roads, cleanliness, desirability;
 	public float[,] elevation;
-    public string[,] structures;
 
     public World(float x, float y) : this(new Node((int)x, (int)y)) { }
 
@@ -18,7 +17,6 @@ public class World {
         terrain = sz.CreateArrayOfSize<int>();
         roads = sz.CreateArrayOfSize<int>();
         cleanliness = sz.CreateArrayOfSize<int>();
-        structures = sz.CreateArrayOfSize<string>();
         desirability = sz.CreateArrayOfSize<int>();
 
     }
@@ -40,164 +38,17 @@ public class World {
         return false;
     }
 
-    public void RenameArea(string s, int x, int y, int szx, int szy) {
-        structures[x, y] = s;
-        for (int a = x; a < szx + x; a++) {
-            for (int b = y; b < szy + y; b++) {
-                structures[a, b] = s;
-            }
-        }
-    }
+    public Structure GetBuildingAt(int x, int y) {
 
-    void ClearArea(int x, int y, int szx, int szy) {
-        RenameArea(null, x, y, szx, szy);
-    }
-
-    public bool IsRoadAt(int x, int y) {
-
-        if (OutOfBounds(x, y))
-            return false;
-
-        return roads[x, y] > 0;
-
-    }
-
-    public bool IsUnblockedRoadAt(int x, int y) {
-
-        if (OutOfBounds(x, y))
-            return false;
-
-		if (IsBuildingAt(x, y))
-			if (GetBuildingNameAt(x, y).Contains("Ramp"))
-				return false;
-
-        return roads[x, y] == 2;
-
-    }
-
-	public bool IsRoadblockAt(int x, int y) {
-
-		if (OutOfBounds(x, y))
-			return false;
-
-		return roads[x, y]  == 1;
+		WorldController wc = GameObject.FindObjectOfType<WorldController>();
+		return wc.GetBuildingAt(x, y);
 
 	}
 
-    public GameObject GetBuildingAt(int x, int y) {
-        string n = GetBuildingNameAt(x, y);
+	public Structure GetBuildingAt(Node n) {
 
-        if (n == null)
-            return null;
+		return GetBuildingAt(n.x, n.y);
 
-        return GameObject.Find(n);
-    }
-
-    public GameObject GetBuildingAt(Node n) {
-
-        return GetBuildingAt(n.x, n.y);
-
-    }
-
-    public string GetBuildingNameAt(int x, int y){
-        if(OutOfBounds(x,y))
-            return "";
-
-        return structures[x, y];
-    }
-
-    public string GetBuildingNameAt(Node n) {
-        return GetBuildingNameAt((int)n.x, (int)n.y);
-    }
-
-    public bool IsBuildingAt(int x, int y) {
-        return !string.IsNullOrEmpty(GetBuildingNameAt(x, y));
-    }
-
-    public int TileCost(int x, int y) {
-        if (IsRoadAt(x, y))
-            return 1;
-        return 2;
-    }
-
-    public int TileCost(Node n) {
-        return TileCost(n.x, n.y);
-    }
-
-    public bool IsNearWater(int x, int y, int sizex, int sizey) {
-
-        for (int a = x - 2; a < x + sizex + 2; a++)
-            for (int b = y - 2; b < y + sizey + 2; b++) {
-                if (OutOfBounds(a, b))
-                    continue;
-                if (terrain[a, b] == (int)Terrain.Water)
-                    return true;
-            }
-                
-        return false;
-
-    }
-
-    public bool IsOnTile(int x, int y, int sizex, int sizey, Terrain t) {
-
-        for (int a = x; a < x + sizex; a++)
-            for (int b = y; b < y + sizey; b++) {
-                if (OutOfBounds(a, b))
-                    continue;
-                if (terrain[a, b] == (int)t)
-                    return true;
-            }
-
-        return false;
-
-    }
-
-    public bool IsNearStructure(int x, int y, int sizex, int sizey, string str) {
-
-        for (int a = x - 2; a < x + sizex + 2; a++)
-            for (int b = y - 2; b < y + sizey + 2; b++) {
-                if (OutOfBounds(a, b))
-                    continue;
-                string s = structures[a, b];
-                if (string.IsNullOrEmpty(s))
-                    continue;
-                if (s.Contains(str))
-                    return true;
-            }
-
-        return false;
-
-    }
-
-    public bool IsNearCanal(int x, int y, int sizex, int sizey) {
-
-        for (int a = x - 2; a < x + sizex + 2; a++)
-            for (int b = y - 2; b < y + sizey + 2; b++) {
-                if (OutOfBounds(a, b))
-                    continue;
-                GameObject go = GetBuildingAt(a, b);
-				if (go == null)
-					continue;
-                Canal c = go.GetComponent<Canal>();
-                if (c == null)
-                    continue;
-                if (c.WaterAccess)
-                    return true;
-            }
-
-        return false;
-
-    }
-
-    public int Fertility(int x, int y) {
-
-        int fert = (int)Terrain.END + 1 - terrain[x, y];
-
-        if (IsNearCanal(x, y, 2, 2) && fert < 5)
-            fert++;
-
-        return fert;
-
-    }
-
+	}
+	
 }

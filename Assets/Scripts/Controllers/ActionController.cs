@@ -95,14 +95,14 @@ public class ActionController : MonoBehaviour {
         if (d == "paint")
             return world.CanPaintTerrain(w, x, y);
 
-        else if (w == "Fence" && world.Map.IsUnblockedRoadAt(x, y))
+        else if (w == "Fence" && world.IsUnblockedRoadAt(x, y))
             return true;
 
         else if (d == "place")
             return world.CanSpawnStructure(w, x, y, buildingRotation);
 
         else if (d == "demolish" || d == "unplace")
-            return world.Map.GetBuildingAt(x, y) != null;
+            return world.GetBuildingAt(x, y) != null;
 
         else if (d == "rebuild")
             return true;
@@ -131,12 +131,12 @@ public class ActionController : MonoBehaviour {
 
 		//EXCEPTIONS TO BUILDING PLACEMENT
 		//if we're building a fence and there's a plain road here, build a gate instead
-		if (w == "Fence" && world.Map.IsUnblockedRoadAt(x, y)) {
+		if (w == "Fence" && world.IsUnblockedRoadAt(x, y)) {
 
 			//buildingroadblock = true;
 			world.Demolish(x, y);
 
-			if (world.Map.IsUnblockedRoadAt(x - 1, y) || world.Map.IsUnblockedRoadAt(x + 1, y))
+			if (world.IsUnblockedRoadAt(x - 1, y) || world.IsUnblockedRoadAt(x + 1, y))
 				buildingRotation = 90;
 
 			world.SpawnStructure("FenceGate", x, y, buildingRotation);
@@ -172,7 +172,7 @@ public class ActionController : MonoBehaviour {
 					moneyController.SpendOnConstruction(StructureDatabase.GetModifiedCost(act.What));
 
 				else if (modeController.currentMode == Mode.Construct && currentAction.Do == "demolish") {
-					Structure s = world.Map.GetBuildingAt(n).GetComponent<Structure>();
+					Structure s = world.GetBuildingAt(n);
 					moneyController.SpendOnConstruction(s.Sizex * s.Sizey * demolishCost);
 				}
 
@@ -244,10 +244,9 @@ public class ActionController : MonoBehaviour {
 
 		foreach(Node n in acts.Keys) {
 
-			GameObject go = world.Map.GetBuildingAt(n);
-			if (go == null)
+			Structure s = world.GetBuildingAt(n);
+			if (s == null)
 				continue;
-			Structure s = go.GetComponent<Structure>();
 			if (structures.Contains(s))
 				continue;
 			cost += s.Sizex * s.Sizey * demolishCost;
@@ -378,7 +377,7 @@ public class ActionController : MonoBehaviour {
             return new Action("unplace", a.What);
 
         else if (a.Do == "demolish")
-            return new Action("rebuild", world.Map.GetBuildingAt(n));
+            return new Action("rebuild", world.GetBuildingAt(n).gameObject);
 
         return null;
 

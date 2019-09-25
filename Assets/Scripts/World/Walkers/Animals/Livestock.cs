@@ -38,7 +38,7 @@ public class Livestock : Animal {
 			else if (RestTime > 0) {
 				Stuck = true;
 				RestTime--;
-				if (world.Map.IsUnblockedRoadAt(X, Y))
+				if (world.IsUnblockedRoadAt(X, Y))
 					world.Map.cleanliness[X, Y] += 5;
 			}
 			else {
@@ -99,7 +99,7 @@ public class Livestock : Animal {
 
     void EatPlant(int a, int b) {
 
-        GameObject s = world.Map.GetBuildingAt(a, b);
+        Structure s = world.GetBuildingAt(a, b);
         if (s == null)
             return;
         Crop c = s.GetComponent<Crop>();
