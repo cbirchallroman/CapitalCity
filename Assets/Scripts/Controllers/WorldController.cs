@@ -498,12 +498,45 @@ public class WorldController : MonoBehaviour {
 		//make new tile
 		GameObject newTile = GenerateTile(x, y, GameObject.Find("Row_" + x));
 		tiles[x, y] = newTile;  //put tile into tile grid
-		Debug.Log(newTile);
 
 		//replace tile in mesh
 		meshCombiner.ReplaceTile(oldTile, newTile);
 
     }
+
+	//check if a tile can be painted
+	public bool CanChangeElevation(int delta, int x, int y) {
+
+		//if out of range, don't try it
+		if (Map.OutOfBounds(x, y))
+			return false;
+
+		if (Map.elevation[x, y] + delta < 0 || Map.elevation[x, y] + delta > 7)
+			return false;
+
+		return true;
+
+	}
+
+	public void ChangeElevation(int delta, int x, int y) {
+
+		if (!CanChangeElevation(delta, x, y))
+			return;
+
+		//get old tile if it exists
+		GameObject oldTile = tiles[x, y];
+
+		//set new terrain
+		Map.elevation[x, y] += delta;
+
+		//make new tile
+		GameObject newTile = GenerateTile(x, y, GameObject.Find("Row_" + x));
+		tiles[x, y] = newTile;  //put tile into tile grid
+
+		//replace tile in mesh
+		meshCombiner.ReplaceTile(oldTile, newTile);
+
+	}
 	
 	public void CatchOnFire(int x, int y, int sizex, int sizey) {
 

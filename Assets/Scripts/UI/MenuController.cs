@@ -97,7 +97,7 @@ public class MenuController : MonoBehaviour {
             
         menu.SetActive(true);
 		menu.transform.SetAsLastSibling();
-
+		
         TooltipController.SetText("");
 
         if (hasMode) if (!openOnModes.Contains(modeController.currentMode))

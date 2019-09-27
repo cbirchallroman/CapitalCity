@@ -140,7 +140,7 @@ public class MeshCombiner : MonoBehaviour {
 		//position to begin from
 		int minVerticePos = -1;
 
-		Vector3 firstVertPosToRemove = objToRemove.transform.TransformPoint(verticesToRemove[0]);
+		Vector3 firstVertPosToRemove = objToRemove.transform.TransformPoint(verticesToRemove[verticesToRemove.Length - 1]);
 		firstVertPosToRemove = combinedMesh.InverseTransformPoint(firstVertPosToRemove);
 
 		for (int i = 0; i < currentVertices.Count && minVerticePos == -1; i++) {

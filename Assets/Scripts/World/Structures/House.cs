@@ -535,7 +535,7 @@ public class House : Structure {
 	public int Thirst { get; set; }
 	public int ThirstRate { get { return 1; } }
 	public int MaxThirst { get { return ThirstRate * TimeController.MonthTime * 12; } }
-	public int DesperateThirst { get { return ThirstRate * TimeController.MonthTime * 3; } } //if it's been 3 months
+	public int DesperateThirst { get { return ThirstRate * TimeController.MonthTime * 9; } } //if it's been 9 months
 
 	public bool DesperatelyThirsty { get { return Thirst >= DesperateThirst; } }
 
@@ -579,7 +579,7 @@ public class House : Structure {
 	public int Hunger { get; set; }
 	public int HungerRate { get { return Residents.Count; } }
 	public int MaxHunger { get { return HungerRate * TimeController.MonthTime * 12; } }
-	public int DesperateHunger { get { return HungerRate * TimeController.MonthTime * 3; } }
+	public int DesperateHunger { get { return HungerRate * TimeController.MonthTime * 9; } }
 
 	public bool DesperatelyHungry { get { return Hunger >= DesperateHunger; } }
 

@@ -92,20 +92,23 @@ public class ActionController : MonoBehaviour {
         string d = act.Do;
         string w = act.What;
 
-        if (d == "paint")
-            return world.CanPaintTerrain(w, x, y);
+		if (d == "paint")
+			return world.CanPaintTerrain(w, x, y);
 
-        else if (w == "Fence" && world.IsUnblockedRoadAt(x, y))
-            return true;
+		else if (d == "elevate")
+			return world.CanChangeElevation(int.Parse(w), x, y);
 
-        else if (d == "place")
-            return world.CanSpawnStructure(w, x, y, buildingRotation);
+		else if (w == "Fence" && world.IsUnblockedRoadAt(x, y))
+			return true;
 
-        else if (d == "demolish" || d == "unplace")
-            return world.GetBuildingAt(x, y) != null;
+		else if (d == "place")
+			return world.CanSpawnStructure(w, x, y, buildingRotation);
 
-        else if (d == "rebuild")
-            return true;
+		else if (d == "demolish" || d == "unplace")
+			return world.GetBuildingAt(x, y) != null;
+
+		else if (d == "rebuild")
+			return true;
 
         return false;
     }
@@ -122,6 +125,9 @@ public class ActionController : MonoBehaviour {
 
 		else if (d == "paint")
 			world.PaintTerrain(w, x, y);
+
+		else if (d == "elevate")
+			world.ChangeElevation(int.Parse(w), x, y);
 
 		else if (d == "demolish" || d == "unplace")
 			world.Demolish(x, y);
