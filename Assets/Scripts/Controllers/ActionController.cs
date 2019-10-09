@@ -288,7 +288,7 @@ public class ActionController : MonoBehaviour {
     //get preview object for an action
     public GameObject GetPreview(Action act) {
 
-        if (act.Do == "paint" || act.Do == "demolish") {
+        if (act.Do == "paint" || act.Do == "demolish" || act.Do == "elevate") {
 
             GameObject go = (GameObject)Instantiate(Resources.Load("Previews/Hover"));
             
@@ -332,7 +332,7 @@ public class ActionController : MonoBehaviour {
         if (act == null)
             return false;
 
-        if (act.Do == "paint" || act.Do == "demolish")
+        if (act.Do == "paint" || act.Do == "demolish" || act.Do == "elevate")
             return true;
 
         else if(act.Do == "place") {

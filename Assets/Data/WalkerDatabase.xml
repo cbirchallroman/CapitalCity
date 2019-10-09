@@ -122,4 +122,11 @@
     <CanPassThrough>Tree</CanPassThrough>
 
   </Walker>
+  <Walker>
+
+    <Name>Mourner</Name>
+    <RoadWalker>true</RoadWalker>
+    <CanPassThrough>House</CanPassThrough>
+
+  </Walker>
 </WalkerDatabase>

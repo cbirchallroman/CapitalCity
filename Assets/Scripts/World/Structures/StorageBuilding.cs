@@ -6,7 +6,7 @@ using UnityEngine;
 [System.Serializable]
 public class StorageBuildingSave : WorkplaceSave {
     
-    public int[] inventory, queue;
+    public int[] inventory, queueInventory;
     public float[] willAccept;
     public bool[] willGet;
 
@@ -15,7 +15,7 @@ public class StorageBuildingSave : WorkplaceSave {
         StorageBuilding s = go.GetComponent<StorageBuilding>();
         
         inventory = s.Inventory;
-        queue = s.Queue;
+        queueInventory = s.QueueInventory;
         willAccept = s.WillAccept;
         willGet = s.WillGet;
 
@@ -34,7 +34,7 @@ public class StorageBuilding : Workplace {
     public float defaultPercent = 1;
     public ItemType typeStored;
     public int[] Inventory { get; set; }
-    public int[] Queue { get; set; }
+    public int[] QueueInventory { get; set; }
     public float[] WillAccept { get; set; }
     public bool[] WillGet { get; set; }
 
@@ -45,7 +45,7 @@ public class StorageBuilding : Workplace {
 
         StorageBuildingSave s = (StorageBuildingSave)o;
         Inventory = s.inventory;
-        Queue = s.queue;
+        QueueInventory = s.queueInventory;
         WillAccept = s.willAccept;
         WillGet = s.willGet;
         
@@ -104,7 +104,7 @@ public class StorageBuilding : Workplace {
         base.Activate();
 
         Inventory = new int[NumOfTotalTypes];
-        Queue = new int[NumOfTotalTypes];
+        QueueInventory = new int[NumOfTotalTypes];
 
         WillAccept = new float[NumOfTotalTypes];
         //set all types to accept all
@@ -112,7 +112,7 @@ public class StorageBuilding : Workplace {
             WillAccept[a] = defaultPercent;
 
         WillGet = new bool[NumOfTotalTypes];
-        CollapseRisk = 100;
+        //CollapseRisk = 100;
 
     }
 
@@ -146,7 +146,7 @@ public class StorageBuilding : Workplace {
 			return 0;
 
 		//actual space left, which is the max it will accept times the total potential space minus the amount stored
-		int space = (int)(WillAccept[a] * stockpile / weight) - Inventory[a] - Queue[a];
+		int space = (int)(WillAccept[a] * stockpile / weight) - Inventory[a] - QueueInventory[a];
 		
         //if the total potential space is less than what could be stored individually, return the total potential space
         if (EmptySpace < space)
@@ -171,9 +171,9 @@ public class StorageBuilding : Workplace {
     //sums up total queue
     public int AmountQueued() {
         int sum = 0;
-		for(int item = 0; item < Queue.Length; item++) {
+		for(int item = 0; item < QueueInventory.Length; item++) {
 
-			sum += Queue[item] * ResourcesDatabase.GetWeight(Enums.GetItemName(item, typeStored));
+			sum += QueueInventory[item] * ResourcesDatabase.GetWeight(Enums.GetItemName(item, typeStored));
 
 		}
         return sum;
@@ -216,14 +216,14 @@ public class StorageBuilding : Workplace {
             Debug.Log(name + " does not store " + io.GetItemName());
 
         //else remove from queue and add to inventory
-        Queue[io.item] -= io.amount;
+        QueueInventory[io.item] -= io.amount;
         Inventory[io.item] += io.amount;
         UpdateVisibleGoods();
     }
 
 	public void ExpectItem(ItemOrder io) {
 
-		Queue[io.item] += io.amount;
+		QueueInventory[io.item] += io.amount;
 		//Debug.Log(name + " expects to receive " + io);
 
 	}

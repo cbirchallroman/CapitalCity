@@ -8,7 +8,7 @@ public class StructureSave : ObjSave {
 
     public int sizex, sizey, days, weeks, months;
     public bool activeRandomWalker, activeSmartWalker;
-    public float FireRisk, CollapseRisk, AmountStored;
+    public float FireRisk, CollapseRisk, AmountStored, Queue;
 
     public StructureSave(GameObject go) : base(go) {
 
@@ -22,6 +22,7 @@ public class StructureSave : ObjSave {
         FireRisk = s.FireRisk;
         CollapseRisk = s.CollapseRisk;
 		AmountStored = s.AmountStored;
+		Queue = s.Queue;
 
 		activeRandomWalker = s.ActiveRandomWalker;
         activeSmartWalker = s.ActiveSmartWalker;
@@ -46,6 +47,7 @@ public class Structure : Obj {
 	public int stockpile = 100;
 	public MeshRenderer groundMR;
 	public float AmountStored { get; set; }
+	public float Queue { get; set; }
 
 	public int Sizex { get; set; }
     public int Sizey { get; set; }
@@ -91,6 +93,7 @@ public class Structure : Obj {
         FireRisk = s.FireRisk;
         CollapseRisk = s.CollapseRisk;
 		AmountStored = s.AmountStored;
+		Queue = s.Queue;
 
 		ActiveRandomWalker = s.activeRandomWalker;
         ActiveSmartWalker = s.activeSmartWalker;
@@ -655,6 +658,72 @@ public class Structure : Obj {
         return queue;
 
     }
+
+	public SimplePriorityQueue<Cemetary> FindCemetary(int corpses) {
+
+		GameObject[] objs = GameObject.FindGameObjectsWithTag("Cemetar");
+		SimplePriorityQueue<Cemetary> queue = new SimplePriorityQueue<Cemetary>();
+
+		if (objs.Length == 0)
+			return queue;
+		
+
+		foreach (GameObject go in objs) {
+
+			Cemetary cemetary = go.GetComponent<Cemetary>();
+
+			//if cemetary cannot accept corpses, continue
+			if (!cemetary.CanAcceptCorpses(corpses))
+				continue;
+
+			//if cemetary has no entrances, continue
+			List<Node> entrancesThere = cemetary.GetAdjRoadTiles();
+			if (entrancesThere.Count == 0)
+				continue;
+			
+			float distance = new Node(this).DistanceTo(entrancesThere[0]);
+
+			queue.Enqueue(cemetary, distance);
+
+		}
+
+		return queue;
+
+	}
+
+	public Walker SpawnMourner(int corpses) {
+		
+		Node start = new Node(this);
+
+		SimplePriorityQueue<Cemetary> queue = FindCemetary(corpses);
+
+		for (int i = 0; queue.Count > 0 && i < 5 && !ActiveSmartWalker; i++) {
+
+			Cemetary cemetary = queue.Dequeue();
+			List<Node> exits = cemetary.GetAdjRoadTiles();
+			if (exits.Count == 0)
+				continue;
+
+			Queue<Node> path = pathfinder.FindPath(start, exits, "Mourner");
+			if (path.Count == 0)
+				continue;
+
+			GameObject go = world.SpawnObject("Walkers", "Mourner", start);
+
+			Walker c = go.GetComponent<Walker>();
+			c.world = world;
+			c.yield = corpses;
+			c.Origin = this;
+			c.Destination = cemetary;
+			c.Activate();
+			c.SetPath(path);
+			return c;
+
+		}
+
+		return null;
+
+	}
 
     public Carryer SpawnGetterToStorage(ItemOrder io) {
 

@@ -16,8 +16,7 @@ public class GiverCart : Carryer {
 	}
 
 	public override void OnceAtDestination() {
-
-        base.OnceAtDestination();
+		
         Destination.ReceiveItem(Order);
 
     }

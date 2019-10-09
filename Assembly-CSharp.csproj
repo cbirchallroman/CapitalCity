@@ -61,6 +61,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Assets\Fence.cs" />
     <Compile Include="Assets\MinimapController.cs" />
     <Compile Include="Assets\Scripts\Controllers\ActionController.cs" />
     <Compile Include="Assets\Scripts\Controllers\AudioController.cs" />
@@ -174,8 +175,8 @@
     <Compile Include="Assets\Scripts\World\Obj.cs" />
     <Compile Include="Assets\Scripts\World\Pathfinder.cs" />
     <Compile Include="Assets\Scripts\World\RandomModel.cs" />
-    <Compile Include="Assets\Scripts\World\StorageBlock.cs" />
     <Compile Include="Assets\Scripts\World\Structures\Canal.cs" />
+    <Compile Include="Assets\Scripts\World\Structures\Cemetary.cs" />
     <Compile Include="Assets\Scripts\World\Structures\ConstructionSite.cs" />
     <Compile Include="Assets\Scripts\World\Structures\Cottage.cs" />
     <Compile Include="Assets\Scripts\World\Structures\Crop.cs" />
@@ -183,7 +184,6 @@
     <Compile Include="Assets\Scripts\World\Structures\Distributer.cs" />
     <Compile Include="Assets\Scripts\World\Structures\EmptyLot.cs" />
     <Compile Include="Assets\Scripts\World\Structures\Farmhouse.cs" />
-    <Compile Include="Assets\Scripts\World\Structures\Fence.cs" />
     <Compile Include="Assets\Scripts\World\Structures\Generator.cs" />
     <Compile Include="Assets\Scripts\World\Structures\House.cs" />
     <Compile Include="Assets\Scripts\World\Structures\InspectorsTower.cs" />
@@ -194,6 +194,7 @@
     <Compile Include="Assets\Scripts\World\Structures\Roadblock.cs" />
     <Compile Include="Assets\Scripts\World\Structures\RubbleOnFire.cs" />
     <Compile Include="Assets\Scripts\World\Structures\Stable.cs" />
+    <Compile Include="Assets\Scripts\World\Structures\StorageBlock.cs" />
     <Compile Include="Assets\Scripts\World\Structures\StorageBuilding.cs" />
     <Compile Include="Assets\Scripts\World\Structures\Structure.cs" />
     <Compile Include="Assets\Scripts\World\Structures\TiledStructure.cs" />
@@ -216,6 +217,7 @@
     <Compile Include="Assets\Scripts\World\Walkers\Emigrant.cs" />
     <Compile Include="Assets\Scripts\World\Walkers\Follower.cs" />
     <Compile Include="Assets\Scripts\World\Walkers\Immigrant.cs" />
+    <Compile Include="Assets\Scripts\World\Walkers\Mourner.cs" />
     <Compile Include="Assets\Scripts\World\Walkers\Random\Architect.cs" />
     <Compile Include="Assets\Scripts\World\Walkers\Random\CottageVender.cs" />
     <Compile Include="Assets\Scripts\World\Walkers\Random\Healer.cs" />
